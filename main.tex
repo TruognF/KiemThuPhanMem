@@ -1652,19 +1652,75 @@ EC4\_Search & Hashtag từng tồn tại nhưng bài viết duy nhất gắn has
 \subsection{Phân tích miền (Domain Analysis)}
 
 \subsubsection{Chức năng B2 -- Đăng ký tài khoản}
-\begin{tcolorbox}[colback=yellow!10, colframe=orange!70!black, title=\textbf{Ghi chú các thành phần còn thiếu so với tài liệu gốc KTPM}, fonttitle=\bfseries]
-So với file \texttt{KyThuatPhanTichMien\_QuyetDinh.pdf} (trang 1--6), mục này hiện đang lược bớt: (1) Phần Tóm tắt Requirement \& bảng mã kỹ thuật \texttt{T22--T33}; (2) \textit{Bảng 1: Biến đầu vào ($x, y$)} và \textit{Bảng 2: Các điều kiện kiểm thử ($C_1$--$C_4$)}; (3) \textit{Bảng 1.5.1: Test Case cho kỹ thuật phân tích miền (\texttt{DA-TC01}--\texttt{DA-TC06} ánh xạ sang TC gốc)}.
-\end{tcolorbox}
 
+\noindent\textbf{a. Mô tả nghiệp vụ \& Yêu cầu kỹ thuật (TRD)}
 \begin{itemize}[leftmargin=1.2cm, noitemsep]
-    \item[\textbf{--}] \textbf{Biến đầu vào:} $x$ là độ dài Mật khẩu (\texttt{Password}), $y$ là độ dài Mật khẩu xác nhận (\texttt{ConfirmPassword}).
-    \item[\textbf{--}] \textbf{Ràng buộc miền:} $8 \le x \le 100$ và $y = x$. (Điều kiện trùng khớp nội dung \texttt{Password == ConfirmPassword} được kiểm tra bổ sung).
+    \item[\textbf{--}] \textbf{Mã BRD:} B2
+    \item[\textbf{--}] \textbf{Tên chức năng:} Đăng ký tài khoản (\texttt{User Registration}) -- Kiểm tra ràng buộc liên biến Mật khẩu và Xác nhận mật khẩu.
+    \item[\textbf{--}] \textbf{Tóm tắt Requirement từ tài liệu hệ thống:}
+    \begin{itemize}[leftmargin=0.8cm, label=$\bullet$, noitemsep]
+        \item Mật khẩu không được để trống, độ dài hợp lệ từ 8 đến 100 ký tự.
+        \item Mật khẩu phải chứa ít nhất 1 chữ hoa (\texttt{A--Z}), 1 chữ thường (\texttt{a--z}), 1 chữ số (\texttt{0--9}) và 1 ký tự đặc biệt.
+        \item Hệ thống chấm điểm độ mạnh mật khẩu (0--100) theo thời gian thực khi người dùng nhập.
+        \item Mật khẩu xác nhận (\texttt{ConfirmPassword}) phải có độ dài bằng và nội dung trùng khớp hoàn toàn với Mật khẩu (\texttt{Password}).
+    \end{itemize}
 \end{itemize}
 
 \begin{table}[H]
 \centering
 \small
-\begin{tabular}{|L{3.5cm}|L{2.2cm}|C{1.2cm}|C{0.9cm}|C{0.9cm}|C{0.9cm}|C{0.9cm}|C{0.9cm}|C{0.9cm}|}
+\begin{tabularx}{\textwidth}{|C{1.8cm}|X|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{T\#} & \textbf{Mô tả yêu cầu} \tabularnewline
+\hline
+\textbf{T22--T27} & Mật khẩu không được để trống, dài từ 8 đến 100 ký tự, gồm ít nhất 1 chữ hoa, 1 chữ thường, 1 chữ số và 1 ký tự đặc biệt. \\ \hline
+\textbf{T28} & Hệ thống đánh giá độ mạnh mật khẩu theo thang 0--100 và hiển thị cảnh báo theo từng ngưỡng chưa đạt. \\ \hline
+\textbf{T29--T30} & Mã hóa mật khẩu an toàn và gán quyền mặc định Người dùng khi đăng ký hợp lệ. \\ \hline
+\textbf{T32--T33} & Đăng ký thành công thì chuyển hướng về trang đăng nhập; đăng ký thất bại hiển thị thông báo lỗi rõ ràng theo từng trường. \\ \hline
+\end{tabularx}
+\caption{Bảng mã yêu cầu kỹ thuật chức năng Đăng ký tài khoản -- Ràng buộc mật khẩu (B2)}
+\end{table}
+
+\noindent\textbf{b. Xác định biến đầu vào, điều kiện kiểm thử \& Ma trận Domain Analysis}
+
+\begin{table}[H]
+\centering
+\small
+\begin{minipage}[t]{0.48\textwidth}
+\begin{tabularx}{\linewidth}{|C{1.4cm}|X|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{Biến} & \textbf{Ý nghĩa} \tabularnewline
+\hline
+$x$ & Độ dài chuỗi Mật khẩu (\texttt{Password}) \\ \hline
+$y$ & Độ dài chuỗi Mật khẩu xác nhận (\texttt{ConfirmPassword}) \\ \hline
+\end{tabularx}
+\caption{Biến đầu vào chức năng Đăng ký (B2)}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\textwidth}
+\begin{tabularx}{\linewidth}{|C{1.4cm}|X|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{Mã} & \textbf{Điều kiện kiểm thử} \tabularnewline
+\hline
+$C_1$ & $x \ge 8$ (độ dài tối thiểu) \\ \hline
+$C_2$ & $x \le 100$ (độ dài tối đa) \\ \hline
+$C_3$ & $y = x$ (độ dài xác nhận bằng mật khẩu) \\ \hline
+$C_4$ & \texttt{Password == ConfirmPassword} \\ \hline
+\end{tabularx}
+\caption{Các điều kiện kiểm thử (\texttt{C1}--\texttt{C4}) cho B2}
+\end{minipage}
+\end{table}
+
+\begin{itemize}[leftmargin=1.2cm, noitemsep]
+    \item[\textbf{--}] \textbf{Ràng buộc miền:} $8 \le x \le 100$ và $y = x$ (điều kiện trùng khớp nội dung \texttt{Password == ConfirmPassword} được kiểm tra bổ sung).
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|X|C{2.0cm}|C{1.2cm}|C{0.9cm}|C{0.9cm}|C{0.9cm}|C{0.9cm}|C{0.9cm}|C{0.9cm}|}
 \hline
 \rowcolor[RGB]{179, 205, 255}
 \textbf{Biến} & \textbf{Điều kiện} & \textbf{Loại} & \textbf{TC1} & \textbf{TC2} & \textbf{TC3} & \textbf{TC4} & \textbf{TC5} & \textbf{TC6} \tabularnewline
@@ -1678,15 +1734,15 @@ So với file \texttt{KyThuatPhanTichMien\_QuyetDinh.pdf} (trang 1--6), mục n�
  & & Off & & & & & & 13 \\ \cline{2-9}
  & Typical & In & 8 & 7 & 100 & 101 & & \\ \hline
 \multicolumn{3}{|c|}{\textbf{Kết quả mong đợi}} & \textcolor{blue}{$\checkmark$} & \textcolor{red}{$\times$} & \textcolor{blue}{$\checkmark$} & \textcolor{red}{$\times$} & \textcolor{blue}{$\checkmark$} & \textcolor{red}{$\times$} \\ \hline
-\end{tabular}
+\end{tabularx}
 \caption{Ma trận Domain Analysis cho độ dài Mật khẩu và Xác nhận mật khẩu (B2)}
 \end{table}
 
-\noindent\textbf{Bảng Test Cases chi tiết chức năng B2 (Đăng ký tài khoản -- Ràng buộc mật khẩu):}
+\noindent\textbf{c. Bảng Test Cases chi tiết chức năng B2 (Đăng ký tài khoản -- Ràng buộc mật khẩu):}
 \begingroup
 \scriptsize
 \setlength{\tabcolsep}{3pt}
-\begin{longtable}{|C{0.8cm}|C{0.75cm}|C{0.95cm}|L{2.0cm}|L{3.0cm}|L{2.25cm}|L{2.6cm}|L{2.5cm}|C{0.85cm}|}
+\begin{longtable}{|C{0.8cm}|C{0.85cm}|C{0.95cm}|L{2.0cm}|L{3.0cm}|L{2.15cm}|L{2.6cm}|L{2.5cm}|C{0.85cm}|}
 \hline
 \rowcolor[RGB]{179, 205, 255}
 \textbf{TC\#} & \textbf{BR\#} & \textbf{TR\#} & \textbf{TestCase} & \textbf{TestSteps} & \textbf{Test Data} & \textbf{Expected} & \textbf{Result} & \textbf{P/F} \tabularnewline
@@ -1699,38 +1755,82 @@ So với file \texttt{KyThuatPhanTichMien\_QuyetDinh.pdf} (trang 1--6), mục n�
 \endhead
 \hline
 \endfoot
-\textbf{26} & B2 & T22 & Đăng ký khi để trống Mật khẩu & 1. Vào trang đăng ký\newline 2. Để trống ô Mật khẩu, nhấn Đăng ký & Tên: newuser09\newline MK: (trống) & Trường Mật khẩu hiển thị yêu cầu bắt buộc. & Trình duyệt chặn gửi, báo HTML required. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{27} & B2 & T23 & Đăng ký với Mật khẩu 7 ký tự (dưới biên) & 1. Nhập mật khẩu 7 ký tự đủ hoa, thường, số, đặc biệt\newline 2. Nhấn Đăng ký & Tên: newuser10\newline MK: Test@12 & Hệ thống từ chối do mật khẩu dưới 8 ký tự. & Server từ chối vì yêu cầu >= 8 ký tự (Defect \#1 ở FE). & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{28} & B2 & T23--T27 & Đăng ký với Mật khẩu 8 ký tự đủ tiêu chí (biên dưới) & 1. Nhập mật khẩu đúng 8 ký tự đủ 4 nhóm\newline 2. Nhấn Đăng ký & Tên: newuser11\newline MK: Test@123 & Đăng ký thành công, chuyển hướng về trang Đăng nhập. & Đăng ký thành công, chuyển về /login. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{29} & B2 & T24 & Đăng ký với Mật khẩu thiếu chữ hoa & 1. Nhập mật khẩu thiếu chữ hoa\newline 2. Nhấn Đăng ký & MK: test@1234 & Đăng ký không thành công, báo thiếu tiêu chí chữ hoa. & Frontend chặn, tiêu chí chữ hoa hiện X đỏ. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{30} & B2 & T25 & Đăng ký với Mật khẩu thiếu chữ thường & 1. Nhập mật khẩu thiếu chữ thường\newline 2. Nhấn Đăng ký & MK: TEST@1234 & Đăng ký không thành công, báo thiếu tiêu chí chữ thường. & Frontend chặn, tiêu chí chữ thường hiện X đỏ. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{31} & B2 & T26 & Đăng ký với Mật khẩu thiếu chữ số & 1. Nhập mật khẩu thiếu chữ số\newline 2. Nhấn Đăng ký & MK: Test@abcd & Đăng ký không thành công, báo thiếu tiêu chí chữ số. & Frontend chặn, tiêu chí chữ số hiện X đỏ. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{32} & B2 & T27 & Đăng ký với Mật khẩu thiếu ký tự đặc biệt & 1. Nhập mật khẩu thiếu ký tự đặc biệt\newline 2. Nhấn Đăng ký & MK: Test12345 & Đăng ký không thành công, báo thiếu ký tự đặc biệt. & Frontend chặn, tiêu chí đặc biệt hiện X đỏ. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{33} & B2 & T29 & Đăng ký khi Mật khẩu xác nhận không khớp & 1. Nhập MK hợp lệ\newline 2. Nhập Confirm Password khác & MK: Test@12345\newline XN: Test@99999 & Hiển thị ``Mật khẩu không trùng khớp. Vui lòng kiểm tra lại!''. & Frontend chặn và hiển thị đúng thông báo. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{34} & B2 & T30, T32 & Đăng ký thành công với đầy đủ thông tin hợp lệ & 1. Nhập đầy đủ thông tin hợp lệ\newline 2. Nhấn Đăng ký & Tên: testuser\_ok\newline MK/XN: Test@12345 & Tạo tài khoản, gán role ``User'', chuyển hướng về /login. & Đăng ký thành công, chuyển về /login. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{35} & B2 & T30 & Xác minh tài khoản vừa đăng ký có thể đăng nhập & 1. Sau TC34, vào /login\newline 2. Đăng nhập với TK vừa tạo & Tên: testuser\_ok\newline MK: Test@12345 & Đăng nhập thành công, chuyển hướng đến /home. & Đăng nhập thành công, vào trang Home. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{36} & B2 & T28 & Cập nhật trạng thái yêu cầu mật khẩu realtime & 1. Vào trang đăng ký\newline 2. Gõ từng ký tự vào ô mật khẩu & MK: a $
-ightarrow$ aA $
-ightarrow$ aA1@bcde & Danh sách tiêu chí cập nhật trạng thái theo thời gian thực. & Cập nhật theo từng phím gõ. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{26} & B2 & T23--T27 & Đăng ký với Mật khẩu 8 ký tự (On $x \ge 8$, $y = 8$) & 1. Nhập mật khẩu đúng 8 ký tự đủ 4 nhóm\newline 2. Nhập Confirm 8 ký tự trùng khớp, nhấn Đăng ký & MK: Test@123 ($x=8$)\newline XN: Test@123 ($y=8$) & Đăng ký thành công, chuyển hướng về trang Đăng nhập. & Đăng ký thành công, chuyển về /login. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{27} & B2 & T23 & Đăng ký với Mật khẩu 7 ký tự (Off $x \ge 8$, $y = 7$) & 1. Nhập mật khẩu 7 ký tự đủ 4 nhóm\newline 2. Nhập Confirm 7 ký tự trùng khớp, nhấn Đăng ký & MK: Test@12 ($x=7$)\newline XN: Test@12 ($y=7$) & Hệ thống từ chối do mật khẩu dưới 8 ký tự. & Server từ chối vì yêu cầu >= 8 ký tự. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{28} & B2 & T23--T27 & Đăng ký với Mật khẩu 100 ký tự (On $x \le 100$, $y = 100$) & 1. Nhập mật khẩu đúng 100 ký tự đủ 4 nhóm\newline 2. Nhập Confirm 100 ký tự trùng khớp, nhấn Đăng ký & MK: 100 ký tự ($x=100$)\newline XN: 100 ký tự ($y=100$) & Hệ thống chấp nhận độ dài biên trên 100 ký tự, đăng ký thành công. & Đăng ký thành công với mật khẩu 100 ký tự. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{28} & B2 & T23--T27 & Đăng ký với Mật khẩu 101 ký tự (Off $x \le 100$, $y = 101$) & 1. Nhập mật khẩu 101 ký tự đủ 4 nhóm\newline 2. Nhập Confirm 101 ký tự trùng khớp, nhấn Đăng ký & MK: 101 ký tự ($x=101$)\newline XN: 101 ký tự ($y=101$) & Hệ thống từ chối, báo lỗi độ dài mật khẩu vượt quá 100 ký tự. & Hệ thống chặn và báo lỗi vượt quá 100 ký tự. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{29} & B2 & T30, T32 & Đăng ký thành công với Mật khẩu 10 ký tự (On $y = x$, $x = 10$) & 1. Nhập đầy đủ thông tin hợp lệ, MK 10 ký tự\newline 2. Nhập Confirm 10 ký tự trùng khớp, nhấn Đăng ký & Tên: testuser\_ok\newline MK/XN: Test@12345 ($x=10, y=10$) & Tạo tài khoản, gán role ``User'', chuyển hướng về /login. & Đăng ký thành công, chuyển về /login. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{30} & B2 & T23--T27 & Đăng ký khi độ dài Xác nhận không bằng Mật khẩu (Off $y = x$, $x = 14, y = 13$) & 1. Nhập MK hợp lệ dài 14 ký tự\newline 2. Nhập Confirm dài 13 ký tự & MK: Test@123456789 ($x=14$)\newline XN: Test@12345678 ($y=13$) & Hiển thị ``Mật khẩu không trùng khớp. Vui lòng kiểm tra lại!''. & Frontend chặn và hiển thị đúng thông báo. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \caption{Bảng Test Cases chức năng B2 -- Đăng ký tài khoản (Domain Analysis)}
 \end{longtable}
 \endgroup
 
 
 \subsubsection{Chức năng B10 -- Khoảnh khắc 24h (Stories)}
-\begin{tcolorbox}[colback=yellow!10, colframe=orange!70!black, title=\textbf{Ghi chú các thành phần còn thiếu so với tài liệu gốc KTPM}, fonttitle=\bfseries]
-So với file \texttt{KyThuatPhanTichMien\_QuyetDinh.pdf} (trang 16--20), mục này hiện đang lược bớt: (1) Phần Tóm tắt Requirement \& bảng mã kỹ thuật \texttt{T125, T132}; (2) \textit{Bảng 1: Biến đầu vào ($x, y$)} và \textit{Bảng 2: Các điều kiện kiểm thử ($C_1$--$C_3$)}; (3) \textit{Bảng 4.4.1: Test Case cho kỹ thuật phân tích miền (\texttt{DA-TC01}--\texttt{DA-TC07})}.
-\end{tcolorbox}
 
+\noindent\textbf{a. Mô tả nghiệp vụ \& Yêu cầu kỹ thuật (TRD)}
 \begin{itemize}[leftmargin=1.2cm, noitemsep]
-    \item[\textbf{--}] \textbf{Biến đầu vào:} $x$ là số giờ đã trôi qua kể từ khi Story được đăng, $y$ là số giờ còn lại trước khi Story hết hạn.
-    \item[\textbf{--}] \textbf{Ràng buộc miền:} $0 \le x < 24$ và $y = 24 - x$.
+    \item[\textbf{--}] \textbf{Mã BRD:} B10
+    \item[\textbf{--}] \textbf{Tên chức năng:} Khoảnh khắc 24h (\texttt{Stories}) -- Kiểm tra điều kiện tạo và thời hạn hiển thị 24 giờ.
+    \item[\textbf{--}] \textbf{Tóm tắt Requirement từ tài liệu hệ thống:}
+    \begin{itemize}[leftmargin=0.8cm, label=$\bullet$, noitemsep]
+        \item Story bắt buộc phải có ít nhất hình ảnh hoặc nội dung chữ (tối đa 500 ký tự).
+        \item Story tồn tại và hiển thị trong đúng 24 giờ kể từ thời điểm đăng; sau 24 giờ tự động biến mất khỏi danh sách.
+    \end{itemize}
 \end{itemize}
 
 \begin{table}[H]
 \centering
 \small
-\begin{tabular}{|L{3.5cm}|L{2.2cm}|C{1.1cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|}
+\begin{tabularx}{\textwidth}{|C{1.8cm}|X|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{T\#} & \textbf{Mô tả yêu cầu} \tabularnewline
+\hline
+\textbf{T125} & Story phải có ít nhất hình ảnh hoặc nội dung chữ (không được để trống đồng thời cả hai). \\ \hline
+\textbf{T132} & Story tự động tồn tại trong đúng 24 giờ kể từ thời điểm đăng; sau 24 giờ tự động biến mất khỏi danh sách hiển thị. \\ \hline
+\end{tabularx}
+\caption{Bảng mã yêu cầu kỹ thuật chức năng Khoảnh khắc 24h (B10)}
+\end{table}
+
+\noindent\textbf{b. Xác định biến đầu vào, điều kiện kiểm thử \& Ma trận Domain Analysis}
+
+\begin{table}[H]
+\centering
+\small
+\begin{minipage}[t]{0.48\textwidth}
+\begin{tabularx}{\linewidth}{|C{1.4cm}|X|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{Biến} & \textbf{Ý nghĩa} \tabularnewline
+\hline
+$x$ & Số giờ đã trôi qua kể từ lúc đăng Story \\ \hline
+$y$ & Số giờ còn lại trước khi Story hết hạn \\ \hline
+\end{tabularx}
+\caption{Biến đầu vào chức năng Story 24h (B10)}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\textwidth}
+\begin{tabularx}{\linewidth}{|C{1.4cm}|X|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{Mã} & \textbf{Điều kiện kiểm thử} \tabularnewline
+\hline
+$C_1$ & $x \ge 0$ (thời gian tồn tại không âm) \\ \hline
+$C_2$ & $x < 24$ (trong hạn 24 giờ) \\ \hline
+$C_3$ & $y = 24 - x$ (ràng buộc liên biến thời gian) \\ \hline
+\end{tabularx}
+\caption{Các điều kiện kiểm thử (\texttt{C1}--\texttt{C3}) cho B10}
+\end{minipage}
+\end{table}
+
+\begin{itemize}[leftmargin=1.2cm, noitemsep]
+    \item[\textbf{--}] \textbf{Ràng buộc miền:} $0 \le x < 24$ và $y = 24 - x$ (với \texttt{TC2}, giá trị $x = -1$ nằm ngoài miền hợp lệ trước lúc đăng, $y = 25$ chỉ dùng đối chiếu công thức).
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|X|C{2.0cm}|C{1.1cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|}
 \hline
 \rowcolor[RGB]{179, 205, 255}
 \textbf{Biến} & \textbf{Điều kiện} & \textbf{Loại} & \textbf{TC1} & \textbf{TC2} & \textbf{TC3} & \textbf{TC4} & \textbf{TC5} & \textbf{TC6} & \textbf{TC7} \tabularnewline
@@ -1745,15 +1845,15 @@ So với file \texttt{KyThuatPhanTichMien\_QuyetDinh.pdf} (trang 16--20), mục 
  & & Off$+$ & & & & & & & 22 \\ \cline{2-10}
  & Typical & In & 24 & 25 & 0 & 1 & & & \\ \hline
 \multicolumn{3}{|c|}{\textbf{Kết quả mong đợi}} & \textcolor{blue}{$\checkmark$} & \textcolor{red}{$\times$} & \textcolor{red}{$\times$} & \textcolor{blue}{$\checkmark$} & \textcolor{blue}{$\checkmark$} & \textcolor{red}{$\times$} & \textcolor{red}{$\times$} \\ \hline
-\end{tabular}
+\end{tabularx}
 \caption{Ma trận Domain Analysis cho thời hạn hiển thị Story 24h (B10)}
 \end{table}
 
-\noindent\textbf{Bảng Test Cases chi tiết chức năng B10 (Khoảnh khắc 24h -- Stories):}
+\noindent\textbf{c. Bảng Test Cases chi tiết chức năng B10 (Khoảnh khắc 24h -- Stories):}
 \begingroup
 \scriptsize
 \setlength{\tabcolsep}{3pt}
-\begin{longtable}{|C{0.8cm}|C{0.75cm}|C{0.95cm}|L{2.0cm}|L{3.0cm}|L{2.25cm}|L{2.6cm}|L{2.5cm}|C{0.85cm}|}
+\begin{longtable}{|C{0.8cm}|C{0.85cm}|C{0.95cm}|L{2.0cm}|L{3.0cm}|L{2.15cm}|L{2.6cm}|L{2.5cm}|C{0.85cm}|}
 \hline
 \rowcolor[RGB]{179, 205, 255}
 \textbf{TC\#} & \textbf{BR\#} & \textbf{TR\#} & \textbf{TestCase} & \textbf{TestSteps} & \textbf{Test Data} & \textbf{Expected} & \textbf{Result} & \textbf{P/F} \tabularnewline
@@ -1766,12 +1866,13 @@ So với file \texttt{KyThuatPhanTichMien\_QuyetDinh.pdf} (trang 16--20), mục 
 \endhead
 \hline
 \endfoot
-\textbf{153} & B10 & T125 & Tạo story không có nội dung và hình ảnh & 1. Nhấp ô tạo tin\newline 2. Để trống chữ và không chọn ảnh, nhấn Đăng tin & Nội dung: trống\newline Hình ảnh: trống & Báo lỗi ``Vui lòng nhập nội dung hoặc chọn hình ảnh tin''. & Đăng không thành công, báo lỗi đúng. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{154} & B10 & T125 & Tạo story chỉ có nội dung văn bản & 1. Nhấp ô tạo tin\newline 2. Nhập nội dung chữ, không thêm ảnh, nhấn Đăng tin & Nội dung: ``Hôm nay thời tiết đẹp'' & Đăng Story thành công, xuất hiện trên thanh Khoảnh khắc. & Story được tạo thành công với nội dung chữ. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{155} & B10 & T125 & Tạo story chỉ có hình ảnh & 1. Nhấp ô tạo tin\newline 2. Để trống chữ, chọn ảnh 2.3MB, nhấn Đăng tin & Hình ảnh: pic.png (2.3MB) & Đăng Story thành công, hiển thị ảnh trên thanh Khoảnh khắc. & Story được tạo thành công với hình ảnh. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{156} & B10 & T125 & Tạo story có cả nội dung và hình ảnh & 1. Nhấp ô tạo tin\newline 2. Nhập chữ và chọn ảnh, nhấn Đăng tin & Nội dung: ``Hôm nay...''\newline Ảnh: pic.png (2.3MB) & Đăng Story thành công với cả văn bản và hình ảnh. & Story được tạo thành công. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{172} & B10 & T132 & Kiểm tra story vẫn hiển thị khi còn trong 24 giờ & 1. Đăng một Story mới\newline 2. Kiểm tra sau 5--10 phút và F5 & Thời gian đăng < 24 giờ & Story vẫn hiển thị bình thường trên thanh Khoảnh khắc. & Story vẫn xuất hiện và có thể xem. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{173} & B10 & T132 & Kiểm tra story tự động biến mất khi hết hạn 24 giờ & 1. Đăng Story mới\newline 2. Chờ/chỉnh thời gian qua 24 giờ, quan sát & Thời gian đăng > 24 giờ & Hệ thống tự động lọc bỏ Story quá hạn khỏi thanh Khoảnh khắc. & Sau 24 giờ Story tự động biến mất. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{153} & B10 & T132 & Kiểm tra Story tại thời điểm vừa đăng (On $x \ge 0$) & 1. Đăng một Story mới\newline 2. Kiểm tra ngay tại thời điểm $x = 0$ giờ & $x = 0$ giờ\newline $y = 24$ giờ & Story hợp lệ, hiển thị ngay trên thanh Khoảnh khắc. & Story hiển thị bình thường. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{154} & B10 & T132 & Kiểm tra thời gian trước khi đăng (Off $x \ge 0$) & 1. Thiết lập mốc kiểm tra $x = -1$ giờ (trước thời điểm tạo)\newline 2. Truy vấn danh sách Story & $x = -1$ giờ\newline $y = 25$ giờ & Không hợp lệ; Story chưa tồn tại và không hiển thị. & Hệ thống không hiển thị Story. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{155} & B10 & T132 & Kiểm tra Story tại đúng mốc hết hạn 24 giờ (On $x < 24$) & 1. Đăng Story mới\newline 2. Chờ/chỉnh thời gian đúng mốc 24 giờ, quan sát & $x = 24$ giờ\newline $y = 0$ giờ & Hết hạn ($x < 24$ sai); hệ thống tự động lọc bỏ Story khỏi danh sách. & Sau 24 giờ Story tự động biến mất. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{156} & B10 & T132 & Kiểm tra Story sát biên trên 23 giờ (Off $x < 24$) & 1. Đăng Story mới\newline 2. Kiểm tra tại mốc 23 giờ sau khi đăng & $x = 23$ giờ\newline $y = 1$ giờ & Story vẫn còn hạn và hiển thị bình thường trên thanh Khoảnh khắc. & Story vẫn xuất hiện và có thể xem. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{157} & B10 & T132 & Kiểm tra ràng buộc liên biến đúng $y = 24 - x$ (On $y = 24 - x$) & 1. Đăng Story mới\newline 2. Kiểm tra sau 1 giờ ($x = 1$) & $x = 1$ giờ\newline $y = 23$ giờ & Thỏa mãn $y = 24 - x$; Story hiển thị đúng trạng thái còn hạn. & Story hiển thị đúng thời hạn còn lại. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{158} & B10 & T132 & Kiểm tra sai lệch ràng buộc dưới $y < 24 - x$ (Off$-$ $y = 24 - x$) & 1. Truyền/giả lập $x = 2$ giờ\newline 2. Kiểm tra trạng thái khi $y = 21$ giờ ($y \ne 22$) & $x = 2$ giờ\newline $y = 21$ giờ & Không hợp lệ do vi phạm ràng buộc $y = 24 - x$. & Hệ thống phát hiện sai lệch thời hạn. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{159} & B10 & T132 & Kiểm tra sai lệch ràng buộc trên $y > 24 - x$ (Off$+$ $y = 24 - x$) & 1. Truyền/giả lập $x = 3$ giờ\newline 2. Kiểm tra trạng thái khi $y = 22$ giờ ($y \ne 21$) & $x = 3$ giờ\newline $y = 22$ giờ & Không hợp lệ do vi phạm ràng buộc $y = 24 - x$. & Hệ thống phát hiện sai lệch thời hạn. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \caption{Bảng Test Cases chức năng B10 -- Khoảnh khắc 24h (Domain Analysis)}
 \end{longtable}
 \endgroup
