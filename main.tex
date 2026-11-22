@@ -2295,14 +2295,340 @@ So với file \texttt{ChuyenDoiTrangThai\_NhanQua.pdf} (trang 119--124), mục n
 \subsection{Đồ thị nhân -- quả (Cause--Effect Graph)}
 
 \subsubsection{Chức năng B1 -- Đăng nhập người dùng}
-\begin{tcolorbox}[colback=yellow!10, colframe=orange!70!black, title=\textbf{Ghi chú tài liệu}, fonttitle=\bfseries]
-\textbf{Chưa có tài liệu thiết kế Đồ thị nhân -- quả cho chức năng B1 trong thư mục KTPM} (tài liệu hiện có mới thực hiện kỹ thuật này cho B2). Cần bổ sung phân tích nguyên nhân--hệ quả và bảng quyết định dẫn xuất cho B1.
-\end{tcolorbox}
+
+\noindent\textbf{a. Mô tả nghiệp vụ \& Yêu cầu kỹ thuật (TRD)}
+\begin{itemize}[leftmargin=1.2cm, noitemsep]
+    \item[\textbf{--}] \textbf{Mã BRD:} B1
+    \item[\textbf{--}] \textbf{Tên chức năng:} Đăng nhập người dùng (\texttt{User Login}) -- Kiểm tra điều kiện xác thực và phân quyền cổng đăng nhập.
+    \item[\textbf{--}] \textbf{Tóm tắt Requirement từ tài liệu hệ thống:}
+    \begin{itemize}[leftmargin=0.8cm, label=$\bullet$, noitemsep]
+        \item Tên đăng nhập và mật khẩu không được để trống.
+        \item Tài khoản phải tồn tại trong hệ thống và mật khẩu phải trùng khớp.
+        \item Tài khoản có vai trò Quản trị viên (\texttt{Admin}) không được phép đăng nhập qua cổng người dùng thường.
+        \item Khi hợp lệ, hệ thống cho phép đăng nhập, lưu phiên 60 phút và chuyển hướng về trang chủ; khi sai thông tin, hiển thị thông báo lỗi chung để bảo mật.
+    \end{itemize}
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|C{1.8cm}|X|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{T\#} & \textbf{Mô tả yêu cầu} \tabularnewline
+\hline
+\textbf{T01--T02} & Tên đăng nhập và mật khẩu không được để trống. \\ \hline
+\textbf{T03--T04} & Tài khoản phải tồn tại trong hệ thống và mật khẩu nhập vào phải trùng khớp. \\ \hline
+\textbf{T05} & Tài khoản Quản trị viên (\texttt{Admin}) không được phép đăng nhập ở cổng người dùng thường. \\ \hline
+\textbf{T06--T07} & Hợp lệ thì cấp phiên đăng nhập 60 phút; sai tên đăng nhập hoặc mật khẩu thì từ chối và báo lỗi chung. \\ \hline
+\end{tabularx}
+\caption{Bảng mã yêu cầu kỹ thuật chức năng Đăng nhập người dùng (B1)}
+\end{table}
+
+\noindent\textbf{b. Xác định Nguyên nhân (Causes) \& Kết quả (Effects)}
+\begin{table}[H]
+\centering
+\small
+\begin{minipage}[t]{0.48\textwidth}
+\begin{tabularx}{\linewidth}{|C{1.3cm}|X|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{Mã} & \textbf{Nguyên nhân (Causes)} \tabularnewline
+\hline
+\textbf{C1} & Tên đăng nhập hợp lệ (không trống) \\ \hline
+\textbf{C2} & Mật khẩu hợp lệ (không trống) \\ \hline
+\textbf{C3} & Tài khoản tồn tại trong hệ thống \\ \hline
+\textbf{C4} & Tài khoản không có vai trò \texttt{Admin} \\ \hline
+\textbf{C5} & Mật khẩu trùng khớp với tài khoản \\ \hline
+\end{tabularx}
+\caption{Danh sách nguyên nhân (\texttt{C1}--\texttt{C5}) chức năng B1}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\textwidth}
+\begin{tabularx}{\linewidth}{|C{1.3cm}|X|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{Mã} & \textbf{Kết quả (Effects)} \tabularnewline
+\hline
+\textbf{E1} & Đăng nhập thành công, cấp phiên \& vào \texttt{/home} \\ \hline
+\textbf{E2} & Chặn gửi, báo lỗi thiếu trường bắt buộc \\ \hline
+\textbf{E3} & Từ chối, báo lỗi chung sai thông tin \\ \hline
+\textbf{E4} & Chặn đăng nhập, yêu cầu dùng cổng Admin \\ \hline
+\end{tabularx}
+\caption{Danh sách kết quả (\texttt{E1}--\texttt{E4}) chức năng B1}
+\end{minipage}
+\end{table}
+
+\begin{itemize}[leftmargin=1.2cm, noitemsep]
+    \item[\textbf{--}] \textbf{Biểu thức logic dẫn xuất (với nút trung gian $M1 = C1 \land C2$, $M2 = C3 \land C4 \land \neg C5$, $M3 = \neg C3 \lor M2$, $M4 = C3 \land C4 \land C5$):}
+    \begin{itemize}[leftmargin=0.8cm, label=$\bullet$, noitemsep]
+        \item $E1 = M1 \land M4 = C1 \land C2 \land C3 \land C4 \land C5$
+        \item $E2 = \neg C1 \lor \neg C2$
+        \item $E3 = M1 \land M3 = (C1 \land C2) \land (\neg C3 \lor (C3 \land C4 \land \neg C5))$
+        \item $E4 = M1 \land C3 \land \neg C4 = C1 \land C2 \land C3 \land \neg C4$
+    \end{itemize}
+\end{itemize}
+
+\noindent\textbf{c. Đồ thị nhân -- quả (Cause--Effect Graph)}
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    scale=0.82, transform shape,
+    ce/.style={circle, draw=black, thick, fill=white, minimum size=0.84cm, font=\bfseries\color{blue!85!black}, inner sep=1pt},
+    edge/.style={draw=red!55!black, thick},
+    logic/.style={font=\small\bfseries\color{blue!85!black}, fill=white, inner sep=1pt},
+    notmark/.style={sloped, font=\Large\bfseries, text=black, fill=white, inner sep=1pt}
+]
+    % Nguyên nhân (Causes)
+    \node[ce] (C1) at (0, 6.2) {C1};
+    \node[ce] (C2) at (0, 4.4) {C2};
+    \node[ce] (C3) at (0, 1.8) {C3};
+    \node[ce] (C4) at (0, 0.0) {C4};
+    \node[ce] (C5) at (0, -1.8) {C5};
+
+    % Nút trung gian
+    \node[ce] (M1) at (3.6, 4.4) {M1};
+    \node[ce] (M4) at (3.6, 2.6) {M4};
+    \node[ce] (M2) at (3.6, -1.4) {M2};
+    \node[ce] (M3) at (7.6, -1.6) {M3};
+
+    % Kết quả (Effects)
+    \node[ce] (E2) at (11.4, 6.2) {E2};
+    \node[ce] (E1) at (11.4, 3.8) {E1};
+    \node[ce] (E4) at (11.4, 1.2) {E4};
+    \node[ce] (E3) at (11.4, -1.6) {E3};
+
+    % M1 = C1 and C2
+    \draw[edge] (C1) -- (M1);
+    \draw[edge] (C2) -- (M1);
+    \draw[edge] (M1) ++(155:0.88cm) arc (155:190:0.88cm);
+    \node[logic] at ([xshift=-1.18cm, yshift=0.14cm]M1.center) {$\cap$};
+
+    % E2 = (not C1) or (not C2)
+    \draw[edge] (C1) -- node[notmark, pos=0.50] {$\sim$} (E2);
+    \draw[edge] (C2) -- node[notmark, pos=0.65] {$\sim$} (E2);
+    \draw[edge] (E2) ++(175:1.05cm) arc (175:198:1.05cm);
+    \node[logic] at ([xshift=-1.35cm, yshift=-0.12cm]E2.center) {$\cup$};
+
+    % M4 = C3 and C4 and C5
+    \draw[edge] (C3) -- (M4);
+    \draw[edge] (C4) -- (M4);
+    \draw[edge] (C5) -- (M4);
+    \draw[edge] (M4) ++(185:0.90cm) arc (185:235:0.90cm);
+    \node[logic] at ([xshift=-1.15cm, yshift=-0.42cm]M4.center) {$\cap$};
+
+    % M2 = C3 and C4 and (not C5)
+    \draw[edge] (C3) -- (M2);
+    \draw[edge] (C4) -- (M2);
+    \draw[edge] (C5) -- node[notmark, pos=0.45] {$\sim$} (M2);
+    \draw[edge] (M2) ++(135:0.90cm) arc (135:195:0.90cm);
+    \node[logic] at ([xshift=-1.18cm, yshift=0.22cm]M2.center) {$\cap$};
+
+    % M3 = (not C3) or M2
+    \draw[edge] (C3) -- node[notmark, pos=0.72] {$\sim$} (M3);
+    \draw[edge] (M2) -- (M3);
+    \draw[edge] (M3) ++(152:0.90cm) arc (152:186:0.90cm);
+    \node[logic] at ([xshift=-1.22cm, yshift=0.18cm]M3.center) {$\cup$};
+
+    % E1 = M1 and M4
+    \draw[edge] (M1) -- (E1);
+    \draw[edge] (M4) -- (E1);
+    \draw[edge] (E1) ++(170:1.00cm) arc (170:196:1.00cm);
+    \node[logic] at ([xshift=-1.32cm, yshift=-0.06cm]E1.center) {$\cap$};
+
+    % E4 = M1 and C3 and (not C4)
+    \draw[edge] (M1) -- (E4);
+    \draw[edge] (C3) -- (E4);
+    \draw[edge] (C4) -- node[notmark, pos=0.78] {$\sim$} (E4);
+    \draw[edge] (E4) ++(154:1.05cm) arc (154:188:1.05cm);
+    \node[logic] at ([xshift=-1.35cm, yshift=0.18cm]E4.center) {$\cap$};
+
+    % E3 = M1 and M3
+    \draw[edge] (M1) -- (E3);
+    \draw[edge] (M3) -- (E3);
+    \draw[edge] (E3) ++(140:0.95cm) arc (140:182:0.95cm);
+    \node[logic] at ([xshift=-1.25cm, yshift=0.30cm]E3.center) {$\cap$};
+\end{tikzpicture}
+\caption{Đồ thị nhân -- quả chức năng Đăng nhập người dùng (B1)}
+\end{figure}
+
+\noindent\textbf{d. Bảng Test Cases chi tiết chức năng B1 (Đăng nhập người dùng):}
+\begingroup
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{|C{0.8cm}|C{0.85cm}|C{0.95cm}|L{2.0cm}|L{3.0cm}|L{2.15cm}|L{2.6cm}|L{2.5cm}|C{0.85cm}|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{TC\#} & \textbf{BR\#} & \textbf{TR\#} & \textbf{TestCase} & \textbf{TestSteps} & \textbf{Test Data} & \textbf{Expected} & \textbf{Result} & \textbf{P/F} \tabularnewline
+\hline
+\endfirsthead
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{TC\#} & \textbf{BR\#} & \textbf{TR\#} & \textbf{TestCase} & \textbf{TestSteps} & \textbf{Test Data} & \textbf{Expected} & \textbf{Result} & \textbf{P/F} \tabularnewline
+\hline
+\endhead
+\hline
+\endfoot
+\textbf{1} & B1 & T01 & Đăng nhập khi bỏ trống Tên đăng nhập (R1) & 1. Vào trang đăng nhập\newline 2. Để trống Tên đăng nhập, nhập MK, bấm Đăng nhập & Tên: (trống)\newline MK: User@123456 & Chặn gửi và yêu cầu nhập Tên đăng nhập. & Trình duyệt chặn gửi, báo bắt buộc nhập. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{2} & B1 & T02 & Đăng nhập khi bỏ trống Mật khẩu (R1) & 1. Vào trang đăng nhập\newline 2. Nhập Tên đăng nhập, để trống MK, bấm Đăng nhập & Tên: User1\newline MK: (trống) & Chặn gửi và yêu cầu nhập Mật khẩu. & Trình duyệt chặn gửi, báo bắt buộc nhập. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{3} & B1 & T01, T02 & Đăng nhập khi bỏ trống cả hai trường (R1) & 1. Vào trang đăng nhập\newline 2. Để trống cả Tên đăng nhập và MK, bấm Đăng nhập & Tên: (trống)\newline MK: (trống) & Chặn gửi và yêu cầu nhập đầy đủ thông tin. & Trình duyệt chặn gửi, hiển thị cảnh báo. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{4} & B1 & T03, T07 & Đăng nhập với tài khoản không tồn tại (R2) & 1. Nhập tên không tồn tại và MK bất kỳ\newline 2. Bấm Đăng nhập & Tên: khongtontai999\newline MK: User@123456 & Từ chối đăng nhập, hiển thị thông báo lỗi chung. & Hiển thị ``Invalid username or password''. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{5} & B1 & T04, T07 & Đăng nhập với mật khẩu sai (R4) & 1. Nhập tên hợp lệ, mật khẩu sai\newline 2. Bấm Đăng nhập & Tên: User1\newline MK: SaiMatKhau!1 & Từ chối đăng nhập, hiển thị thông báo lỗi chung. & Hiển thị ``Invalid username or password''. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{6} & B1 & T06, T09 & Đăng nhập thành công với tài khoản User (R5) & 1. Nhập đúng tên và mật khẩu User\newline 2. Bấm Đăng nhập & Tên: User1\newline MK: User@123456 & Đăng nhập thành công, lưu phiên 60 phút, vào \texttt{/home}. & Chuyển hướng thành công đến \texttt{/home}. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{7} & B1 & T09, T10 & Kiểm tra nút ẩn/hiện mật khẩu và cập nhật UI & 1. Nhập mật khẩu, bấm biểu tượng mắt\newline 2. Đăng nhập thành công, kiểm tra giao diện & Tên: User1\newline MK: User@123456 & Mật khẩu ẩn/hiện đúng; giao diện cập nhật trạng thái đã đăng nhập. & Hiển thị và cập nhật trạng thái đúng. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{8} & B1 & T08 & Đăng nhập sai nhiều lần liên tiếp & 1. Nhập sai mật khẩu liên tiếp nhiều lần\newline 2. Quan sát phản hồi hệ thống & Tên: User1\newline MK sai (5 lần) & Hệ thống không khóa tài khoản theo số lần nhập sai. & Vẫn cho phép thử lại ở các lần tiếp theo. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{9} & B1 & T05 & Đăng nhập bằng tài khoản Admin qua cổng User (R3) & 1. Vào trang đăng nhập người dùng (\texttt{/login})\newline 2. Nhập tài khoản Admin, bấm Đăng nhập & Tên: admin\newline MK: Admin@123456 & Chặn đăng nhập và yêu cầu dùng cổng Admin. & Chặn đăng nhập và báo đúng thông báo. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{10} & B1 & T07 & Thông báo lỗi chung không để lộ trường sai & 1. Nhập sai Tên hoặc sai Mật khẩu\newline 2. Đối chiếu nội dung thông báo lỗi & Tên sai / MK sai & Cả hai trường hợp đều trả về cùng một thông báo lỗi chung. & Không lộ thông tin trường nào bị sai. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\caption{Bảng Test Cases chức năng B1 -- Đăng nhập người dùng (Cause--Effect Graph)}
+\end{longtable}
+\endgroup
+
 
 \subsubsection{Chức năng B5 -- Thích bài viết \& Bình luận}
-\begin{tcolorbox}[colback=yellow!10, colframe=orange!70!black, title=\textbf{Ghi chú tài liệu}, fonttitle=\bfseries]
-\textbf{Chưa có tài liệu thiết kế Đồ thị nhân -- quả cho chức năng B5 trong thư mục KTPM} (tài liệu hiện có mới thực hiện kỹ thuật này cho B2). Cần bổ sung đồ thị nhân--quả cho logic Like/Unlike và quy tắc không tự thông báo của B5.
-\end{tcolorbox}
+
+\noindent\textbf{a. Mô tả nghiệp vụ \& Yêu cầu kỹ thuật (TRD)}
+\begin{itemize}[leftmargin=1.2cm, noitemsep]
+    \item[\textbf{--}] \textbf{Mã BRD:} B5
+    \item[\textbf{--}] \textbf{Tên chức năng:} Thích và bỏ thích bài viết / bình luận (\texttt{Like / Unlike}).
+    \item[\textbf{--}] \textbf{Tóm tắt Requirement từ tài liệu hệ thống:}
+    \begin{itemize}[leftmargin=0.8cm, label=$\bullet$, noitemsep]
+        \item Dưới mỗi bài viết/bình luận hiển thị biểu tượng trái tim và tổng số lượt thích.
+        \item Nhấn vào trái tim chưa thích (màu trắng) sẽ chuyển sang đã thích (màu đỏ) và tăng số lượt thích thêm 1; nhấn lại lần nữa sẽ bỏ thích và giảm đi 1.
+        \item Số lượt thích được đồng bộ tức thời cho các người dùng khác đang xem cùng bài viết.
+        \item Khi người khác thích bài viết, tác giả nhận được thông báo tức thời; nếu tác giả tự thích bài viết của mình thì không gửi thông báo.
+    \end{itemize}
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|C{1.8cm}|X|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{T\#} & \textbf{Mô tả yêu cầu} \tabularnewline
+\hline
+\textbf{T82} & Dưới mỗi bài viết hiển thị nút biểu tượng trái tim kèm tổng số lượt thích. \\ \hline
+\textbf{T83--T84} & Nhấn trái tim trắng chuyển sang đỏ ($+1$); nhấn trái tim đỏ chuyển lại trắng ($-1$). \\ \hline
+\textbf{T85} & Số lượt thích tự động cập nhật theo thời gian thực cho người khác đang xem bài viết. \\ \hline
+\textbf{T86} & Tác giả nhận được thông báo khi có người khác thích bài; không tự thông báo nếu tự thích bài mình. \\ \hline
+\textbf{T87} & Người dùng có thể nhấn thả tim cho từng bình luận bên dưới bài viết. \\ \hline
+\end{tabularx}
+\caption{Bảng mã yêu cầu kỹ thuật chức năng Thích bài viết \& Bình luận (B5)}
+\end{table}
+
+\noindent\textbf{b. Xác định Nguyên nhân (Causes) \& Kết quả (Effects)}
+\begin{table}[H]
+\centering
+\small
+\begin{minipage}[t]{0.48\textwidth}
+\begin{tabularx}{\linewidth}{|C{1.3cm}|X|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{Mã} & \textbf{Nguyên nhân (Causes)} \tabularnewline
+\hline
+\textbf{C1} & Người dùng nhấn nút trái tim trên bài viết / bình luận \\ \hline
+\textbf{C2} & Trạng thái trước khi nhấn là chưa thích (tim trắng) \\ \hline
+\textbf{C3} & Người nhấn không phải là tác giả bài viết \\ \hline
+\end{tabularx}
+\caption{Danh sách nguyên nhân (\texttt{C1}--\texttt{C3}) chức năng B5}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\textwidth}
+\begin{tabularx}{\linewidth}{|C{1.3cm}|X|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{Mã} & \textbf{Kết quả (Effects)} \tabularnewline
+\hline
+\textbf{E1} & Chuyển tim sang đỏ, tăng lượt thích $+1$ \\ \hline
+\textbf{E2} & Chuyển tim về trắng, giảm lượt thích $-1$ \\ \hline
+\textbf{E3} & Đồng bộ số lượt thích tức thời đến người đang xem \\ \hline
+\textbf{E4} & Gửi thông báo tức thời cho tác giả \\ \hline
+\end{tabularx}
+\caption{Danh sách kết quả (\texttt{E1}--\texttt{E4}) chức năng B5}
+\end{minipage}
+\end{table}
+
+\begin{itemize}[leftmargin=1.2cm, noitemsep]
+    \item[\textbf{--}] \textbf{Biểu thức logic dẫn xuất:}
+    \begin{itemize}[leftmargin=0.8cm, label=$\bullet$, noitemsep]
+        \item $E1 = C1 \land C2$
+        \item $E2 = C1 \land \neg C2$
+        \item $E3 = C1$ (áp dụng đồng bộ tức thời cho cả thao tác Thích và Bỏ thích)
+        \item $E4 = C1 \land C2 \land C3$ (chỉ gửi thông báo khi là thao tác Thích và người bấm không phải tác giả)
+    \end{itemize}
+\end{itemize}
+
+\noindent\textbf{c. Đồ thị nhân -- quả (Cause--Effect Graph)}
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    scale=0.95, transform shape,
+    ce/.style={circle, draw=black, thick, fill=white, minimum size=0.84cm, font=\bfseries\color{blue!85!black}, inner sep=1pt},
+    edge/.style={draw=red!55!black, thick},
+    logic/.style={font=\small\bfseries\color{blue!85!black}, fill=white, inner sep=1pt},
+    notmark/.style={sloped, font=\Large\bfseries, text=black, fill=white, inner sep=1pt}
+]
+    % Nguyên nhân (Causes)
+    \node[ce] (C1) at (0, 4.0) {C1};
+    \node[ce] (C2) at (0, 2.0) {C2};
+    \node[ce] (C3) at (0, 0.0) {C3};
+
+    % Kết quả (Effects) — xếp E3 lên trên cùng để giảm giao cắt
+    \node[ce] (E3) at (7.6, 4.5) {E3};
+    \node[ce] (E1) at (7.6, 3.0) {E1};
+    \node[ce] (E2) at (7.6, 1.5) {E2};
+    \node[ce] (E4) at (7.6, 0.0) {E4};
+
+    % E3 = C1 (identity)
+    \draw[edge] (C1) -- (E3);
+
+    % E1 = C1 and C2
+    \draw[edge] (C1) -- (E1);
+    \draw[edge] (C2) -- (E1);
+    \draw[edge] (E1) ++(175:0.95cm) arc (175:202:0.95cm);
+    \node[logic] at ([xshift=-1.28cm, yshift=-0.08cm]E1.center) {$\cap$};
+
+    % E2 = C1 and (not C2)
+    \draw[edge] (C1) -- (E2);
+    \draw[edge] (C2) -- node[notmark, pos=0.62] {$\sim$} (E2);
+    \draw[edge] (E2) ++(158:0.95cm) arc (158:186:0.95cm);
+    \node[logic] at ([xshift=-1.28cm, yshift=0.14cm]E2.center) {$\cap$};
+
+    % E4 = C1 and C2 and C3
+    \draw[edge] (C1) -- (E4);
+    \draw[edge] (C2) -- (E4);
+    \draw[edge] (C3) -- (E4);
+    \draw[edge] (E4) ++(150:0.95cm) arc (150:182:0.95cm);
+    \node[logic] at ([xshift=-1.28cm, yshift=0.24cm]E4.center) {$\cap$};
+\end{tikzpicture}
+\caption{Đồ thị nhân -- quả chức năng Thích bài viết \& Bình luận (B5)}
+\end{figure}
+
+\noindent\textbf{d. Bảng Test Cases chi tiết chức năng B5 (Thích bài viết \& Bình luận):}
+\begingroup
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{|C{0.8cm}|C{0.85cm}|C{0.95cm}|L{2.0cm}|L{3.0cm}|L{2.15cm}|L{2.6cm}|L{2.5cm}|C{0.85cm}|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{TC\#} & \textbf{BR\#} & \textbf{TR\#} & \textbf{TestCase} & \textbf{TestSteps} & \textbf{Test Data} & \textbf{Expected} & \textbf{Result} & \textbf{P/F} \tabularnewline
+\hline
+\endfirsthead
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{TC\#} & \textbf{BR\#} & \textbf{TR\#} & \textbf{TestCase} & \textbf{TestSteps} & \textbf{Test Data} & \textbf{Expected} & \textbf{Result} & \textbf{P/F} \tabularnewline
+\hline
+\endhead
+\hline
+\endfoot
+\textbf{103} & B5 & T82 & Hiển thị nút trái tim kèm tổng số lượt thích (R1) & 1. Đăng nhập, mở Bảng tin\newline 2. Quan sát vùng tương tác dưới bài viết & Bài viết có 0 lượt thích & Hiển thị biểu tượng trái tim trắng kèm số lượng \texttt{0}. & Hiển thị đúng nút tim và bộ đếm. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{104} & B5 & T83 & Nhấn thích bài viết khi tim đang trắng (R2/R3) & 1. Mở bài viết có tim trắng (0 thích)\newline 2. Nhấn vào nút trái tim & Bài viết PostId = 10 & Trái tim chuyển sang màu đỏ và số lượng tăng thành \texttt{1}. & Tim chuyển đỏ, lượt thích tăng $+1$. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{105} & B5 & T84 & Nhấn bỏ thích bài viết khi tim đang đỏ (R4) & 1. Mở bài viết đã thích (tim đỏ, 1 thích)\newline 2. Nhấn lại vào nút trái tim & Bài viết PostId = 10 & Trái tim trở lại màu trắng và số lượng giảm về \texttt{0}. & Tim chuyển trắng, lượt thích giảm $-1$. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{106} & B5 & T85 & Đồng bộ số lượt thích thời gian thực (R2/R4) & 1. User1 và User2 cùng mở PostId = 10\newline 2. User1 nhấn thích, quan sát màn hình User2 & User1 thích bài\newline User2 đang xem & Màn hình User2 tự động cập nhật số lượt thích mới mà không cần tải lại trang. & Đồng bộ SignalR tức thời chính xác. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{107} & B5 & T86 & Tác giả nhận thông báo khi người khác thích bài (R2) & 1. User2 thích bài viết của User1\newline 2. Kiểm tra chuông thông báo của User1 & Tác giả: User1\newline Người thích: User2 & Chuông thông báo của User1 hiển thị thông báo có người thích bài viết. & User1 nhận thông báo tức thời. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{108} & B5 & T86 & Tác giả tự thích bài viết của mình không tự thông báo (R3) & 1. User1 mở bài viết của chính mình\newline 2. User1 nhấn thích và kiểm tra chuông & Tác giả: User1\newline Người thích: User1 & Lượt thích tăng $+1$ nhưng không phát sinh thông báo tới chính User1. & Không gửi thông báo tự thích. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{109} & B5 & T87 & Nhấn thả tim cho bình luận của bài viết (R2/R4) & 1. Mở danh sách bình luận của bài viết\newline 2. Nhấn biểu tượng tim ở một bình luận & Bình luận trên PostId = 10 & Biểu tượng tim của bình luận đổi màu và cập nhật đúng số lượt thích bình luận. & Thích/bỏ thích bình luận hoạt động đúng. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\caption{Bảng Test Cases chức năng B5 -- Thích bài viết \& Bình luận (Cause--Effect Graph)}
+\end{longtable}
+\endgroup
 
 % ----------------------------------------------------------
 % 3.7 Pairwise
