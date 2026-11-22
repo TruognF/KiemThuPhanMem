@@ -1267,74 +1267,75 @@ EC2\_TargetUser & Tài khoản không tồn tại (ID không có trong CSDL) & \
 
 
 \subsubsection{Chức năng B11 -- Hashtag \& Phân loại nội dung}
-\begin{tcolorbox}[colback=yellow!10, colframe=orange!70!black, title=\textbf{Ghi chú các thành phần còn thiếu so với tài liệu gốc KTPM}, fonttitle=\bfseries]
-So với file \texttt{LopTuongDuong\_GiaTriBien.pdf} (trang 45--46), mục này hiện đang lược bớt: Phần Tóm tắt Requirement \& bảng mã kỹ thuật \texttt{T135--T140} ở đầu mục.
+\begin{tcolorbox}[colback=yellow!10, colframe=orange!70!black, title=\textbf{Ghi chú -- Chưa hoàn thành}, fonttitle=\bfseries]
+Mục 3.1.2 hiện mới dừng ở phân lớp đơn lẻ ($n=1$) cho phần \textit{Nhận diện Hashtag} và \textit{Tìm kiếm Hashtag}; cần bổ sung thêm biến đầu vào để lập bảng \textbf{Tổ hợp lớp tương đương ($n+2$)} ở bước sau.
 \end{tcolorbox}
 
-\noindent\textbf{a. Nhận diện Hashtag trong bài viết}
+\begin{itemize}[leftmargin=1.2cm, noitemsep]
+    \item[\textbf{--}] \textbf{Mã BRD:} B11
+    \item[\textbf{--}] \textbf{Tên chức năng:} Hashtag \& Phân loại nội dung
+    \item[\textbf{--}] \textbf{Tóm tắt Requirement từ tài liệu hệ thống:}
+    \begin{itemize}[leftmargin=0.8cm, label=$\bullet$, noitemsep]
+        \item Khi người dùng đăng bài có chứa ký tự \texttt{\#}, hệ thống tự động nhận diện và lưu hashtag.
+        \item Hashtag trong bài viết được hiển thị dưới dạng liên kết.
+        \item Người dùng có thể nhấn vào hashtag để xem các bài viết có cùng hashtag.
+        \item Người dùng có thể tìm kiếm hashtag theo tên.
+    \end{itemize}
+\end{itemize}
+
 \begin{table}[H]
 \centering
 \small
-\begin{tabular}{|l|p{8.0cm}|l|}
+\begin{tabularx}{\textwidth}{|C{1.5cm}|X|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{T\#} & \textbf{Mô tả} \tabularnewline
+\hline
+\textbf{T135} & Khi đăng bài viết có chứa ký tự \texttt{\#} (ví dụ: \texttt{\#dulich}, \texttt{\#congnghe}), hệ thống tự động nhận diện và lưu thẻ chủ đề. \\ \hline
+\textbf{T137} & Khi nhấp chuột vào một hashtag trong bài viết, hệ thống tự động lọc và hiển thị tất cả bài viết có gắn hashtag đó trên Bảng tin. \\ \hline
+\textbf{T138} & Người dùng có thể nhập từ khóa bắt đầu bằng \texttt{\#} trên thanh tìm kiếm để tìm các bài viết liên quan. \\ \hline
+\textbf{T139} & Khi tìm kiếm hashtag có tồn tại, hệ thống trả về danh sách các bài viết gắn thẻ tương ứng. \\ \hline
+\textbf{T140} & Khi tìm kiếm hashtag không tồn tại hoặc chưa có bài viết nào, hệ thống hiển thị thông báo ``Không tìm thấy bài viết nào phù hợp''. \\ \hline
+\end{tabularx}
+\caption{Bảng mã yêu cầu kỹ thuật chức năng Hashtag \& Phân loại nội dung (B11)}
+\end{table}
+
+\noindent\textbf{a. Nhận diện Hashtag}
+
+\noindent -- Phân chia lớp tương đương:
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|L{2.6cm}|X|L{4.2cm}|}
 \hline
 \rowcolor[RGB]{179, 205, 255}
 \textbf{Lớp} & \textbf{Điều kiện} & \textbf{Tính hợp lệ} \tabularnewline
 \hline
-EC1\_Hashtag & Có ký tự \texttt{\#} đứng trước chuỗi chữ/số (vd: \texttt{\#dulich}) & \textcolor{blue}{\textbf{Hợp lệ}} \\ \hline
-EC2\_Hashtag & Nhiều hashtag hợp lệ cách nhau (vd: \texttt{\#capstone \#reactjs \#dotnet2026}) & \textcolor{blue}{\textbf{Hợp lệ}} \\ \hline
-EC3\_Hashtag & Nhiều hashtag hợp lệ viết liền nhau (vd: \texttt{\#dulich\#friend}) & \textcolor{blue}{\textbf{Hợp lệ}} \\ \hline
-EC4\_Hashtag & Ký tự \texttt{\#} đứng riêng hoặc không kèm chữ/số hợp lệ (vd: \texttt{\#}, \texttt{\#@!}) & \textcolor{red}{\textbf{Không hợp lệ}} \\ \hline
-\end{tabular}
+EC1\_Hashtag & Có ký tự \texttt{\#} đứng trước chuỗi chữ/số, ví dụ \texttt{\#dulich} & \textcolor{blue}{\textbf{Hợp lệ}} \\ \hline
+EC2\_Hashtag & Nhiều hashtag hợp lệ trong cùng bài viết, ví dụ \texttt{\#capstone \#reactjs \#dotnet2026} & \textcolor{blue}{\textbf{Hợp lệ}} \\ \hline
+EC3\_Hashtag & Có nhiều hashtag hợp lệ viết liền nhau, ví dụ \texttt{\#dulich\#friend} & \textcolor{blue}{\textbf{Hợp lệ}} \\ \hline
+EC4\_Hashtag & Ký tự \texttt{\#} đứng riêng hoặc không kèm chuỗi chữ/số hợp lệ, ví dụ \texttt{\#}, \texttt{\#@!} & \textcolor{red}{\textbf{Không hợp lệ với tư cách hashtag}} \\ \hline
+\end{tabularx}
 \caption{Phân chia lớp tương đương nhận diện Hashtag (B11)}
 \end{table}
 
-\begin{table}[H]
-\centering
-\small
-\begin{tabularx}{\textwidth}{|c|L{5.2cm}|X|}
-\hline
-\rowcolor[RGB]{179, 205, 255}
-\textbf{Test-case} & \textbf{Dữ liệu đại diện} & \textbf{Kết quả} \tabularnewline
-\hline
-\textbf{TC156} & \texttt{Hôm nay đi \#dulich} & Hợp lệ -- nhận diện \texttt{\#dulich} thành hashtag \\ \hline
-\textbf{TC157} & \texttt{\#capstone \#reactjs \#dotnet2026} & Hợp lệ -- nhận diện riêng từng hashtag \\ \hline
-\textbf{TC158} & \texttt{\#dulich\#friend} & Hợp lệ -- tách thành hai hashtag \texttt{\#dulich} và \texttt{\#friend} \\ \hline
-\textbf{TC159} & \texttt{Phòng số \# 102 và \#@!} & Không hợp lệ -- không tạo hashtag \\ \hline
-\end{tabularx}
-\caption{Bảng kiểm thử đại diện nhận diện Hashtag (B11)}
-\end{table}
+\noindent\textbf{b. Tìm kiếm Hashtag}
 
-\noindent\textbf{b. Tìm kiếm theo Hashtag}
+\noindent -- Phân chia lớp tương đương:
 \begin{table}[H]
 \centering
 \small
-\begin{tabular}{|l|p{7.8cm}|l|}
+\begin{tabularx}{\textwidth}{|L{2.6cm}|X|L{4.8cm}|}
 \hline
 \rowcolor[RGB]{179, 205, 255}
 \textbf{Lớp} & \textbf{Điều kiện} & \textbf{Tính hợp lệ} \tabularnewline
 \hline
-EC1\_Search & Hashtag tồn tại trong hệ thống (vd: \texttt{\#dulich}) & \textcolor{blue}{\textbf{Hợp lệ}} -- trả về bài viết \\ \hline
-EC2\_Search & Hashtag tồn tại nhưng khác chữ hoa/thường (\texttt{\#Dulich}, \texttt{\#DULICH}) & \textcolor{blue}{\textbf{Hợp lệ}} -- trả về kết quả \\ \hline
-EC3\_Search & Hashtag không tồn tại trong hệ thống & \textcolor{red}{\textbf{Không có kết quả}} \\ \hline
-EC4\_Search & Hashtag từng tồn tại nhưng bài viết duy nhất đã bị xóa & \textcolor{red}{\textbf{Không có kết quả}} \\ \hline
-\end{tabular}
-\caption{Phân chia lớp tương đương tìm kiếm Hashtag (B11)}
-\end{table}
-
-\begin{table}[H]
-\centering
-\small
-\begin{tabularx}{\textwidth}{|c|L{5.5cm}|X|}
-\hline
-\rowcolor[RGB]{179, 205, 255}
-\textbf{Test-case} & \textbf{Dữ liệu đại diện} & \textbf{Kết quả} \tabularnewline
-\hline
-\textbf{TC160} & Tìm \texttt{\#dulich} (tồn tại) & Hiển thị các bài viết có \texttt{\#dulich} \\ \hline
-\textbf{TC161} & Tìm \texttt{\#Dulich} (hệ thống có \texttt{\#dulich}) & Vẫn hiển thị kết quả tương ứng \\ \hline
-\textbf{TC162} & Tìm \texttt{\#khongtontai999} & Hiển thị thông báo không có bài viết phù hợp \\ \hline
-\textbf{TC163} & Tìm \texttt{\#CongngheJava} (bài duy nhất đã xóa) & Không hiển thị bài đã xóa \\ \hline
+EC1\_Search & Hashtag tồn tại trong hệ thống, ví dụ \texttt{\#dulich} & \textcolor{blue}{\textbf{Hợp lệ}} -- trả về các bài viết tương ứng \\ \hline
+EC2\_Search & Hashtag tồn tại nhưng khác chữ hoa/thường, ví dụ \texttt{\#Dulich}, \texttt{\#DULICH} & \textcolor{blue}{\textbf{Hợp lệ}} -- vẫn trả về kết quả tương ứng \\ \hline
+EC3\_Search & Hashtag không tồn tại trong hệ thống & \textcolor{red}{\textbf{Không hợp lệ về mặt kết quả}} -- không có bài viết phù hợp \\ \hline
+EC4\_Search & Hashtag từng tồn tại nhưng bài viết duy nhất gắn hashtag đó đã bị xóa & \textcolor{red}{\textbf{Không hợp lệ về mặt kết quả}} -- không còn bài viết phù hợp \\ \hline
 \end{tabularx}
-\caption{Bảng kiểm thử đại diện tìm kiếm Hashtag (B11)}
+\caption{Phân chia lớp tương đương tìm kiếm Hashtag (B11)}
 \end{table}
 
 \noindent\textbf{c. Bảng Test Cases chi tiết chức năng B11 (Hashtag \& Phân loại nội dung):}
