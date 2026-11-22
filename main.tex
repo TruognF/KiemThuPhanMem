@@ -871,36 +871,106 @@ B16 & T183 & 236 \\ \hline
 % ----------------------------------------------------------
 % 3.1 ECP
 % ----------------------------------------------------------
-\subsection{Phân hoạch lớp tương đương (Equivalence Class Partitioning -- ECP)}
+\subsection{Phân chia lớp tương đương (Equivalence Class Partitioning -- ECP)}
 
 \subsubsection{Chức năng B3 -- Thông tin cá nhân (Profile)}
-\begin{tcolorbox}[colback=yellow!10, colframe=orange!70!black, title=\textbf{Ghi chú các thành phần còn thiếu so với tài liệu gốc KTPM}, fonttitle=\bfseries]
-So với file \texttt{LopTuongDuong\_GiaTriBien.pdf} (trang 12--16), mục này hiện đang lược bớt: (1) Phần Tóm tắt Requirement \& bảng mã kỹ thuật \texttt{T36--T58}; (2) Sơ đồ trục số BVA cho độ dài Họ tên (2--100) và dung lượng ảnh đại diện ($\le 5$MB); (3) Sơ đồ TikZ 2 khối \texttt{LỚP HỢP LỆ (VALID) / LỚP KHÔNG HỢP LỆ (INVALID)}; (4) Tiểu mục \textit{3.3 Xem thông tin hồ sơ \& Bảo mật dữ liệu (Get User Profile -- TC26..TC29)}.
-\end{tcolorbox}
 
+\noindent\textbf{a. Cập nhật thông tin hồ sơ (Update User Profile)}
 \begin{itemize}[leftmargin=1.2cm, noitemsep]
-    \item[\textbf{--}] \textbf{Phạm vi áp dụng:} Cập nhật thông tin hồ sơ (quyền hạn thực hiện, độ dài \texttt{FullName} 2--100 ký tự) và Tải lên ảnh đại diện (định dạng MIME \texttt{JPEG/PNG/GIF/WebP}, dung lượng $\le 5$ MB).
+    \item[\textbf{--}] \textbf{Mã BRD:} B3
+    \item[\textbf{--}] \textbf{Tên chức năng:} Thông tin cá nhân -- Chức năng Cập nhật thông tin hồ sơ.
+    \item[\textbf{--}] \textbf{Tóm tắt Requirement từ tài liệu hệ thống:}
+    \begin{itemize}[leftmargin=0.8cm, label=$\bullet$, noitemsep]
+        \item Yêu cầu người dùng phải đăng nhập (Authorize -- JWT Token hợp lệ).
+        \item Chỉ chủ tài khoản mới được phép cập nhật hồ sơ của mình (\texttt{id} trong URL route phải trùng với \texttt{userId} trong Token).
+        \item Người khác cố cập nhật hồ sơ không phải của mình trả về HTTP 403 Forbidden (``You cannot update this user'').
+        \item Họ tên (\texttt{FullName}) không được để trống, độ dài từ 2 đến 100 ký tự.
+        \item Tiểu sử (\texttt{Bio}) là tùy chọn, có thể để trống hoặc \texttt{null}.
+        \item Cập nhật thành công trả về HTTP 200 OK và phát sự kiện SignalR ``UserProfileUpdated'' đến tất cả client đang kết nối.
+    \end{itemize}
 \end{itemize}
 
-\noindent\textbf{a. Cập nhật thông tin hồ sơ (Update Profile)}
 \begin{table}[H]
 \centering
 \small
-\begin{tabular}{|l|p{8.5cm}|l|}
+\begin{tabularx}{\textwidth}{|C{1.5cm}|X|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{T\#} & \textbf{Mô tả} \tabularnewline
+\hline
+\textbf{T36} & Yêu cầu phải đăng nhập (Authorize -- JWT Token hợp lệ). \\ \hline
+\textbf{T37} & Chỉ chủ tài khoản mới được phép cập nhật hồ sơ của mình (\texttt{id} trong URL route phải trùng với \texttt{userId} trong JWT Token). \\ \hline
+\textbf{T38} & Người khác cố cập nhật hồ sơ không phải của mình $\rightarrow$ HTTP 403 Forbidden (``You cannot update this user''). \\ \hline
+\textbf{T39} & Họ tên (\texttt{FullName}) không được để trống. \\ \hline
+\textbf{T40} & Họ tên phải có ít nhất 2 ký tự. \\ \hline
+\textbf{T41} & Họ tên không được vượt quá 100 ký tự. \\ \hline
+\textbf{T42} & Tiểu sử (\texttt{Bio}) là tùy chọn, có thể để trống hoặc \texttt{null}. \\ \hline
+\textbf{T43} & \texttt{ProfilePictureUrl} là tùy chọn, có thể để trống hoặc \texttt{null}. \\ \hline
+\textbf{T44} & Nếu tài khoản không tồn tại $\rightarrow$ HTTP 404 Not Found (``User not found''). \\ \hline
+\textbf{T45} & Cập nhật thành công trả về HTTP 200 OK. \\ \hline
+\textbf{T46} & Cập nhật thành công, hệ thống phát sự kiện SignalR ``UserProfileUpdated'' kèm thông tin mới nhất của người dùng đến tất cả client đang kết nối (\texttt{Clients.All}). \\ \hline
+\end{tabularx}
+\caption{Bảng mã yêu cầu kỹ thuật cập nhật thông tin hồ sơ (B3)}
+\end{table}
+
+\noindent\textbf{Độ dài Họ tên khi cập nhật (FullName Length - BVA):}
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+    \draw[->, thick] (0,0) -- (11.2,0) node[right, font=\small] {Length};
+    \draw[red!75!black, line width=2.2pt] (0.5,0) -- (2.2,0);
+    \draw[green!60!black, line width=2.2pt] (2.2,0) -- (8.8,0);
+    \draw[red!75!black, line width=2.2pt] (8.8,0) -- (10.5,0);
+    \draw[thick] (2.2,-0.15) -- (2.2,0.15) node[below=6pt, font=\small\bfseries] {2};
+    \draw[thick] (8.8,-0.15) -- (8.8,0.15) node[below=6pt, font=\small\bfseries] {100};
+    \node[above=6pt, align=center, text=red!75!black, font=\footnotesize] at (1.35,0) {Không hợp lệ\\($< 2$)};
+    \node[above=6pt, align=center, text=green!60!black, font=\footnotesize] at (5.5,0) {Hợp lệ\\($2 \le \text{Length} \le 100$)};
+    \node[above=6pt, align=center, text=red!75!black, font=\footnotesize] at (9.65,0) {Không hợp lệ\\($> 100$)};
+\end{tikzpicture}
+\end{figure}
+\begin{itemize}[leftmargin=1.2cm, noitemsep]
+    \item[\textbf{--}] \textbf{Điểm biên dưới = 2:} các giá trị lân cận gồm $x = 2$ (hợp lệ), $x = 1$ ($< 2$, không hợp lệ), $x = 3$ ($> 2$, hợp lệ) $\rightarrow \{1, 2, 3\}$.
+    \item[\textbf{--}] \textbf{Điểm biên trên = 100:} các giá trị lân cận gồm $x = 100$ (hợp lệ), $x = 99$ ($< 100$, hợp lệ), $x = 101$ ($> 100$, không hợp lệ) $\rightarrow \{99, 100, 101\}$.
+\end{itemize}
+
+\noindent\textbf{Phân chia lớp tương đương (ECP):}
+
+\noindent -- Quyền hạn người thực hiện cập nhật:
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|L{3.0cm}|X|C{3.2cm}|}
 \hline
 \rowcolor[RGB]{179, 205, 255}
 \textbf{Lớp} & \textbf{Điều kiện} & \textbf{Tính hợp lệ} \tabularnewline
 \hline
 EC1\_ProfRole & Là chính chủ tài khoản (\texttt{routeId == tokenUserId}) & \textcolor{blue}{\textbf{Hợp lệ}} \\ \hline
 EC2\_ProfRole & Là người dùng khác (\texttt{routeId != tokenUserId}) & \textcolor{red}{\textbf{Không hợp lệ}} \\ \hline
-EC1\_ProfName & Độ dài \texttt{FullName} từ 2 đến 100 ký tự & \textcolor{blue}{\textbf{Hợp lệ}} \\ \hline
-EC2\_ProfName & \texttt{FullName} để trống hoặc $< 2$ ký tự & \textcolor{red}{\textbf{Không hợp lệ}} \\ \hline
-EC3\_ProfName & \texttt{FullName} vượt quá 100 ký tự & \textcolor{red}{\textbf{Không hợp lệ}} \\ \hline
-\end{tabular}
-\caption{Phân chia lớp tương đương cho chức năng Cập nhật hồ sơ (B3)}
+\end{tabularx}
+\caption{Phân chia lớp tương đương Quyền hạn người thực hiện cập nhật (B3)}
 \end{table}
 
-\noindent\textbf{Tổ hợp lớp tương đương theo phương pháp $n+2$ ($n=2 \Rightarrow 4$ test-case):}
+\noindent -- Độ dài Họ tên mới:
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|L{3.0cm}|X|C{3.2cm}|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{Lớp} & \textbf{Điều kiện} & \textbf{Tính hợp lệ} \tabularnewline
+\hline
+EC1\_ProfName & Độ dài từ 2 đến 100 ký tự & \textcolor{blue}{\textbf{Hợp lệ}} \\ \hline
+EC2\_ProfName & Để trống hoặc $< 2$ ký tự & \textcolor{red}{\textbf{Không hợp lệ}} \\ \hline
+EC3\_ProfName & Vượt quá 100 ký tự & \textcolor{red}{\textbf{Không hợp lệ}} \\ \hline
+\end{tabularx}
+\caption{Phân chia lớp tương đương Độ dài Họ tên mới (B3)}
+\end{table}
+
+\noindent\textbf{Tổ hợp lớp tương đương theo phương pháp $n+2$:}
+\begin{itemize}[leftmargin=1.2cm, noitemsep]
+    \item[\textbf{--}] Có 2 loại dữ liệu đầu vào: Quyền hạn người thực hiện, Độ dài Họ tên mới.
+    \item[\textbf{--}] Với $n = 2$: $n + 2 = 2 + 2 = 4$ test-case.
+\end{itemize}
 \begin{table}[H]
 \centering
 \small
@@ -918,23 +988,127 @@ EC3\_ProfName & \texttt{FullName} vượt quá 100 ký tự & \textcolor{red}{\t
 \end{table}
 
 \noindent\textbf{b. Tải lên ảnh đại diện (Upload Profile Picture)}
+\begin{itemize}[leftmargin=1.2cm, noitemsep]
+    \item[\textbf{--}] \textbf{Mã BRD:} B3
+    \item[\textbf{--}] \textbf{Tên chức năng:} Thông tin cá nhân -- Chức năng Tải lên ảnh đại diện.
+    \item[\textbf{--}] \textbf{Tóm tắt Requirement từ tài liệu hệ thống:}
+    \begin{itemize}[leftmargin=0.8cm, label=$\bullet$, noitemsep]
+        \item Yêu cầu đăng nhập, chỉ chủ tài khoản mới được thay đổi ảnh đại diện của mình (người khác nhận 403 Forbidden).
+        \item File ảnh không được để trống (bắt buộc chọn file).
+        \item Dung lượng file ảnh không được vượt quá 5 MB (5,242,880 bytes). Nếu vượt $\rightarrow$ HTTP 400 Bad Request.
+        \item File ảnh phải thuộc một trong các định dạng MIME: \texttt{image/jpeg}, \texttt{image/png}, \texttt{image/gif}, \texttt{image/webp}. Định dạng khác bị từ chối với HTTP 400 Bad Request.
+        \item Trước khi gửi lên server, giao diện Frontend tự động nén ảnh xuống kích thước tối đa $256\times256$ pixel với chất lượng 85\% và chuyển sang định dạng JPEG.
+        \item Tải ảnh thành công trả về HTTP 200 OK kèm URL ảnh mới và hệ thống phát sự kiện SignalR cập nhật tức thì.
+    \end{itemize}
+\end{itemize}
+
 \begin{table}[H]
 \centering
 \small
-\begin{tabular}{|l|p{8.5cm}|l|}
+\begin{tabularx}{\textwidth}{|C{1.5cm}|X|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{T\#} & \textbf{Mô tả} \tabularnewline
+\hline
+\textbf{T47} & Yêu cầu phải đăng nhập (Authorize -- JWT Token hợp lệ). \\ \hline
+\textbf{T48} & Chỉ chủ tài khoản mới được phép thay đổi ảnh đại diện của mình. Người khác $\rightarrow$ HTTP 403 Forbidden (``You cannot update this user''). \\ \hline
+\textbf{T49} & File ảnh không được để trống (bắt buộc phải chọn file). Nếu trống $\rightarrow$ HTTP 400 (``Please select a file to upload''). \\ \hline
+\textbf{T50} & Dung lượng file ảnh không được vượt quá 5 MB (5,242,880 bytes). Nếu vượt $\rightarrow$ HTTP 400 (``File size must not exceed 5MB''). \\ \hline
+\textbf{T51} & File ảnh phải thuộc một trong các định dạng MIME được chấp nhận: \texttt{image/jpeg}, \texttt{image/png}, \texttt{image/gif}, \texttt{image/webp}. \\ \hline
+\textbf{T52} & File ảnh có định dạng MIME khác sẽ bị từ chối $\rightarrow$ HTTP 400 (``Only image files (JPEG, PNG, GIF, WebP) are allowed''). \\ \hline
+\textbf{T53} & Trước khi gửi lên server, giao diện Frontend tự động nén ảnh xuống kích thước tối đa $256\times256$ pixel với chất lượng 85\% và chuyển sang định dạng JPEG. \\ \hline
+\textbf{T55} & Tải ảnh thành công trả về HTTP 200 OK kèm thông tin người dùng đã được cập nhật URL ảnh mới. \\ \hline
+\textbf{T56} & Tải ảnh thành công, hệ thống sẽ tự động cập nhật đến tất cả client đang kết nối theo thời gian thực qua SignalR. \\ \hline
+\end{tabularx}
+\caption{Bảng mã yêu cầu kỹ thuật tải lên ảnh đại diện (B3)}
+\end{table}
+
+\noindent\textbf{Dung lượng file ảnh đại diện (Avatar File Size - BVA):}
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+    \draw[->, thick] (0,0) -- (7.6,0) node[right, font=\small] {Size};
+    \draw[green!60!black, line width=2.2pt] (0.5,0) -- (4.3,0);
+    \draw[red!75!black, line width=2.2pt] (4.3,0) -- (7.0,0);
+    \draw[thick] (4.3,-0.15) -- (4.3,0.15) node[below=6pt, font=\small\bfseries] {5 MB (5,242,880 B)};
+    \node[above=6pt, align=center, text=green!60!black, font=\footnotesize] at (2.4,0) {Hợp lệ\\($\text{Size} \le 5\text{ MB}$)};
+    \node[above=6pt, align=center, text=red!75!black, font=\footnotesize] at (5.65,0) {Không hợp lệ\\($> 5\text{ MB (5,242,880 B)}$)};
+\end{tikzpicture}
+\end{figure}
+\begin{itemize}[leftmargin=1.2cm, noitemsep]
+    \item[\textbf{--}] \textbf{Đoạn hợp lệ:} $\text{Size} \le 5,242,880\text{ bytes}$ (5 MB).
+    \item[\textbf{--}] \textbf{Đoạn không hợp lệ trên:} $\text{Size} > 5,242,880\text{ bytes}$.
+    \item[\textbf{--}] \textbf{Điểm biên trên = 5,242,880 bytes:} các giá trị lân cận gồm:
+    \begin{itemize}[leftmargin=0.8cm, label=$\bullet$, noitemsep]
+        \item $x = 5,242,880$ bytes (đúng 5MB, hợp lệ).
+        \item $x = 5,242,879$ bytes ($\text{5MB} - 1\text{ byte}$, hợp lệ).
+        \item $x = 5,242,881$ bytes ($\text{5MB} + 1\text{ byte}$, vượt biên, không hợp lệ).
+    \end{itemize}
+\end{itemize}
+
+\noindent\textbf{Phân chia lớp tương đương Định dạng \& Dung lượng file (ECP):}
+
+\noindent -- Định dạng file ảnh (MIME Type):
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|L{3.0cm}|X|C{3.2cm}|}
 \hline
 \rowcolor[RGB]{179, 205, 255}
 \textbf{Lớp} & \textbf{Điều kiện} & \textbf{Tính hợp lệ} \tabularnewline
 \hline
 EC1\_Mime & Định dạng: \texttt{image/jpeg}, \texttt{image/png}, \texttt{image/gif}, \texttt{image/webp} & \textcolor{blue}{\textbf{Hợp lệ}} \\ \hline
-EC2\_Mime & Định dạng không hỗ trợ (\texttt{EXE}, \texttt{PDF}, \texttt{BMP}, \texttt{SVG}, \texttt{TIFF}) & \textcolor{red}{\textbf{Không hợp lệ}} \\ \hline
-EC1\_FileSize & Có chọn file và dung lượng $\le 5$ MB (5,242,880 bytes) & \textcolor{blue}{\textbf{Hợp lệ}} \\ \hline
-EC2\_FileSize & Không chọn file (file rỗng / null) & \textcolor{red}{\textbf{Không hợp lệ}} \\ \hline
-EC3\_FileSize & Dung lượng vượt quá 5 MB & \textcolor{red}{\textbf{Không hợp lệ}} \\ \hline
-\end{tabular}
-\caption{Phân chia lớp tương đương cho chức năng Upload ảnh đại diện (B3)}
+EC2\_Mime & Định dạng không được hỗ trợ (\texttt{EXE}, \texttt{PDF}, \texttt{BMP}, \texttt{SVG}, \texttt{TIFF}) & \textcolor{red}{\textbf{Không hợp lệ}} \\ \hline
+\end{tabularx}
+\caption{Phân chia lớp tương đương Định dạng file ảnh (B3)}
 \end{table}
 
+\newpage
+\noindent -- Dung lượng file ảnh:
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|L{3.0cm}|X|C{3.2cm}|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{Lớp} & \textbf{Điều kiện} & \textbf{Tính hợp lệ} \tabularnewline
+\hline
+EC1\_FileSize & Có chọn file và Dung lượng $\le 5$ MB (5,242,880 bytes) & \textcolor{blue}{\textbf{Hợp lệ}} \\ \hline
+EC2\_FileSize & Không chọn file (file rỗng / \texttt{null}) & \textcolor{red}{\textbf{Không hợp lệ}} \\ \hline
+EC3\_FileSize & Dung lượng vượt quá 5 MB & \textcolor{red}{\textbf{Không hợp lệ}} \\ \hline
+\end{tabularx}
+\caption{Phân chia lớp tương đương Dung lượng file ảnh (B3)}
+\end{table}
+
+\noindent\textbf{Sơ đồ phân loại lớp tương đương Ảnh đại diện:}
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    validbox/.style={rectangle, rounded corners=18pt, draw=blue!75!black, fill=blue!4, line width=0.9pt, minimum width=6.2cm, minimum height=2.6cm, inner sep=8pt, align=center, font=\small},
+    invalidbox/.style={rectangle, rounded corners=18pt, draw=red!75!black, fill=red!4, line width=0.9pt, minimum width=6.2cm, minimum height=2.6cm, inner sep=8pt, align=center, font=\small}
+]
+    \node[validbox] at (0,0) {
+        Chính chủ tài khoản thao tác\\[2pt]
+        Định dạng: JPEG, PNG, GIF, WebP\\[2pt]
+        Dung lượng file $\le$ 5 MB\\[6pt]
+        \textbf{\textcolor{blue!80!black}{LỚP HỢP LỆ (VALID)}}
+    };
+    \node[invalidbox] at (7.0,0) {
+        Người dùng khác cố tình upload\\[2pt]
+        File rỗng / Không chọn file\\[2pt]
+        File cấm (EXE, PDF, DOC, BMP)\\[2pt]
+        Dung lượng vượt quá 5 MB\\[6pt]
+        \textcolor{red!80!black}{\textbf{LỚP KHÔNG HỢP}}\\[2pt]
+        \textcolor{red!80!black}{\textbf{LỆ (INVALID)}}
+    };
+\end{tikzpicture}
+\end{figure}
+
+\noindent\textbf{Tổ hợp lớp tương đương theo phương pháp $n+2$:}
+\begin{itemize}[leftmargin=1.2cm, noitemsep]
+    \item[\textbf{--}] Có 2 loại dữ liệu đầu vào: Định dạng file (MIME Type), Dung lượng file.
+    \item[\textbf{--}] Với $n = 2$: $n + 2 = 2 + 2 = 4$ test-case.
+\end{itemize}
 \begin{table}[H]
 \centering
 \small
@@ -951,7 +1125,112 @@ EC3\_FileSize & Dung lượng vượt quá 5 MB & \textcolor{red}{\textbf{Không
 \caption{Bảng tổ hợp kiểm thử tải lên ảnh đại diện (B3)}
 \end{table}
 
-\noindent\textbf{c. Bảng Test Cases chi tiết chức năng B3 (Thông tin cá nhân):}
+\noindent\textbf{c. Xem thông tin hồ sơ \& Bảo mật dữ liệu (Get User Profile)}
+\begin{itemize}[leftmargin=1.2cm, noitemsep]
+    \item[\textbf{--}] \textbf{Mã BRD:} B3
+    \item[\textbf{--}] \textbf{Tên chức năng:} Thông tin cá nhân -- Chức năng Xem thông tin người dùng và Bảo mật dữ liệu.
+    \item[\textbf{--}] \textbf{Tóm tắt Requirement từ tài liệu hệ thống:}
+    \begin{itemize}[leftmargin=0.8cm, label=$\bullet$, noitemsep]
+        \item Yêu cầu phải đăng nhập (Authorize -- JWT Token hợp lệ).
+        \item Nếu tài khoản không tồn tại trên hệ thống trả về HTTP 404 Not Found (``User not found'').
+        \item Kết quả trả về dạng \texttt{UserResponseDto}, tuyệt đối không chứa các trường nhạy cảm (\texttt{PasswordHash}, \texttt{SecurityStamp}).
+        \item Dữ liệu trả về đầy đủ bao gồm: \texttt{UserName}, \texttt{Email}, \texttt{FullName}, \texttt{ProfilePictureUrl}, \texttt{Bio}.
+    \end{itemize}
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|C{1.5cm}|X|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{T\#} & \textbf{Mô tả} \tabularnewline
+\hline
+\textbf{T57} & Yêu cầu phải đăng nhập (Authorize -- JWT Token hợp lệ). \\ \hline
+\textbf{T58} & Nếu tài khoản không tồn tại $\rightarrow$ HTTP 404 Not Found (``User not found''). \\ \hline
+\textbf{T59} & Kết quả trả về dạng \texttt{UserResponseDto}, tuyệt đối không chứa các trường nhạy cảm (\texttt{PasswordHash}, \texttt{SecurityStamp}). \\ \hline
+\textbf{T60} & Dữ liệu trả về bao gồm: \texttt{UserName}, \texttt{Email}, \texttt{FullName}, \texttt{ProfilePictureUrl}, \texttt{Bio}. \\ \hline
+\end{tabularx}
+\caption{Bảng mã yêu cầu kỹ thuật xem thông tin hồ sơ (B3)}
+\end{table}
+
+\noindent\textbf{Phân chia lớp tương đương (ECP):}
+
+\noindent -- Trạng thái đăng nhập của người xem:
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|L{3.0cm}|X|C{3.2cm}|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{Lớp} & \textbf{Điều kiện} & \textbf{Tính hợp lệ} \tabularnewline
+\hline
+EC1\_Auth & Đã đăng nhập, JWT Token còn hiệu lực & \textcolor{blue}{\textbf{Hợp lệ}} \\ \hline
+EC2\_Auth & Chưa đăng nhập hoặc Token hết hạn / giả mạo & \textcolor{red}{\textbf{Không hợp lệ}} \\ \hline
+\end{tabularx}
+\caption{Phân chia lớp tương đương Trạng thái đăng nhập người xem (B3)}
+\end{table}
+
+\noindent -- Trạng thái tài khoản người dùng cần xem:
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|L{3.0cm}|X|C{3.2cm}|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{Lớp} & \textbf{Điều kiện} & \textbf{Tính hợp lệ} \tabularnewline
+\hline
+EC1\_TargetUser & Tài khoản tồn tại trong cơ sở dữ liệu & \textcolor{blue}{\textbf{Hợp lệ}} \\ \hline
+EC2\_TargetUser & Tài khoản không tồn tại (ID không có trong CSDL) & \textcolor{red}{\textbf{Không hợp lệ}} \\ \hline
+\end{tabularx}
+\caption{Phân chia lớp tương đương Trạng thái tài khoản cần xem (B3)}
+\end{table}
+
+\noindent\textbf{Sơ đồ phân loại lớp tương đương Xem hồ sơ:}
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    validbox/.style={rectangle, rounded corners=18pt, draw=blue!75!black, fill=blue!4, line width=0.9pt, minimum width=6.2cm, minimum height=2.5cm, inner sep=8pt, align=center, font=\small},
+    invalidbox/.style={rectangle, rounded corners=18pt, draw=red!75!black, fill=red!4, line width=0.9pt, minimum width=6.2cm, minimum height=2.5cm, inner sep=8pt, align=center, font=\small}
+]
+    \node[validbox] at (0,0) {
+        Đã đăng nhập (JWT hợp lệ)\\[2pt]
+        Tài khoản tồn tại trong CSDL\\[2pt]
+        Ẩn thông tin nhạy cảm\\[6pt]
+        \textbf{\textcolor{blue!80!black}{LỚP HỢP LỆ (VALID)}}
+    };
+    \node[invalidbox] at (7.0,0) {
+        Chưa đăng nhập / Token hết hạn\\[2pt]
+        Tài khoản không tồn tại (ID ảo)\\[2pt]
+        Token giả mạo\\[6pt]
+        \textcolor{red!80!black}{\textbf{LỚP KHÔNG HỢP}}\\[2pt]
+        \textcolor{red!80!black}{\textbf{LỆ (INVALID)}}
+    };
+\end{tikzpicture}
+\end{figure}
+
+\noindent\textbf{Tổ hợp lớp tương đương theo phương pháp $n+2$:}
+\begin{itemize}[leftmargin=1.2cm, noitemsep]
+    \item[\textbf{--}] Có 2 loại dữ liệu đầu vào: Trạng thái đăng nhập người xem, Trạng thái tài khoản cần xem.
+    \item[\textbf{--}] Với $n = 2$: $n + 2 = 2 + 2 = 4$ test-case.
+\end{itemize}
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|c|X|X|l|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{Test-case} & \textbf{Trạng thái đăng nhập người xem} & \textbf{Trạng thái tài khoản cần xem} & \textbf{Kết quả} \tabularnewline
+\hline
+\textbf{TC26} & Đã đăng nhập (Token hợp lệ) & Tài khoản tồn tại trong CSDL & 200 OK (Ẩn hash) \\ \hline
+\textbf{TC27} & Chưa đăng nhập / Token hết hạn & Tài khoản không tồn tại & 401 Unauthorized \\ \hline
+\textbf{TC28} & Đã đăng nhập (Token hợp lệ) & Tài khoản không tồn tại & 404 Not Found \\ \hline
+\textbf{TC29} & Chưa đăng nhập / Token hết hạn & Tài khoản tồn tại trong CSDL & 401 Unauthorized \\ \hline
+\end{tabularx}
+\caption{Bảng tổ hợp kiểm thử xem hồ sơ và bảo mật dữ liệu (B3)}
+\end{table}
+
+\noindent\textbf{d. Bảng Test Cases chi tiết chức năng B3 (Thông tin cá nhân):}
 \begingroup
 \scriptsize
 \setlength{\tabcolsep}{3pt}
