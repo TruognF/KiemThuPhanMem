@@ -1387,14 +1387,41 @@ EC4\_Search & Hashtag từng tồn tại nhưng bài viết duy nhất gắn has
 \subsection{Phân tích giá trị biên (Boundary Value Analysis -- BVA)}
 
 \subsubsection{Chức năng B6 -- Bình luận (Comments \& Replies)}
-\begin{tcolorbox}[colback=yellow!10, colframe=orange!70!black, title=\textbf{Ghi chú các thành phần còn thiếu so với tài liệu gốc KTPM}, fonttitle=\bfseries]
-So với file \texttt{LopTuongDuong\_GiaTriBien.pdf} (trang 26--29), mục này hiện đang lược bớt: (1) Phần Tóm tắt Requirement \& bảng mã kỹ thuật \texttt{T88--T95}; (2) Tiểu mục \textit{6.2 Chỉnh sửa nội dung bình luận (Edit Comment -- phân lớp ECP \& bảng tổ hợp $n+2$ từ TC70..TC73)}; (3) Tiểu mục \textit{6.3 Xóa bình luận \& Xác nhận (Delete Comment -- phân lớp ECP \& bảng tổ hợp $n+2$ từ TC74..TC77)}.
-\end{tcolorbox}
 
+\noindent\textbf{a. Đăng bình luận mới (Comment Input)}
 \begin{itemize}[leftmargin=1.2cm, noitemsep]
-    \item[\textbf{--}] \textbf{Ràng buộc độ dài:} Nội dung bình luận (khi tạo mới và chỉnh sửa) giới hạn từ \textbf{1 đến 500 ký tự}; không được để trống hoặc chỉ chứa khoảng trắng.
+    \item[\textbf{--}] \textbf{Mã BRD:} B6
+    \item[\textbf{--}] \textbf{Tên chức năng:} Bình luận \& Phản hồi bình luận -- Chức năng Đăng bình luận mới.
+    \item[\textbf{--}] \textbf{Tóm tắt Requirement từ tài liệu hệ thống:}
+    \begin{itemize}[leftmargin=0.8cm, label=$\bullet$, noitemsep]
+        \item Người dùng đăng nhập có thể nhập chữ để bình luận dưới bài viết hoặc phản hồi bình luận của người khác.
+        \item Nội dung bình luận không được để trống hoặc chỉ gõ toàn dấu cách.
+        \item Độ dài nội dung bình luận giới hạn từ 1 đến 500 ký tự.
+        \item Khi đăng thành công, bình luận mới xuất hiện ngay lập tức bên dưới bài viết, ô nhập được xóa trắng và số lượng bình luận tăng thêm 1.
+        \item Người khác đang mở bài viết sẽ nhìn thấy bình luận mới tức thời qua SignalR mà không cần tải lại trang.
+        \item Tác giả bài viết nhận được thông báo chuông kèm trích dẫn nội dung bình luận.
+    \end{itemize}
 \end{itemize}
 
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|C{1.5cm}|X|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{T\#} & \textbf{Mô tả} \tabularnewline
+\hline
+\textbf{T88} & Dưới mỗi bài viết có nút ``Bình luận''; nhấn vào sẽ mở ra khung nhập và danh sách bình luận và thấy được số lượng bình luận. \\ \hline
+\textbf{T89} & Nội dung bình luận không được để trống hoặc chỉ gõ toàn dấu cách; nếu để trống thì không thể bấm gửi. \\ \hline
+\textbf{T90} & Người dùng có thể nhấn phím Enter trên bàn phím hoặc bấm nút Gửi để đăng bình luận. \\ \hline
+\textbf{T91} & Khi gửi thành công, bình luận mới xuất hiện ngay lập tức bên dưới bài viết, ô nhập được xóa trắng, và số lượng bình luận tăng lên 1. \\ \hline
+\textbf{T92} & Người khác đang mở bài viết sẽ nhìn thấy bình luận mới xuất hiện ngay lập tức qua SignalR mà không cần tải lại trang. \\ \hline
+\textbf{T93} & Tác giả bài viết nhận được thông báo chuông kèm trích dẫn nội dung bình luận khi có người vào bình luận. \\ \hline
+\end{tabularx}
+\caption{Bảng mã yêu cầu kỹ thuật chức năng đăng bình luận mới (B6)}
+\end{table}
+
+\noindent\textbf{Độ dài nội dung bình luận (Comment Length - BVA):}
 \begin{center}
 \begin{tikzpicture}[x=0.02cm, y=1cm]
     \draw[thick, ->] (-80, 0) -- (620, 0) node[right] {\small Length};
@@ -1410,27 +1437,87 @@ So với file \texttt{LopTuongDuong\_GiaTriBien.pdf} (trang 26--29), mục này 
 \end{center}
 
 \begin{itemize}[leftmargin=1.2cm, noitemsep]
-    \item[\textbf{--}] \textbf{Biên dưới $= 1$:} Các giá trị lân cận gồm $x = 0$ ($<1$, không hợp lệ), $x = 1$ (hợp lệ), $x = 2$ (hợp lệ) $\rightarrow \{0, 1, 2\}$.
-    \item[\textbf{--}] \textbf{Biên trên $= 500$:} Các giá trị lân cận gồm $x = 499$ (hợp lệ), $x = 500$ (hợp lệ), $x = 501$ ($>500$, không hợp lệ) $\rightarrow \{499, 500, 501\}$.
+    \item[\textbf{--}] \textbf{Đoạn hợp lệ ($1 \le \text{Length} \le 500$):} Tất cả các chuỗi văn bản có độ dài từ 1 đến 500 ký tự hợp lệ.
+    \item[\textbf{--}] \textbf{Đoạn không hợp lệ dưới ($\text{Length} < 1$):} Chuỗi rỗng 0 ký tự hoặc chuỗi chỉ toàn dấu cách trắng.
+    \item[\textbf{--}] \textbf{Đoạn không hợp lệ trên ($\text{Length} > 500$):} Độ dài bình luận vượt quá 500 ký tự cho phép (chặn gửi / báo lỗi).
+    \item[\textbf{--}] \textbf{Các test-case tương ứng với các giá trị biên:}
+    \begin{itemize}[leftmargin=0.8cm, label=$\bullet$, noitemsep]
+        \item \textbf{Biên dưới = 1:} các giá trị lân cận gồm $x = 1$ (hợp lệ), $x = 0$ ($<1$, không hợp lệ), $x = 2$ ($>1$, hợp lệ) $\rightarrow \{0, 1, 2\}$.
+        \item \textbf{Biên trên = 500:} các giá trị lân cận gồm $x = 500$ (hợp lệ), $x = 499$ ($<500$, hợp lệ), $x = 501$ ($>500$, không hợp lệ) $\rightarrow \{499, 500, 501\}$.
+    \end{itemize}
+\end{itemize}
+
+
+\noindent\textbf{b. Chỉnh sửa nội dung bình luận (Edit Comment)}
+\begin{itemize}[leftmargin=1.2cm, noitemsep]
+    \item[\textbf{--}] \textbf{Mã BRD:} B6
+    \item[\textbf{--}] \textbf{Tên chức năng:} Bình luận \& Phản hồi bình luận -- Chức năng Chỉnh sửa bình luận.
+    \item[\textbf{--}] \textbf{Tóm tắt Requirement từ tài liệu hệ thống:}
+    \begin{itemize}[leftmargin=0.8cm, label=$\bullet$, noitemsep]
+        \item Người viết bình luận có quyền chỉnh sửa bình luận của chính mình.
+        \item Người khác xem bình luận sẽ không nhìn thấy nút ``Sửa''.
+        \item Quy tắc kiểm tra nội dung sau khi sửa tuân theo đúng quy tắc khi tạo mới: độ dài từ 1 đến 500 ký tự, không được sửa thành chuỗi rỗng 0 ký tự (chặn) hoặc sửa thành chuỗi đạt biên 500 ký tự (hợp lệ) và 501 ký tự (chặn báo lỗi).
+    \end{itemize}
 \end{itemize}
 
 \begin{table}[H]
 \centering
 \small
-\begin{tabularx}{\textwidth}{|c|X|X|l|}
+\begin{tabularx}{\textwidth}{|C{1.5cm}|X|}
 \hline
 \rowcolor[RGB]{179, 205, 255}
-\textbf{Test-case} & \textbf{Trạng thái đăng nhập} & \textbf{Độ dài nội dung bình luận} & \textbf{Kết quả} \tabularnewline
+\textbf{T\#} & \textbf{Mô tả} \tabularnewline
 \hline
-\textbf{TC66} & Đã đăng nhập & Hợp lệ: 1--500 ký tự & \textcolor{blue}{\textbf{Hợp lệ}} \\ \hline
-\textbf{TC67} & Chưa đăng nhập & Không hợp lệ: 0 ký tự / Chỉ dấu cách & \textcolor{red}{\textbf{Không hợp lệ}} \\ \hline
-\textbf{TC68} & Đã đăng nhập & Không hợp lệ: 0 ký tự / Chỉ dấu cách & \textcolor{red}{\textbf{Không hợp lệ}} \\ \hline
-\textbf{TC69} & Chưa đăng nhập & Hợp lệ: 1--500 ký tự & \textcolor{red}{\textbf{Không hợp lệ}} \\ \hline
+\textbf{T94} & Người viết bình luận có quyền sửa hoặc xóa bình luận của mình; người khác xem bình luận đó sẽ không thấy nút Sửa Xóa. \\ \hline
 \end{tabularx}
-\caption{Bảng tổ hợp kiểm thử đăng bình luận mới (B6)}
+\caption{Bảng mã yêu cầu kỹ thuật chức năng chỉnh sửa bình luận (B6)}
 \end{table}
 
-\noindent\textbf{Bảng Test Cases chi tiết chức năng B6 (Bình luận \& Phản hồi):}
+\noindent\textbf{Phân tích giá trị biên độ dài nội dung sau khi chỉnh sửa (Edit Comment Length -- BVA):}
+\begin{center}
+\begin{tikzpicture}[x=0.02cm, y=1cm]
+    \draw[thick, ->] (-80, 0) -- (620, 0) node[right] {\small Length};
+    \draw[line width=3pt, red!70] (-50, 0) -- (1, 0);
+    \node[above=6pt, text=red!80!black, font=\footnotesize, align=center] at (-25, 0) {\textbf{Không hợp lệ}\\($< 1$)};
+    \draw[line width=3pt, green!60!black] (1, 0) -- (500, 0);
+    \node[above=6pt, text=green!50!black, font=\footnotesize, align=center] at (250, 0) {\textbf{Hợp lệ}\\($1 \le \text{Length} \le 500$)};
+    \draw[line width=3pt, red!70] (500, 0) -- (590, 0);
+    \node[above=6pt, text=red!80!black, font=\footnotesize, align=center] at (545, 0) {\textbf{Không hợp lệ}\\($> 500$)};
+    \draw[thick] (1, -0.18) -- (1, 0.18) node[below=5pt] {\textbf{1}};
+    \draw[thick] (500, -0.18) -- (500, 0.18) node[below=5pt] {\textbf{500}};
+\end{tikzpicture}
+\end{center}
+
+\begin{itemize}[leftmargin=1.2cm, noitemsep]
+    \item[\textbf{--}] \textbf{Đoạn hợp lệ ($1 \le \text{Length} \le 500$):} Độ dài nội dung bình luận sau khi chỉnh sửa từ 1 đến 500 ký tự.
+    \item[\textbf{--}] \textbf{Đoạn không hợp lệ dưới ($\text{Length} < 1$):} Sửa thành chuỗi rỗng 0 ký tự hoặc chỉ toàn dấu cách trắng.
+    \item[\textbf{--}] \textbf{Đoạn không hợp lệ trên ($\text{Length} > 500$):} Sửa thành chuỗi vượt quá 500 ký tự.
+    \item[\textbf{--}] \textbf{Các giá trị biên cần kiểm thử:}
+    \begin{itemize}[leftmargin=0.8cm, label=$\bullet$, noitemsep]
+        \item \textbf{Biên dưới = 1:} $x = 0$ (không hợp lệ), $x = 1$ (hợp lệ), $x = 2$ (hợp lệ) $\rightarrow \{0, 1, 2\}$.
+        \item \textbf{Biên trên = 500:} $x = 499$ (hợp lệ), $x = 500$ (hợp lệ), $x = 501$ (không hợp lệ) $\rightarrow \{499, 500, 501\}$.
+    \end{itemize}
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|c|C{3.2cm}|X|C{2.8cm}|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{Test-case} & \textbf{Giá trị biên} & \textbf{Dữ liệu độ dài sau khi sửa} & \textbf{Kết quả} \tabularnewline
+\hline
+\textbf{BVA\_E1} & Biên dưới ($x < 1$) & $x = 0$ ký tự (chuỗi rỗng / khoảng trắng) & \textcolor{red}{\textbf{Không hợp lệ}} \\ \hline
+\textbf{BVA\_E2} & Biên dưới ($x = 1$) & $x = 1$ ký tự hợp lệ & \textcolor{blue}{\textbf{Hợp lệ}} \\ \hline
+\textbf{BVA\_E3} & Cận biên dưới ($x = 2$) & $x = 2$ ký tự hợp lệ & \textcolor{blue}{\textbf{Hợp lệ}} \\ \hline
+\textbf{BVA\_E4} & Cận biên trên ($x = 499$) & $x = 499$ ký tự hợp lệ & \textcolor{blue}{\textbf{Hợp lệ}} \\ \hline
+\textbf{BVA\_E5} & Biên trên ($x = 500$) & $x = 500$ ký tự hợp lệ & \textcolor{blue}{\textbf{Hợp lệ}} \\ \hline
+\textbf{BVA\_E6} & Biên trên ($x > 500$) & $x = 501$ ký tự & \textcolor{red}{\textbf{Không hợp lệ}} \\ \hline
+\end{tabularx}
+\caption{Bảng giá trị biên kiểm thử chỉnh sửa nội dung bình luận (B6)}
+\end{table}
+
+\noindent\textbf{c. Bảng Test Cases chi tiết chức năng B6 (Bình luận \& Phản hồi):}
 \begingroup
 \scriptsize
 \setlength{\tabcolsep}{3pt}
@@ -1459,15 +1546,41 @@ So với file \texttt{LopTuongDuong\_GiaTriBien.pdf} (trang 26--29), mục này 
 \endgroup
 
 
-\subsubsection{Chức năng B16 -- Thông báo \& Mở bài viết từ thông báo}
-\begin{tcolorbox}[colback=yellow!10, colframe=orange!70!black, title=\textbf{Ghi chú các thành phần còn thiếu so với tài liệu gốc KTPM}, fonttitle=\bfseries]
-So với file \texttt{LopTuongDuong\_GiaTriBien.pdf} (trang 57--59), mục này hiện đang lược bớt: (1) Phần Tóm tắt Requirement \& bảng mã kỹ thuật \texttt{T175--T182}; (2) Tiểu mục \textit{16.2 Mở bài viết từ thông báo (Post Navigation -- phân lớp ECP trạng thái đọc/bài viết đích \& bảng tổ hợp $n+2$ từ TC209..TC212)}.
-\end{tcolorbox}
+\subsubsection{Chức năng B16 -- Thông báo Realtime (Đếm số lượng thông báo chưa đọc)}
 
+\noindent\textbf{a. Đếm số lượng thông báo chưa đọc (Unread Notifications Badge)}
 \begin{itemize}[leftmargin=1.2cm, noitemsep]
-    \item[\textbf{--}] \textbf{Quy tắc hiển thị Badge chuông:} Thông báo đẩy qua SignalR trong vòng $< 1$ giây; hiển thị số lượng chưa đọc từ \texttt{1} đến \texttt{99} và rút gọn thành \texttt{99+} khi vượt quá 99.
+    \item[\textbf{--}] \textbf{Mã BRD:} B16
+    \item[\textbf{--}] \textbf{Tên chức năng:} Thông báo Realtime -- Chức năng Đếm số lượng thông báo chưa đọc trên Badge chuông.
+    \item[\textbf{--}] \textbf{Tóm tắt Requirement từ tài liệu hệ thống:}
+    \begin{itemize}[leftmargin=0.8cm, label=$\bullet$, noitemsep]
+        \item Hệ thống gửi thông báo trực tiếp qua SignalR trong vòng chưa tới 1 giây khi có hoạt động tương tác.
+        \item Biểu tượng chuông tự động nhảy số thông báo chưa đọc kèm chấm đỏ.
+        \item Quy tắc hiển thị Badge:
+        \begin{itemize}[leftmargin=0.8cm, label=$\circ$, noitemsep]
+            \item Khi số thông báo chưa đọc bằng 0: Không hiển thị chấm đỏ và không hiển thị số đếm.
+            \item Khi có thông báo mới (số lượng $= 1$): Bật chấm đỏ và hiển thị số \texttt{1} màu đỏ.
+            \item Khi số lượng vượt quá 99: Rút gọn hiển thị nhãn \texttt{99+}.
+            \item Khi người dùng nhấp vào biểu tượng thông báo: Số lượng thông báo chưa đọc lập tức chuyển về 0 và chấm đỏ biến mất.
+        \end{itemize}
+    \end{itemize}
 \end{itemize}
 
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|C{1.5cm}|X|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{T\#} & \textbf{Mô tả} \tabularnewline
+\hline
+\textbf{T175} & Biểu tượng chuông thông báo trên thanh điều hướng tự động hiện chấm đỏ và số đếm khi có ai đó tương tác bài viết của mình. \\ \hline
+\textbf{T176} & Bấm vào biểu tượng chuông sẽ mở ra danh sách các thông báo xếp từ mới nhất xuống cũ hơn. \\ \hline
+\end{tabularx}
+\caption{Bảng mã yêu cầu kỹ thuật chức năng đếm số lượng thông báo chưa đọc (B16)}
+\end{table}
+
+\noindent\textbf{Phân tích giá trị biên số lượng thông báo (Badge Count -- BVA):}
 \begin{center}
 \begin{tikzpicture}[x=0.07cm, y=1cm]
     \draw[thick, ->] (-25, 0) -- (130, 0) node[right] {\small Số lượng};
@@ -1483,27 +1596,30 @@ So với file \texttt{LopTuongDuong\_GiaTriBien.pdf} (trang 57--59), mục này 
 \end{center}
 
 \begin{itemize}[leftmargin=1.2cm, noitemsep]
-    \item[\textbf{--}] \textbf{Điểm biên dưới:} Số lượng $= 0$ (không hiện chấm đỏ và số đếm); Số lượng $= 1$ (bật chấm đỏ và hiển thị số \texttt{1}).
-    \item[\textbf{--}] \textbf{Điểm biên trên:} Số lượng $= 99$ (hiển thị \texttt{99}); Số lượng $= 100$ (hiển thị nhãn rút gọn \texttt{99+}).
+    \item[\textbf{--}] \textbf{Miền hiển thị số trực tiếp ($1 \le \text{SL} \le 99$):} Hiển thị chính xác số nguyên chưa đọc; $< 1$ ẩn badge; $> 99$ rút gọn thành \texttt{99+}.
+    \item[\textbf{--}] \textbf{Điểm biên dưới $= 1$:} Các giá trị lân cận gồm $x = 0$ (không hiện chấm đỏ và số đếm), $x = 1$ (bật chấm đỏ, hiển thị \texttt{1}), $x = 2$ (hiển thị \texttt{2}) $\rightarrow \{0, 1, 2\}$.
+    \item[\textbf{--}] \textbf{Điểm biên trên $= 99$:} Các giá trị lân cận gồm $x = 98$ (hiển thị \texttt{98}), $x = 99$ (hiển thị \texttt{99}), $x = 100$ (hiển thị nhãn rút gọn \texttt{99+}) $\rightarrow \{98, 99, 100\}$.
 \end{itemize}
 
 \begin{table}[H]
 \centering
 \small
-\begin{tabularx}{\textwidth}{|c|X|X|l|}
+\begin{tabularx}{\textwidth}{|c|C{3.2cm}|X|C{3.6cm}|}
 \hline
 \rowcolor[RGB]{179, 205, 255}
-\textbf{Test-case} & \textbf{Số lượng thông báo chưa đọc} & \textbf{Trạng thái xem chuông} & \textbf{Kết quả} \tabularnewline
+\textbf{Test-case} & \textbf{Giá trị biên} & \textbf{Số lượng thông báo chưa đọc} & \textbf{Hiển thị mong đợi} \tabularnewline
 \hline
-\textbf{TC205} & Có 1 thông báo mới & Chưa nhấp vào biểu tượng & \textcolor{blue}{\textbf{Hợp lệ}} (Hiện số 1) \\ \hline
-\textbf{TC206} & 0 thông báo & Phiên làm việc hết hạn & \textcolor{red}{\textbf{Không hợp lệ}} \\ \hline
-\textbf{TC207} & Có thông báo chưa đọc & Nhấp vào biểu tượng thông báo & \textcolor{blue}{\textbf{Hợp lệ}} (Về 0) \\ \hline
-\textbf{TC208} & 0 thông báo & Chưa nhấp vào biểu tượng & \textcolor{red}{\textbf{Không hợp lệ}} (Ẩn badge) \\ \hline
+\textbf{BVA\_N1} & Biên dưới ($x < 1$) & $x = 0$ thông báo chưa đọc & Ẩn chấm đỏ và số đếm \\ \hline
+\textbf{BVA\_N2} & Biên dưới ($x = 1$) & $x = 1$ thông báo chưa đọc & Bật chấm đỏ, hiện số \texttt{1} \\ \hline
+\textbf{BVA\_N3} & Cận biên dưới ($x = 2$) & $x = 2$ thông báo chưa đọc & Bật chấm đỏ, hiện số \texttt{2} \\ \hline
+\textbf{BVA\_N4} & Cận biên trên ($x = 98$) & $x = 98$ thông báo chưa đọc & Bật chấm đỏ, hiện số \texttt{98} \\ \hline
+\textbf{BVA\_N5} & Biên trên ($x = 99$) & $x = 99$ thông báo chưa đọc & Bật chấm đỏ, hiện số \texttt{99} \\ \hline
+\textbf{BVA\_N6} & Biên trên ($x > 99$) & $x = 100$ thông báo chưa đọc & Hiện nhãn rút gọn \texttt{99+} \\ \hline
 \end{tabularx}
-\caption{Bảng tổ hợp kiểm thử Badge thông báo chưa đọc (B16)}
+\caption{Bảng giá trị biên kiểm thử Badge thông báo chưa đọc (B16)}
 \end{table}
 
-\noindent\textbf{Bảng Test Cases chi tiết chức năng B16 (Thông báo \& Mở bài viết):}
+\noindent\textbf{b. Bảng Test Cases chi tiết chức năng B16 (Thông báo \& Mở bài viết):}
 \begingroup
 \scriptsize
 \setlength{\tabcolsep}{3pt}
