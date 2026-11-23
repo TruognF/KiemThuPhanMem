@@ -2135,30 +2135,239 @@ A5: Báo lỗi lời dẫn vượt quá 1.000 ký tự & & & \textbf{X} & \\ \hl
 \subsection{Kiểm thử chuyển đổi trạng thái (State Transition Testing)}
 
 \subsubsection{Chức năng B7 -- Kết bạn \& Mạng lưới kết nối}
-\begin{tcolorbox}[colback=yellow!10, colframe=orange!70!black, title=\textbf{Ghi chú các thành phần còn thiếu so với tài liệu gốc KTPM}, fonttitle=\bfseries]
-So với file \texttt{ChuyenDoiTrangThai\_NhanQua.pdf} (trang 68--74), mục này hiện đang lược bớt: (1) \textit{7.1 Mô tả nghiệp vụ \& Bảng TRD (\texttt{T96--T105})}; (2) \textit{7.2 Phân tích nghiệp vụ \& Bảng định nghĩa 4 trạng thái (\texttt{S0--S3})}; (3) \textit{7.3 Liệt kê chi tiết 6 luồng nghiệp vụ (Luồng 1--6 từng bước)}; (4) Sơ đồ chuyển đổi trạng thái gốc có đầy đủ nhãn \texttt{E0--E6} và điều kiện canh (guard conditions); (5) \textit{7.5 Mô tả chi tiết các trạng thái (Sự kiện dẫn đến \& Hành động kèm theo của từng trạng thái \texttt{S0--S3})}.
-\end{tcolorbox}
 
+\noindent\textbf{a. Mô tả nghiệp vụ \& Yêu cầu kỹ thuật (TRD)}
 \begin{itemize}[leftmargin=1.2cm, noitemsep]
-    \item[\textbf{--}] \textbf{Các trạng thái:} \texttt{S0} (Chưa có quan hệ bạn bè), \texttt{S1} (Chờ xác nhận lời mời), \texttt{S2} (Đã trở thành bạn bè -- \texttt{Accepted}), \texttt{S3} (Lời mời bị từ chối -- \texttt{Declined}).
-    \item[\textbf{--}] \textbf{Các sự kiện:} \texttt{E1} (Gửi lời mời kết bạn), \texttt{E2} (Người nhận Chấp nhận), \texttt{E3} (Người nhận Từ chối), \texttt{E4} (Người gửi Thu hồi lời mời), \texttt{E5} (Hủy kết bạn).
+    \item[\textbf{--}] \textbf{Mã BRD:} B7
+    \item[\textbf{--}] \textbf{Tên chức năng:} Kết bạn \& Mạng lưới kết nối -- Gửi lời mời, chấp nhận, từ chối, thu hồi lời mời và hủy kết bạn.
+    \item[\textbf{--}] \textbf{Tóm tắt Requirement từ tài liệu hệ thống:}
+    \begin{itemize}[leftmargin=0.8cm, label=$\ast$, noitemsep]
+        \item \textbf{Gửi lời mời kết bạn:}
+        \begin{itemize}[leftmargin=0.6cm, label=$\circ$, noitemsep]
+            \item Người dùng phải đăng nhập thành công mới được sử dụng các chức năng kết bạn.
+            \item Hệ thống cho phép tìm kiếm người dùng khác và hiển thị trạng thái quan hệ hiện tại.
+            \item Người dùng không được gửi lời mời kết bạn cho chính mình.
+            \item Không cho phép gửi lời mời trùng lặp khi đã có lời mời đang chờ xử lý (\texttt{Pending}) hoặc đã là bạn bè.
+            \item Khi gửi lời mời hợp lệ, hệ thống lưu lời mời ở trạng thái \texttt{Pending} và phát thông báo qua SignalR đến người nhận.
+        \end{itemize}
+        \item \textbf{Chấp nhận và từ chối lời mời:}
+        \begin{itemize}[leftmargin=0.6cm, label=$\circ$, noitemsep]
+            \item Người nhận có thể chấp nhận hoặc từ chối lời mời đang chờ xử lý.
+            \item Khi chấp nhận, quan hệ giữa hai người chuyển sang \texttt{Accepted} và danh sách bạn bè được cập nhật.
+            \item Khi từ chối, lời mời không còn ở trạng thái chờ xử lý; hai tài khoản không trở thành bạn bè.
+            \item Người gửi có thể thu hồi lời mời trước khi người nhận phản hồi, theo yêu cầu đặc tả.
+        \end{itemize}
+        \item \textbf{Hủy kết bạn:}
+        \begin{itemize}[leftmargin=0.6cm, label=$\circ$, noitemsep]
+            \item Người dùng có thể hủy quan hệ với tài khoản đang là bạn bè.
+            \item Khi hủy thành công, quan hệ bạn bè không còn hiệu lực.
+            \item Danh sách bạn bè của hai tài khoản được cập nhật theo trạng thái quan hệ mới.
+        \end{itemize}
+    \end{itemize}
 \end{itemize}
 
-\begin{center}
-\begin{tikzpicture}[node distance=2.6cm and 3.8cm, >=Stealth, thick]
-    \node[draw, rounded corners=8pt, fill=boxbg, align=center, minimum width=2.8cm, minimum height=1.1cm] (S0) {\textbf{S0}\\Chưa là bạn bè};
-    \node[draw, rounded corners=8pt, fill=boxbg, align=center, minimum width=2.8cm, minimum height=1.1cm, right=of S0] (S1) {\textbf{S1}\\Chờ xác nhận};
-    \node[draw, rounded corners=8pt, fill=validgreen, align=center, minimum width=2.8cm, minimum height=1.1cm, below=of S0] (S2) {\textbf{S2}\\Đã là bạn bè};
-    \node[draw, rounded corners=8pt, fill=invalidred, align=center, minimum width=2.8cm, minimum height=1.1cm, below=of S1] (S3) {\textbf{S3}\\Bị từ chối};
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|C{1.5cm}|X|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{T\#} & \textbf{Mô tả} \tabularnewline
+\hline
+\textbf{T96} & Hệ thống hỗ trợ tìm kiếm người dùng và hiển thị trạng thái quan hệ tương ứng. \\ \hline
+\textbf{T97} & Người dùng không được tự gửi lời mời kết bạn cho chính tài khoản của mình. \\ \hline
+\textbf{T98} & Không cho phép gửi lời mời trùng lặp nếu đã có lời mời \texttt{Pending} hoặc đã là bạn bè. \\ \hline
+\textbf{T99} & Lời mời kết bạn được lưu ở trạng thái \texttt{Pending} và gửi thông báo real-time qua SignalR. \\ \hline
+\textbf{T100} & Người nhận có quyền chấp nhận lời mời kết bạn, cập nhật quan hệ thành Bạn bè và đồng bộ tức thời. \\ \hline
+\textbf{T101} & Người nhận có quyền từ chối lời mời kết bạn, cập nhật trạng thái \texttt{Rejected} hoặc xóa bản ghi lời mời. \\ \hline
+\textbf{T102} & Người gửi có quyền thu hồi lời mời đã gửi khi người nhận chưa phản hồi. \\ \hline
+\textbf{T103} & Người dùng có quyền hủy kết bạn với người đang là bạn bè, gỡ bỏ quan hệ. \\ \hline
+\textbf{T104} & Hỗ trợ xem thông tin của bạn bè từ danh sách bạn bè. \\ \hline
+\textbf{T105} & Hiển thị các danh sách lời mời đã nhận và lời mời đã gửi. \\ \hline
+\end{tabularx}
+\caption{Bảng TRD liên quan chức năng Kết bạn \& Mạng lưới kết nối (\texttt{T96--T105})}
+\end{table}
 
-    \draw[->] (S0) to[bend left=18] node[above, font=\footnotesize] {E1: Gửi lời mời} (S1);
-    \draw[->] (S1) to[bend left=18] node[below, font=\footnotesize] {E4: Thu hồi lời mời} (S0);
-    \draw[->] (S1) -- node[above left, font=\footnotesize] {E2: Chấp nhận} (S2);
-    \draw[->] (S1) -- node[right, font=\footnotesize] {E3: Từ chối} (S3);
-    \draw[->] (S2) -- node[left, font=\footnotesize] {E5: Hủy kết bạn} (S0);
-\end{tikzpicture}
-\end{center}
+\noindent\textbf{b. Phân tích nghiệp vụ \& Định nghĩa các trạng thái (\texttt{S0--S3})}
 
+Chức năng Kết bạn \& Mạng lưới kết nối cho phép người dùng thiết lập và quản lý quan hệ bạn bè với những người dùng khác trên InteractHub. Quá trình kết bạn bắt đầu khi hai người chưa có quan hệ bạn bè. Người dùng có thể gửi lời mời đến người khác. Khi lời mời đang chờ xử lý, người nhận có quyền chấp nhận hoặc từ chối, còn người gửi có thể thu hồi lời mời theo yêu cầu hệ thống. Khi hai người đã trở thành bạn bè, một trong hai có thể thực hiện hủy kết bạn để đưa quan hệ trở lại trạng thái chưa là bạn bè. Dựa trên quy trình kết bạn đã xây dựng, xác định 4 trạng thái:
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|C{2.4cm}|L{4.8cm}|X|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{Mã trạng thái} & \textbf{Tên trạng thái} & \textbf{Mô tả} \tabularnewline
+\hline
+\textbf{S0} & Chưa có quan hệ bạn bè & Hai tài khoản chưa là bạn bè và không có lời mời \texttt{Pending} giữa họ. \\ \hline
+\textbf{S1} & Chờ xác nhận lời mời kết bạn & Một người đã gửi lời mời và hệ thống đang chờ người nhận phản hồi. \\ \hline
+\textbf{S2} & Đã trở thành bạn bè & Người nhận chấp nhận lời mời, quan hệ giữa hai tài khoản là \texttt{Accepted}. \\ \hline
+\textbf{S3} & Lời mời kết bạn bị từ chối & Người nhận từ chối lời mời; hai tài khoản không trở thành bạn bè. \\ \hline
+\end{tabularx}
+\caption{Bảng định nghĩa 4 trạng thái của chức năng Kết bạn (B7)}
+\end{table}
+
+\noindent\textbf{c. Liệt kê các luồng nghiệp vụ}
+\begin{itemize}[leftmargin=1.2cm, noitemsep]
+    \item[\textbf{--}] \textbf{Luồng 1 -- Gửi lời mời kết bạn thành công} (\textit{Sequence of States:} $\text{Start} \rightarrow \text{S0} \rightarrow \text{S1}$):
+    \begin{enumerate}[leftmargin=0.7cm, noitemsep]
+        \item User1 và User2 đã có tài khoản hợp lệ và chưa có quan hệ bạn bè.
+        \item User1 truy cập trang cá nhân của User2.
+        \item Hệ thống hiển thị nút Kết bạn.
+        \item User1 nhấn nút Kết bạn.
+        \item Hệ thống kiểm tra hai tài khoản khác nhau và chưa có lời mời \texttt{Pending} hoặc quan hệ \texttt{Accepted}.
+        \item Hệ thống tạo lời mời kết bạn với trạng thái \texttt{Pending}.
+        \item Hệ thống cập nhật trạng thái nút trên giao diện User1.
+        \item Hệ thống phát sự kiện SignalR \texttt{FriendRequestReceived} để thông báo đến User2.
+        \item Quan hệ chuyển sang trạng thái \texttt{S1}.
+    \end{enumerate}
+
+    \item[\textbf{--}] \textbf{Luồng 2 -- Chấp nhận lời mời kết bạn} (\textit{Sequence of States:} $\text{Start} \rightarrow \text{S0} \rightarrow \text{S1} \rightarrow \text{S2}$):
+    \begin{enumerate}[leftmargin=0.7cm, noitemsep]
+        \item User1 đã gửi lời mời kết bạn đến User2.
+        \item Lời mời đang ở trạng thái \texttt{Pending}.
+        \item User2 truy cập danh sách lời mời đã nhận.
+        \item Hệ thống hiển thị lời mời từ User1.
+        \item User2 nhấn Chấp nhận/Xác nhận.
+        \item Hệ thống kiểm tra User2 là người nhận và lời mời chưa được xử lý.
+        \item Hệ thống cập nhật trạng thái quan hệ thành \texttt{Accepted}.
+        \item Hệ thống cập nhật danh sách bạn bè của hai tài khoản.
+        \item Phát sự kiện \texttt{FriendRequestAccepted} để đồng bộ thông tin theo thời gian thực.
+        \item Hai tài khoản chuyển sang trạng thái \texttt{S2}.
+    \end{enumerate}
+
+    \item[\textbf{--}] \textbf{Luồng 3 -- Từ chối lời mời kết bạn} (\textit{Sequence of States:} $\text{Start} \rightarrow \text{S0} \rightarrow \text{S1} \rightarrow \text{S3}$):
+    \begin{enumerate}[leftmargin=0.7cm, noitemsep]
+        \item User1 gửi lời mời kết bạn đến User2.
+        \item Hệ thống tạo lời mời ở trạng thái \texttt{Pending}.
+        \item User2 truy cập danh sách lời mời đã nhận.
+        \item User2 nhấn Từ chối/Xóa lời mời.
+        \item Hệ thống kiểm tra quyền của User2 và trạng thái hiện tại của lời mời.
+        \item Hệ thống xử lý từ chối bằng cách cập nhật trạng thái \texttt{Declined} hoặc xóa bản ghi lời mời, theo cách triển khai.
+        \item Lời mời không còn nằm trong danh sách chờ xử lý.
+        \item Hai tài khoản không trở thành bạn bè.
+        \item Quy trình chuyển sang trạng thái \texttt{S3}.
+    \end{enumerate}
+
+    \item[\textbf{--}] \textbf{Luồng 4 -- Thu hồi lời mời kết bạn đã gửi} (\textit{Sequence of States:} $\text{Start} \rightarrow \text{S0} \rightarrow \text{S1} \rightarrow \text{S0}$):
+    \begin{enumerate}[leftmargin=0.7cm, noitemsep]
+        \item User1 gửi lời mời kết bạn đến User2.
+        \item Lời mời được lưu ở trạng thái \texttt{Pending}.
+        \item Khi User2 chưa phản hồi, User1 chọn chức năng thu hồi lời mời.
+        \item Hệ thống kiểm tra User1 là người gửi và lời mời vẫn chưa được xử lý.
+        \item Hệ thống xóa hoặc hủy hiệu lực của lời mời.
+        \item Lời mời không còn xuất hiện trong danh sách chờ của User2.
+        \item Giao diện User1 trở lại trạng thái có thể gửi lời mời kết bạn.
+        \item Quan hệ chuyển về \texttt{S0}.
+    \end{enumerate}
+
+    \item[\textbf{--}] \textbf{Luồng 5 -- Hủy kết bạn thành công} (\textit{Sequence of States:} $\text{Start} \rightarrow \text{S0} \rightarrow \text{S1} \rightarrow \text{S2} \rightarrow \text{S0}$):
+    \begin{enumerate}[leftmargin=0.7cm, noitemsep]
+        \item User1 và User2 đã thiết lập quan hệ bạn bè \texttt{Accepted}.
+        \item User1 truy cập trang cá nhân hoặc danh sách bạn bè của User2.
+        \item User1 chọn chức năng Hủy kết bạn.
+        \item Hệ thống xử lý thao tác xác nhận nếu giao diện yêu cầu.
+        \item Hệ thống kiểm tra quan hệ bạn bè đang tồn tại.
+        \item Hệ thống hủy quan hệ giữa User1 và User2.
+        \item Danh sách bạn bè của hai người được cập nhật.
+        \item Giao diện chuyển về trạng thái chưa kết bạn.
+        \item Quan hệ quay lại \texttt{S0}.
+    \end{enumerate}
+
+    \item[\textbf{--}] \textbf{Luồng 6 -- Từ chối gửi lời mời trùng lặp} (\textit{Sequence of States:} $\text{Start} \rightarrow \text{S0} \rightarrow \text{S1}$ (duy trì \texttt{S1})):
+    \begin{enumerate}[leftmargin=0.7cm, noitemsep]
+        \item User1 đã gửi lời mời kết bạn cho User2.
+        \item Lời mời đang ở trạng thái \texttt{Pending}.
+        \item User1 truy cập lại trang cá nhân của User2.
+        \item Hệ thống hiển thị trạng thái Đã gửi lời mời.
+        \item Hệ thống không cho phép tạo thêm lời mời trùng lặp.
+        \item Trạng thái quan hệ vẫn là \texttt{S1}.
+    \end{enumerate}
+\end{itemize}
+
+\noindent\textbf{d. Sơ đồ chuyển đổi trạng thái}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.92\textwidth,height=0.80\textheight,keepaspectratio]{FriendRequest.pdf}
+\caption{Sơ đồ chuyển đổi trạng thái chức năng Kết bạn \& Mạng lưới kết nối (B7)}
+\end{figure}
+
+\noindent\textbf{e. Mô tả chi tiết các trạng thái}
+\begin{itemize}[leftmargin=1.2cm, noitemsep]
+    \item[\textbf{--}] \textbf{Chưa có quan hệ bạn bè (S0):}
+    \begin{itemize}[leftmargin=0.8cm, label=--, noitemsep]
+        \item \textit{Sự kiện dẫn đến:}
+        \begin{itemize}[leftmargin=0.6cm, label=$\ast$, noitemsep]
+            \item User1 truy cập trang cá nhân của User2 khi hai tài khoản chưa có quan hệ bạn bè.
+            \item Người gửi thu hồi thành công lời mời đang chờ xử lý (\texttt{S1}).
+            \item Một trong hai người thực hiện hủy kết bạn thành công (\texttt{S2}).
+        \end{itemize}
+        \item \textit{Hành động kèm theo:}
+        \begin{itemize}[leftmargin=0.6cm, label=$\ast$, noitemsep]
+            \item Hệ thống hiển thị trạng thái quan hệ chưa kết bạn.
+            \item Hiển thị nút Kết bạn đối với người dùng khác.
+            \item Không tồn tại quan hệ \texttt{Accepted} hoặc lời mời \texttt{Pending} giữa hai tài khoản.
+            \item Cho phép gửi lời mời kết bạn hợp lệ.
+        \end{itemize}
+    \end{itemize}
+
+    \item[\textbf{--}] \textbf{Chờ xác nhận lời mời kết bạn (S1):}
+    \begin{itemize}[leftmargin=0.8cm, label=--, noitemsep]
+        \item \textit{Sự kiện dẫn đến:}
+        \begin{itemize}[leftmargin=0.6cm, label=$\ast$, noitemsep]
+            \item User1 gửi lời mời kết bạn hợp lệ đến User2.
+            \item Hệ thống tạo yêu cầu kết bạn ở trạng thái \texttt{Pending}.
+        \end{itemize}
+        \item \textit{Hành động kèm theo:}
+        \begin{itemize}[leftmargin=0.6cm, label=$\ast$, noitemsep]
+            \item Hệ thống lưu thông tin người gửi, người nhận và trạng thái \texttt{Pending}.
+            \item Phát sự kiện \texttt{FriendRequestReceived}.
+            \item User1 nhìn thấy trạng thái Đã gửi lời mời.
+            \item User2 nhìn thấy lời mời với các thao tác Chấp nhận và Từ chối.
+            \item Không cho phép tạo lời mời trùng lặp.
+            \item Chờ người nhận chấp nhận hoặc từ chối, hoặc người gửi thu hồi lời mời theo yêu cầu hệ thống.
+        \end{itemize}
+    \end{itemize}
+
+    \item[\textbf{--}] \textbf{Đã trở thành bạn bè (S2):}
+    \begin{itemize}[leftmargin=0.8cm, label=--, noitemsep]
+        \item \textit{Sự kiện dẫn đến:}
+        \begin{itemize}[leftmargin=0.6cm, label=$\ast$, noitemsep]
+            \item User2 nhấn Chấp nhận với lời mời hợp lệ ở trạng thái \texttt{Pending}.
+            \item Hệ thống xử lý chấp nhận thành công.
+        \end{itemize}
+        \item \textit{Hành động kèm theo:}
+        \begin{itemize}[leftmargin=0.6cm, label=$\ast$, noitemsep]
+            \item Cập nhật trạng thái quan hệ thành \texttt{Accepted}.
+            \item Thêm hai tài khoản vào danh sách bạn bè tương ứng.
+            \item Phát sự kiện \texttt{FriendRequestAccepted}.
+            \item Cập nhật trạng thái quan hệ trên giao diện.
+            \item Cho phép thực hiện chức năng Hủy kết bạn.
+            \item Không cho phép gửi lời mời mới khi quan hệ \texttt{Accepted} vẫn còn hiệu lực.
+        \end{itemize}
+    \end{itemize}
+
+    \item[\textbf{--}] \textbf{Lời mời kết bạn bị từ chối (S3):}
+    \begin{itemize}[leftmargin=0.8cm, label=--, noitemsep]
+        \item \textit{Sự kiện dẫn đến:}
+        \begin{itemize}[leftmargin=0.6cm, label=$\ast$, noitemsep]
+            \item Người nhận nhấn Từ chối/Xóa đối với lời mời đang ở trạng thái \texttt{Pending}.
+            \item Hệ thống xử lý từ chối thành công.
+        \end{itemize}
+        \item \textit{Hành động kèm theo:}
+        \begin{itemize}[leftmargin=0.6cm, label=$\ast$, noitemsep]
+            \item Cập nhật trạng thái lời mời thành \texttt{Declined} hoặc xóa bản ghi, tùy cách triển khai.
+            \item Xóa lời mời khỏi danh sách chờ xử lý.
+            \item Không tạo quan hệ bạn bè giữa hai tài khoản.
+            \item Không thêm hai tài khoản vào danh sách bạn bè.
+            \item Hiển thị trạng thái quan hệ phù hợp sau khi lời mời bị từ chối.
+            \item Cho phép kết thúc quy trình hoặc quay lại trang cá nhân.
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\noindent\textbf{f. Bảng kiểm thử chuyển đổi trạng thái \& Bảng Test Cases chi tiết}
 \begin{table}[H]
 \centering
 \small
@@ -2169,7 +2378,7 @@ So với file \texttt{ChuyenDoiTrangThai\_NhanQua.pdf} (trang 68--74), mục nà
 \hline
 \textbf{Start state} & S0 & S1 & S1 & S1 & S2 \\ \hline
 \textbf{Input} & E1 & E2 & E3 & E4 & E5 \\ \hline
-\textbf{Output} & Tạo lời mời \texttt{Pending}, phát \texttt{FriendRequestReceived} & Cập nhật \texttt{Accepted}, phát \texttt{FriendRequestAccepted}, cập nhật DS bạn bè & Xử lý từ chối, không tạo quan hệ bạn bè & Hủy lời mời \texttt{Pending}, cập nhật trạng thái & Gỡ quan hệ \texttt{Accepted}, cập nhật DS bạn bè \\ \hline
+\textbf{Output} & Tạo lời mời \texttt{Pending}, phát \texttt{FriendRequest\allowbreak Received} & Cập nhật \texttt{Accepted}, phát \texttt{FriendRequest\allowbreak Accepted}, cập nhật DS bạn bè & Xử lý từ chối, không tạo quan hệ bạn bè & Hủy lời mời \texttt{Pending}, cập nhật trạng thái & Gỡ quan hệ \texttt{Accepted}, cập nhật DS bạn bè \\ \hline
 \textbf{Finish state} & \textbf{S1} & \textbf{S2} & \textbf{S3} & \textbf{S0} & \textbf{S0} \\ \hline
 \end{tabularx}
 \caption{Bảng kiểm thử chuyển đổi trạng thái chức năng Kết bạn (B7)}
@@ -2194,8 +2403,7 @@ So với file \texttt{ChuyenDoiTrangThai\_NhanQua.pdf} (trang 68--74), mục nà
 \endfoot
 \textbf{117} & B7 & T96 & Tìm kiếm người dùng và kiểm tra trạng thái quan hệ & 1. Nhấp ô tìm kiếm trên Header\newline 2. Nhập tên ``John Doe'', nhấn Enter & Từ khóa: ``John Doe'' & Hiển thị tài khoản kèm avatar và trạng thái quan hệ chính xác. & Hiển thị đúng tài khoản và trạng thái quan hệ. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{118} & B7 & T97 & Không hiển thị nút kết bạn trên trang cá nhân chính mình & 1. Đăng nhập User1\newline 2. Vào trang cá nhân của chính mình & Tài khoản: User1 & Không hiển thị nút ``Kết bạn'', chỉ hiện ``Chỉnh sửa trang cá nhân''. & Không hiển thị nút Kết bạn. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{119} & B7 & T98 & Chặn gửi lời mời trùng lặp khi đang chờ duyệt/đã là bạn & 1. User1 đã gửi lời mời cho User2\newline 2. Vào lại trang User2 thử bấm nút & User1 $
-ightarrow$ User2 (Pending) & Nút hiển thị ``Đã gửi lời mời'', không cho bấm gửi trùng. & Hiển thị ``Đã gửi lời mời'', chặn gửi thêm. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{119} & B7 & T98 & Chặn gửi lời mời trùng lặp khi đang chờ duyệt/đã là bạn & 1. User1 đã gửi lời mời cho User2\newline 2. Vào lại trang User2 thử bấm nút & User1 $\rightarrow$ User2 (Pending) & Nút hiển thị ``Đã gửi lời mời'', không cho bấm gửi trùng. & Hiển thị ``Đã gửi lời mời'', chặn gửi thêm. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{120} & B7 & T99 & Gửi lời mời kết bạn và nhận thông báo qua SignalR & 1. Mở 2 trình duyệt User1, User2\newline 2. User1 bấm ``Thêm bạn bè'' với User2 & Người gửi: User1\newline Người nhận: User2 & Lưu trạng thái chờ duyệt; User2 lập tức nhận thông báo realtime. & Lưu chờ duyệt và đẩy thông báo tức thì. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{121} & B7 & T100 & Người nhận chấp nhận lời mời kết bạn & 1. User2 mở danh sách lời mời\newline 2. Nhấp ``Xác nhận'' lời mời của User1 & Người gửi: User1\newline Người nhận: User2 & Lời mời biến mất khỏi DS chờ, cả hai xuất hiện trong DS bạn bè. & Cả hai trở thành bạn bè chính thức. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{122} & B7 & T101 & Người nhận từ chối lời mời kết bạn & 1. User2 mở tab ``Lời mời đã nhận''\newline 2. Nhấp ``Xóa'' (Từ chối) lời mời của User1 & Người gửi: User1\newline Người nhận: User2 & Lời mời bị xóa khỏi DS chờ, hai tài khoản không thành bạn bè. & Xóa khỏi DS chờ, không thành bạn bè. & \textcolor{blue}{\textbf{Pass}} \\ \hline
@@ -2210,35 +2418,244 @@ ightarrow$ User2 (Pending) & Nút hiển thị ``Đã gửi lời mời'', khôn
 
 
 \subsubsection{Chức năng B13 -- Báo cáo vi phạm \& Kháng cáo bài viết}
-\begin{tcolorbox}[colback=yellow!10, colframe=orange!70!black, title=\textbf{Ghi chú các thành phần còn thiếu so với tài liệu gốc KTPM}, fonttitle=\bfseries]
-So với file \texttt{ChuyenDoiTrangThai\_NhanQua.pdf} (trang 119--124), mục này hiện đang lược bớt: (1) \textit{13.1 Mô tả nghiệp vụ \& Bảng TRD (\texttt{T147--T158})}; (2) \textit{13.2 Phân tích nghiệp vụ \& Bảng định nghĩa 7 trạng thái (\texttt{S0--S6})}; (3) \textit{13.3 Liệt kê chi tiết 7 luồng nghiệp vụ (Luồng 1--7 từng bước)}; (4) Sơ đồ chuyển đổi trạng thái gốc có đầy đủ mô tả hành động trên từng cung \texttt{E1--E7}; (5) \textit{13.5 Mô tả chi tiết các trạng thái (\texttt{S0--S6})}.
-\end{tcolorbox}
 
+\noindent\textbf{a. Mô tả nghiệp vụ \& Yêu cầu kỹ thuật (TRD)}
 \begin{itemize}[leftmargin=1.2cm, noitemsep]
-    \item[\textbf{--}] \textbf{7 trạng thái:} \texttt{S0} (Bài viết công khai), \texttt{S1} (\texttt{Pending}), \texttt{S2} (\texttt{Dismissed}), \texttt{S3} (\texttt{Resolved} -- gỡ bài), \texttt{S4} (\texttt{Appealing} -- đang kháng cáo), \texttt{S5} (\texttt{Appeal Accepted}), \texttt{S6} (\texttt{Appeal Rejected}).
-    \item[\textbf{--}] \textbf{7 sự kiện:} \texttt{E1} (Gửi báo cáo), \texttt{E2} (Báo cáo trùng lặp), \texttt{E3} (Admin bác bỏ), \texttt{E4} (Admin gỡ bài), \texttt{E5} (Tác giả kháng cáo), \texttt{E6} (Admin chấp thuận kháng cáo), \texttt{E7} (Admin từ chối kháng cáo).
+    \item[\textbf{--}] \textbf{Mã BRD:} B13
+    \item[\textbf{--}] \textbf{Tên chức năng:} Báo cáo vi phạm \& Kháng cáo bài viết (Content Moderation \& Appeals) -- Quy trình kiểm duyệt nội dung cộng đồng và xử lý khiếu nại giữa Người dùng (User) và Quản trị viên (Admin).
+    \item[\textbf{--}] \textbf{Tóm tắt Requirement từ tài liệu hệ thống:}
+    \begin{itemize}[leftmargin=0.8cm, label=$\ast$, noitemsep]
+        \item Người dùng đăng nhập có quyền gửi báo cáo bài viết vi phạm tiêu chuẩn cộng đồng với các lý do cụ thể (Spam, Harassment, Inappropriate, Violence, Copyright, Other) kèm mô tả chi tiết (tối đa 500 ký tự).
+        \item Người dùng không được phép tự báo cáo bài viết của chính mình; chặn gửi báo cáo trùng lặp cho cùng một bài viết đang chờ xử lý.
+        \item Báo cáo mới tạo được gán trạng thái Đang chờ xử lý (\texttt{Pending}) và xuất hiện ngay trong danh sách kiểm duyệt của Admin.
+        \item Admin xem danh sách toàn bộ báo cáo (\texttt{/admin/reports}) với bộ lọc trạng thái: Đang chờ, Đã gỡ bài, Đã bác bỏ, Đang kháng cáo.
+        \item Admin thực hiện hành động ``Gỡ bỏ bài viết'' (Resolve): Bài viết bị ẩn khỏi Bảng tin (\texttt{IsDeleted = true}) và gửi thông báo kiểm duyệt tới tác giả.
+        \item Admin thực hiện hành động ``Bác bỏ báo cáo'' (Dismiss): Bài viết được giữ nguyên trên Bảng tin, trạng thái báo cáo chuyển thành Đã bác bỏ.
+        \item Tác giả có bài viết bị gỡ nhận thông báo kèm nút ``Kháng cáo''; gửi kháng cáo bắt buộc nhập lý do từ 10 đến 1.000 ký tự (chuyển sang trạng thái \texttt{Appealing}). Tác giả chỉ được kháng cáo 1 lần.
+        \item Admin thẩm định kháng cáo: có quyền ``Chấp thuận kháng cáo'' (khôi phục bài viết \texttt{IsDeleted = false}) hoặc ``Từ chối kháng cáo'' (giữ nguyên quyết định gỡ bài).
+    \end{itemize}
 \end{itemize}
 
-\begin{center}
-\begin{tikzpicture}[scale=0.75, transform shape, node distance=1.2cm and 1.8cm, >=Stealth, thick]
-    \node[draw, rounded corners=6pt, fill=boxbg, align=center, font=\footnotesize, minimum width=2.0cm] (S0) {\textbf{S0}\\Công khai};
-    \node[draw, rounded corners=6pt, fill=boxbg, align=center, font=\footnotesize, minimum width=2.0cm, right=of S0] (S1) {\textbf{S1}\\Pending};
-    \node[draw, rounded corners=6pt, fill=validgreen, align=center, font=\footnotesize, minimum width=2.0cm, above right=0.6cm and 1.8cm of S1] (S2) {\textbf{S2}\\Dismissed};
-    \node[draw, rounded corners=6pt, fill=invalidred, align=center, font=\footnotesize, minimum width=2.0cm, below right=0.6cm and 1.8cm of S1] (S3) {\textbf{S3}\\Resolved};
-    \node[draw, rounded corners=6pt, fill=boxbg, align=center, font=\footnotesize, minimum width=2.0cm, right=1.8cm of S3] (S4) {\textbf{S4}\\Appealing};
-    \node[draw, rounded corners=6pt, fill=validgreen, align=center, font=\footnotesize, minimum width=2.0cm, above right=0.55cm and 1.7cm of S4] (S5) {\textbf{S5}\\Appeal Accepted};
-    \node[draw, rounded corners=6pt, fill=invalidred, align=center, font=\footnotesize, minimum width=2.0cm, below right=0.55cm and 1.7cm of S4] (S6) {\textbf{S6}\\Appeal Rejected};
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|C{1.5cm}|X|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{T\#} & \textbf{Mô tả} \tabularnewline
+\hline
+\textbf{T147} & Báo cáo bài viết bắt buộc chọn lý do vi phạm chuẩn; chi tiết báo cáo bắt buộc từ 10 đến 500 ký tự. \\ \hline
+\textbf{T148} & Mỗi người chỉ được báo cáo một bài viết tối đa một lần; chặn gửi báo cáo trùng lặp. \\ \hline
+\textbf{T149} & Báo cáo mới tạo được gán trạng thái \texttt{Pending} và xuất hiện ngay trong danh sách kiểm duyệt của Admin. \\ \hline
+\textbf{T150} & Quản trị viên có trang riêng xem danh sách bài viết bị báo cáo có hỗ trợ lọc theo trạng thái: \texttt{Pending}, \texttt{Resolved}, \texttt{Dismissed}, \texttt{Appealing}. \\ \hline
+\textbf{T151} & Giao diện kiểm duyệt Admin hiển thị đầy đủ: nội dung văn bản, hình ảnh đính kèm, tác giả, người báo cáo, thời gian và lý do. \\ \hline
+\textbf{T152} & Admin gỡ bài vi phạm: cập nhật \texttt{IsDeleted = true}, ẩn khỏi Bảng tin, gửi thông báo kiểm duyệt tới tác giả. \\ \hline
+\textbf{T153} & Admin bác bỏ báo cáo: giữ nguyên bài viết công khai, chuyển trạng thái báo cáo thành \texttt{Dismissed}. \\ \hline
+\textbf{T154} & Tác giả bài viết khi bị gỡ bài do vi phạm sẽ nhìn thấy thông báo lý do gỡ bài và nút chức năng ``Kháng cáo''. \\ \hline
+\textbf{T155} & Người dùng gửi đơn Kháng cáo phải nhập lý do từ 10 đến 1.000 ký tự; trạng thái của báo cáo được cập nhật thành \texttt{Appealing}. \\ \hline
+\textbf{T156} & Báo cáo đang ở trạng thái Kháng cáo hiển thị nổi bật trong giao diện Admin kèm huy hiệu và trọn vẹn văn bản giải trình. \\ \hline
+\textbf{T157} & Admin chấp thuận kháng cáo: tự động khôi phục bài viết về trạng thái công khai (\texttt{IsDeleted = false}), thông báo chúc mừng tới tác giả. \\ \hline
+\textbf{T158} & Admin từ chối kháng cáo: giữ nguyên trạng thái gỡ bỏ bài viết, cập nhật Kháng cáo bị từ chối; tác giả chỉ được gửi kháng cáo 1 lần duy nhất. \\ \hline
+\end{tabularx}
+\caption{Bảng TRD liên quan chức năng Báo cáo vi phạm \& Kháng cáo (\texttt{T147--T158})}
+\end{table}
 
-    \draw[->] (S0) -- node[above, font=\scriptsize] {E1} (S1);
-    \draw[->] (S1) edge[loop above] node[above, font=\scriptsize] {E2 (Trùng)} (S1);
-    \draw[->] (S1) -- node[above left, font=\scriptsize] {E3} (S2);
-    \draw[->] (S1) -- node[below left, font=\scriptsize] {E4} (S3);
-    \draw[->] (S3) -- node[above, font=\scriptsize] {E5} (S4);
-    \draw[->] (S4) -- node[above left, font=\scriptsize] {E6} (S5);
-    \draw[->] (S4) -- node[below left, font=\scriptsize] {E7} (S6);
-\end{tikzpicture}
-\end{center}
+\noindent\textbf{b. Phân tích nghiệp vụ \& Định nghĩa các trạng thái (\texttt{S0--S6})}
 
+Module B13 là một chu trình chuyển đổi trạng thái đa vai trò (Người dùng thường, Tác giả bài viết và Quản trị viên). Vòng đời của bài viết và báo cáo trải qua các bước kiểm duyệt nghiêm ngặt: từ bài viết bình thường $\rightarrow$ bị báo cáo $\rightarrow$ Admin thẩm định $\rightarrow$ nếu vi phạm thì gỡ bỏ $\rightarrow$ tác giả có quyền khiếu nại (kháng cáo) $\rightarrow$ Admin ra phán quyết cuối cùng. Dựa trên quy trình kiểm duyệt, xác định 7 trạng thái:
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|C{2.4cm}|L{4.8cm}|X|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{Mã trạng thái} & \textbf{Tên trạng thái} & \textbf{Mô tả} \tabularnewline
+\hline
+\textbf{S0} & Bài viết công khai bình thường & Bài viết hiển thị công khai trên Bảng tin, chưa có báo cáo vi phạm nào đang chờ xử lý. \\ \hline
+\textbf{S1} & Đang chờ xử lý báo cáo (\texttt{Pending}) & Người dùng đã gửi báo cáo vi phạm hợp lệ; bài viết xuất hiện trong danh sách duyệt của Admin. \\ \hline
+\textbf{S2} & Báo cáo bị bác bỏ (\texttt{Dismissed}) & Admin thẩm định thấy bài viết không vi phạm; báo cáo đóng lại, bài viết giữ nguyên công khai. \\ \hline
+\textbf{S3} & Bài viết bị gỡ bỏ vi phạm (\texttt{Resolved}) & Admin xác nhận vi phạm và gỡ bài (\texttt{IsDeleted = true}); gửi thông báo kèm nút Kháng cáo cho tác giả. \\ \hline
+\textbf{S4} & Đang kháng cáo (\texttt{Appealing}) & Tác giả đã gửi giải trình kháng cáo hợp lệ (10--1.000 ký tự); báo cáo hiển thị nổi bật chờ Admin thẩm định lại. \\ \hline
+\textbf{S5} & Kháng cáo được chấp thuận (\texttt{Appeal Accepted}) & Admin đồng ý kháng cáo; bài viết được khôi phục công khai trên Bảng tin (\texttt{IsDeleted = false}). \\ \hline
+\textbf{S6} & Kháng cáo bị từ chối (\texttt{Appeal Rejected}) & Admin bác bỏ kháng cáo; bài viết bị gỡ vĩnh viễn; khóa quyền kháng cáo tiếp theo của tác giả. \\ \hline
+\end{tabularx}
+\caption{Bảng định nghĩa 7 trạng thái của chức năng Báo cáo vi phạm \& Kháng cáo (B13)}
+\end{table}
+
+\noindent\textbf{c. Liệt kê các luồng nghiệp vụ}
+\begin{itemize}[leftmargin=1.2cm, noitemsep]
+    \item[\textbf{--}] \textbf{Luồng 1 -- Gửi báo cáo vi phạm bài viết thành công} (\textit{Sequence of States:} $\text{Start} \rightarrow \text{S0} \rightarrow \text{S1}$):
+    \begin{enumerate}[leftmargin=0.7cm, noitemsep]
+        \item User1 lướt Bảng tin thấy bài viết ID \#10 của User2 có nội dung vi phạm.
+        \item User1 nhấp menu ba chấm của bài viết, chọn ``Báo cáo bài viết''.
+        \item User1 chọn lý do ``Nội dung quấy rối'' và nhập mô tả chi tiết hợp lệ 50 ký tự.
+        \item User1 nhấn nút ``Gửi báo cáo'' (\texttt{E1}).
+        \item Hệ thống kiểm tra hợp lệ, ghi nhận báo cáo vào CSDL ở trạng thái \texttt{Pending} (\texttt{S1}).
+        \item Báo cáo lập tức hiển thị trong danh sách kiểm duyệt của Quản trị viên.
+    \end{enumerate}
+
+    \item[\textbf{--}] \textbf{Luồng 2 -- Admin bác bỏ báo cáo vi phạm không chính xác} (\textit{Sequence of States:} $\text{Start} \rightarrow \text{S1} \rightarrow \text{S2} \rightarrow \text{End}$):
+    \begin{enumerate}[leftmargin=0.7cm, noitemsep]
+        \item Quản trị viên đăng nhập vào \texttt{/admin/reports} và xem xét báo cáo của bài viết ID \#18 (\texttt{S1}).
+        \item Quản trị viên xem chi tiết và nhận định bài viết hoàn toàn hợp lệ, không vi phạm tiêu chuẩn cộng đồng.
+        \item Quản trị viên nhấn nút ``Bác bỏ báo cáo'' (màu xám) và xác nhận (\texttt{E3}).
+        \item Hệ thống cập nhật trạng thái báo cáo thành \texttt{Dismissed} (\texttt{S2}).
+        \item Bài viết ID \#18 vẫn tiếp tục hiển thị bình thường trên Bảng tin.
+    \end{enumerate}
+
+    \item[\textbf{--}] \textbf{Luồng 3 -- Admin duyệt báo cáo và gỡ bỏ bài viết vi phạm} (\textit{Sequence of States:} $\text{Start} \rightarrow \text{S1} \rightarrow \text{S3}$):
+    \begin{enumerate}[leftmargin=0.7cm, noitemsep]
+        \item Quản trị viên xem báo cáo bài viết ID \#15 đang ở trạng thái \texttt{Pending} (\texttt{S1}).
+        \item Quản trị viên kiểm tra nội dung và xác định bài viết vi phạm nghiêm trọng.
+        \item Quản trị viên nhấn nút ``Gỡ bỏ bài viết'' (màu đỏ) và bấm ``Duyệt báo cáo'' (\texttt{E4}).
+        \item Hệ thống cập nhật bài viết thành \texttt{IsDeleted = true}, trạng thái báo cáo chuyển thành \texttt{Resolved} (\texttt{S3}).
+        \item Bài viết lập tức biến mất khỏi Bảng tin của mọi người dùng.
+        \item Hệ thống tự động gửi thông báo kiểm duyệt kèm nút ``Kháng cáo'' màu xanh tới tác giả bài viết.
+    \end{enumerate}
+
+    \item[\textbf{--}] \textbf{Luồng 4 -- Tác giả gửi yêu cầu kháng cáo thành công} (\textit{Sequence of States:} $\text{Start} \rightarrow \text{S3} \rightarrow \text{S4}$):
+    \begin{enumerate}[leftmargin=0.7cm, noitemsep]
+        \item Tác giả bài viết ID \#15 mở thông báo kiểm duyệt và nhấp vào nút ``Kháng cáo''.
+        \item Biểu mẫu kháng cáo hiển thị. Tác giả nhập văn bản giải trình hợp lệ 68 ký tự.
+        \item Tác giả bấm ``Gửi kháng cáo'' (\texttt{E5}).
+        \item Hệ thống xác thực độ dài hợp lệ (10--1.000 ký tự) và tác giả chưa từng gửi kháng cáo trước đó.
+        \item Hệ thống cập nhật trạng thái báo cáo thành \texttt{Appealing} (\texttt{S4}).
+        \item Báo cáo xuất hiện nổi bật với huy hiệu cảnh báo trong trang quản trị Admin.
+    \end{enumerate}
+
+    \item[\textbf{--}] \textbf{Luồng 5 -- Admin chấp thuận kháng cáo và khôi phục bài viết} (\textit{Sequence of States:} $\text{Start} \rightarrow \text{S4} \rightarrow \text{S5} \rightarrow \text{End}$):
+    \begin{enumerate}[leftmargin=0.7cm, noitemsep]
+        \item Quản trị viên lọc danh sách báo cáo theo trạng thái ``Đang kháng cáo'' (\texttt{S4}).
+        \item Quản trị viên mở xem chi tiết bài viết ID \#15 và đọc toàn văn bản giải trình của tác giả.
+        \item Quản trị viên nhận thấy lý do giải trình chính đáng và nhấn ``Chấp thuận kháng cáo'' (nút màu xanh lá) (\texttt{E6}).
+        \item Hệ thống khôi phục trạng thái bài viết (\texttt{IsDeleted = false}), cập nhật báo cáo thành Kháng cáo thành công (\texttt{S5}).
+        \item Bài viết tự động xuất hiện trở lại trên Bảng tin công khai.
+        \item Hệ thống gửi thông báo chúc mừng tới tác giả bài viết.
+    \end{enumerate}
+
+    \item[\textbf{--}] \textbf{Luồng 6 -- Admin từ chối kháng cáo của người dùng} (\textit{Sequence of States:} $\text{Start} \rightarrow \text{S4} \rightarrow \text{S6} \rightarrow \text{End}$):
+    \begin{enumerate}[leftmargin=0.7cm, noitemsep]
+        \item Quản trị viên xem xét một báo cáo đang kháng cáo nhưng giải trình không thỏa đáng (\texttt{S4}).
+        \item Quản trị viên nhấp vào nút ``Từ chối kháng cáo'' (màu đỏ), nhập lý do từ chối và bấm xác nhận (\texttt{E7}).
+        \item Hệ thống giữ nguyên trạng thái gỡ bỏ bài viết (\texttt{IsDeleted = true}), chuyển báo cáo thành Kháng cáo bị từ chối (\texttt{S6}).
+        \item Hệ thống gửi thông báo giải thích quyết định cuối cùng tới tác giả; khóa tính năng kháng cáo lần hai đối với bài viết này.
+    \end{enumerate}
+
+    \item[\textbf{--}] \textbf{Luồng 7 -- Chặn gửi báo cáo trùng lặp} (\textit{Sequence of States:} $\text{Start} \rightarrow \text{S1} \rightarrow \text{S1}$ (duy trì \texttt{S1})):
+    \begin{enumerate}[leftmargin=0.7cm, noitemsep]
+        \item User1 vừa gửi báo cáo bài viết ID \#10 thành công (báo cáo đang ở \texttt{S1} -- \texttt{Pending}).
+        \item User1 lại nhấp menu ba chấm của chính bài viết ID \#10 và chọn ``Báo cáo bài viết'', bấm Gửi lần nữa (\texttt{E2}).
+        \item Hệ thống kiểm tra thấy đã tồn tại báo cáo đang chờ xử lý từ User1 cho bài viết này.
+        \item Hệ thống chặn gửi và cảnh báo: ``Bạn đã gửi báo cáo cho bài viết này rồi, vui lòng chờ Quản trị viên xử lý''.
+    \end{enumerate}
+\end{itemize}
+
+\noindent\textbf{d. Sơ đồ chuyển đổi trạng thái}
+\begin{figure}[H]
+\centering
+\includegraphics[width=1.07\textwidth,height=0.80\textheight,keepaspectratio]{Report.pdf}
+\caption{Sơ đồ chuyển đổi trạng thái chức năng Báo cáo vi phạm \& Kháng cáo (B13)}
+\end{figure}
+
+\noindent\textbf{e. Mô tả chi tiết các trạng thái}
+\begin{itemize}[leftmargin=1.2cm, noitemsep]
+    \item[\textbf{--}] \textbf{Bài viết công khai bình thường (S0):}
+    \begin{itemize}[leftmargin=0.8cm, label=--, noitemsep]
+        \item \textit{Sự kiện dẫn đến:}
+        \begin{itemize}[leftmargin=0.6cm, label=$\ast$, noitemsep]
+            \item Bài viết được người dùng đăng tải công khai thành công trên Bảng tin (\texttt{E0}).
+        \end{itemize}
+        \item \textit{Hành động kèm theo:}
+        \begin{itemize}[leftmargin=0.6cm, label=$\ast$, noitemsep]
+            \item Bài viết hiển thị bình thường cho mọi người dùng.
+            \item Menu 3 chấm hiển thị tùy chọn ``Báo cáo bài viết'' cho người xem (không hiển thị cho chính tác giả).
+        \end{itemize}
+    \end{itemize}
+
+    \item[\textbf{--}] \textbf{Đang chờ xử lý báo cáo -- Pending (S1):}
+    \begin{itemize}[leftmargin=0.8cm, label=--, noitemsep]
+        \item \textit{Sự kiện dẫn đến:}
+        \begin{itemize}[leftmargin=0.6cm, label=$\ast$, noitemsep]
+            \item Người dùng gửi báo cáo vi phạm hợp lệ với lý do bắt buộc và mô tả chi tiết (\texttt{E1}).
+        \end{itemize}
+        \item \textit{Hành động kèm theo:}
+        \begin{itemize}[leftmargin=0.6cm, label=$\ast$, noitemsep]
+            \item Lưu bản ghi báo cáo vào CSDL với trạng thái \texttt{Pending}.
+            \item Xuất hiện trong danh sách kiểm duyệt của Quản trị viên với huy hiệu màu cam.
+            \item Chặn người dùng đó tiếp tục gửi báo cáo trùng lặp cho bài viết này (\texttt{E2}).
+        \end{itemize}
+    \end{itemize}
+
+    \item[\textbf{--}] \textbf{Báo cáo bị bác bỏ -- Dismissed (S2):}
+    \begin{itemize}[leftmargin=0.8cm, label=--, noitemsep]
+        \item \textit{Sự kiện dẫn đến:}
+        \begin{itemize}[leftmargin=0.6cm, label=$\ast$, noitemsep]
+            \item Quản trị viên nhấn nút ``Bác bỏ báo cáo'' trong giao diện kiểm duyệt (\texttt{E3}).
+        \end{itemize}
+        \item \textit{Hành động kèm theo:}
+        \begin{itemize}[leftmargin=0.6cm, label=$\ast$, noitemsep]
+            \item Cập nhật trạng thái báo cáo thành \texttt{Dismissed}.
+            \item Giữ nguyên bài viết công khai trên Bảng tin, không ảnh hưởng đến tài khoản tác giả.
+        \end{itemize}
+    \end{itemize}
+
+    \item[\textbf{--}] \textbf{Bài viết bị gỡ bỏ vi phạm -- Resolved (S3):}
+    \begin{itemize}[leftmargin=0.8cm, label=--, noitemsep]
+        \item \textit{Sự kiện dẫn đến:}
+        \begin{itemize}[leftmargin=0.6cm, label=$\ast$, noitemsep]
+            \item Quản trị viên nhấn nút ``Gỡ bỏ bài viết'' sau khi xác nhận vi phạm (\texttt{E4}).
+        \end{itemize}
+        \item \textit{Hành động kèm theo:}
+        \begin{itemize}[leftmargin=0.6cm, label=$\ast$, noitemsep]
+            \item Cập nhật trạng thái bài viết thành \texttt{IsDeleted = true}.
+            \item Bài viết lập tức biến mất khỏi Bảng tin, trang cá nhân và nhóm.
+            \item Gửi thông báo kiểm duyệt đến tác giả kèm nút ``Kháng cáo'' màu xanh.
+        \end{itemize}
+    \end{itemize}
+
+    \item[\textbf{--}] \textbf{Đang kháng cáo -- Appealing (S4):}
+    \begin{itemize}[leftmargin=0.8cm, label=--, noitemsep]
+        \item \textit{Sự kiện dẫn đến:}
+        \begin{itemize}[leftmargin=0.6cm, label=$\ast$, noitemsep]
+            \item Tác giả bài viết gửi đơn khiếu nại với lý do giải trình hợp lệ từ 10--1.000 ký tự (\texttt{E5}).
+        \end{itemize}
+        \item \textit{Hành động kèm theo:}
+        \begin{itemize}[leftmargin=0.6cm, label=$\ast$, noitemsep]
+            \item Cập nhật trạng thái báo cáo thành \texttt{Appealing}.
+            \item Hiển thị nổi bật báo cáo trong danh sách Admin với huy hiệu màu vàng/cam ``Đang kháng cáo''.
+            \item Hiển thị toàn văn nội dung giải trình cùng các nút ``Chấp thuận kháng cáo'' và ``Từ chối kháng cáo''.
+        \end{itemize}
+    \end{itemize}
+
+    \item[\textbf{--}] \textbf{Kháng cáo được chấp thuận -- Appeal Accepted (S5):}
+    \begin{itemize}[leftmargin=0.8cm, label=--, noitemsep]
+        \item \textit{Sự kiện dẫn đến:}
+        \begin{itemize}[leftmargin=0.6cm, label=$\ast$, noitemsep]
+            \item Quản trị viên nhấn nút ``Chấp thuận kháng cáo'' (\texttt{E6}).
+        \end{itemize}
+        \item \textit{Hành động kèm theo:}
+        \begin{itemize}[leftmargin=0.6cm, label=$\ast$, noitemsep]
+            \item Tự động khôi phục bài viết về trạng thái công khai (\texttt{IsDeleted = false}).
+            \item Bài viết xuất hiện trở lại trên Bảng tin; gửi thông báo chúc mừng tới tác giả.
+        \end{itemize}
+    \end{itemize}
+
+    \item[\textbf{--}] \textbf{Kháng cáo bị từ chối -- Appeal Rejected (S6):}
+    \begin{itemize}[leftmargin=0.8cm, label=--, noitemsep]
+        \item \textit{Sự kiện dẫn đến:}
+        \begin{itemize}[leftmargin=0.6cm, label=$\ast$, noitemsep]
+            \item Quản trị viên nhấn nút ``Từ chối kháng cáo'' (\texttt{E7}).
+        \end{itemize}
+        \item \textit{Hành động kèm theo:}
+        \begin{itemize}[leftmargin=0.6cm, label=$\ast$, noitemsep]
+            \item Giữ nguyên trạng thái gỡ bỏ bài viết vĩnh viễn; khóa quyền khiếu nại tiếp theo của tác giả.
+            \item Gửi thông báo giải thích quyết định cuối cùng tới tác giả.
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\noindent\textbf{f. Bảng kiểm thử chuyển đổi trạng thái \& Bảng Test Cases chi tiết}
 \begin{table}[H]
 \centering
 \small
@@ -2249,7 +2666,7 @@ So với file \texttt{ChuyenDoiTrangThai\_NhanQua.pdf} (trang 119--124), mục n
 \hline
 \textbf{Start state} & S0 & S1 & S1 & S1 & S3 & S4 & S4 \\ \hline
 \textbf{Input} & E1 & E2 & E3 & E4 & E5 & E6 & E7 \\ \hline
-\textbf{Output} & Tạo báo cáo \texttt{Pending}, gửi Admin & Chặn gửi báo cáo trùng & Bác bỏ, giữ nguyên bài & \texttt{IsDeleted=true}, ẩn bài, báo tác giả & Chuyển \texttt{Appealing}, hiện badge Admin & \texttt{IsDeleted=false}, khôi phục bài & Giữ gỡ vĩnh viễn, khóa kháng cáo \\ \hline
+\textbf{Output} & Tạo báo cáo \texttt{Pending}, gửi Admin & Chặn gửi báo cáo trùng & Bác bỏ, giữ nguyên bài & \texttt{IsDeleted\allowbreak =true}, ẩn bài, báo tác giả & Chuyển \texttt{Appealing}, hiện badge Admin & \texttt{IsDeleted\allowbreak =false}, khôi phục bài & Giữ gỡ vĩnh viễn, khóa kháng cáo \\ \hline
 \textbf{Finish state} & \textbf{S1} & \textbf{S1} & \textbf{S2} & \textbf{S3} & \textbf{S4} & \textbf{S5} & \textbf{S6} \\ \hline
 \end{tabularx}
 \caption{Bảng kiểm thử chuyển đổi trạng thái Báo cáo \& Kháng cáo (B13)}
@@ -2601,11 +3018,15 @@ So với file \texttt{ChuyenDoiTrangThai\_NhanQua.pdf} (trang 119--124), mục n
 \end{tikzpicture}
 \caption{Đồ thị nhân -- quả chức năng Thích bài viết \& Bình luận (B5)}
 \end{figure}
+\vspace{-10pt}
 
 \noindent\textbf{d. Bảng Test Cases chi tiết chức năng B5 (Thích bài viết \& Bình luận):}
 \begingroup
 \scriptsize
 \setlength{\tabcolsep}{3pt}
+\setlength{\LTpre}{4pt}
+\setlength{\LTpost}{4pt}
+\renewcommand{\arraystretch}{0.88}
 \begin{longtable}{|C{0.8cm}|C{0.85cm}|C{0.95cm}|L{2.0cm}|L{3.0cm}|L{2.15cm}|L{2.6cm}|L{2.5cm}|C{0.85cm}|}
 \hline
 \rowcolor[RGB]{179, 205, 255}
@@ -2619,6 +3040,9 @@ So với file \texttt{ChuyenDoiTrangThai\_NhanQua.pdf} (trang 119--124), mục n
 \endhead
 \hline
 \endfoot
+\hline
+\caption{Bảng Test Cases chức năng B5 -- Thích bài viết \& Bình luận (Cause--Effect Graph)}
+\endlastfoot
 \textbf{103} & B5 & T82 & Hiển thị nút trái tim kèm tổng số lượt thích (R1) & 1. Đăng nhập, mở Bảng tin\newline 2. Quan sát vùng tương tác dưới bài viết & Bài viết có 0 lượt thích & Hiển thị biểu tượng trái tim trắng kèm số lượng \texttt{0}. & Hiển thị đúng nút tim và bộ đếm. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{104} & B5 & T83 & Nhấn thích bài viết khi tim đang trắng (R2/R3) & 1. Mở bài viết có tim trắng (0 thích)\newline 2. Nhấn vào nút trái tim & Bài viết PostId = 10 & Trái tim chuyển sang màu đỏ và số lượng tăng thành \texttt{1}. & Tim chuyển đỏ, lượt thích tăng $+1$. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{105} & B5 & T84 & Nhấn bỏ thích bài viết khi tim đang đỏ (R4) & 1. Mở bài viết đã thích (tim đỏ, 1 thích)\newline 2. Nhấn lại vào nút trái tim & Bài viết PostId = 10 & Trái tim trở lại màu trắng và số lượng giảm về \texttt{0}. & Tim chuyển trắng, lượt thích giảm $-1$. & \textcolor{blue}{\textbf{Pass}} \\ \hline
@@ -2626,7 +3050,6 @@ So với file \texttt{ChuyenDoiTrangThai\_NhanQua.pdf} (trang 119--124), mục n
 \textbf{107} & B5 & T86 & Tác giả nhận thông báo khi người khác thích bài (R2) & 1. User2 thích bài viết của User1\newline 2. Kiểm tra chuông thông báo của User1 & Tác giả: User1\newline Người thích: User2 & Chuông thông báo của User1 hiển thị thông báo có người thích bài viết. & User1 nhận thông báo tức thời. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{108} & B5 & T86 & Tác giả tự thích bài viết của mình không tự thông báo (R3) & 1. User1 mở bài viết của chính mình\newline 2. User1 nhấn thích và kiểm tra chuông & Tác giả: User1\newline Người thích: User1 & Lượt thích tăng $+1$ nhưng không phát sinh thông báo tới chính User1. & Không gửi thông báo tự thích. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{109} & B5 & T87 & Nhấn thả tim cho bình luận của bài viết (R2/R4) & 1. Mở danh sách bình luận của bài viết\newline 2. Nhấn biểu tượng tim ở một bình luận & Bình luận trên PostId = 10 & Biểu tượng tim của bình luận đổi màu và cập nhật đúng số lượt thích bình luận. & Thích/bỏ thích bình luận hoạt động đúng. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\caption{Bảng Test Cases chức năng B5 -- Thích bài viết \& Bình luận (Cause--Effect Graph)}
 \end{longtable}
 \endgroup
 
@@ -2636,9 +3059,64 @@ So với file \texttt{ChuyenDoiTrangThai\_NhanQua.pdf} (trang 119--124), mục n
 \subsection{Kiểm thử cặp đôi (Pairwise / All-Pairs Testing)}
 
 \subsubsection{Chức năng B4 -- Bảng tin \& Bài viết}
-\begin{tcolorbox}[colback=yellow!10, colframe=orange!70!black, title=\textbf{Ghi chú các thành phần còn thiếu so với tài liệu gốc KTPM}, fonttitle=\bfseries]
-So với file \texttt{ChuyenDoiTrangThai\_NhanQua.pdf} (trang 32--37), mục này hiện đang lược bớt phần \textit{Mô tả nghiệp vụ \& Bảng TRD (\texttt{T64--T75})} ở đầu chức năng B4.
-\end{tcolorbox}
+
+\noindent\textbf{a. Mô tả nghiệp vụ \& Yêu cầu kỹ thuật (TRD)}
+\begin{itemize}[leftmargin=1.2cm, noitemsep]
+    \item[\textbf{--}] \textbf{Mã BRD:} B4
+    \item[\textbf{--}] \textbf{Tên chức năng:} Bảng tin \& Bài viết (News Feed \& Posts) -- Chức năng Đăng bài viết.
+    \item[\textbf{--}] \textbf{Tóm tắt Requirement từ tài liệu hệ thống:}
+    \begin{itemize}[leftmargin=0.8cm, label=$\ast$, noitemsep]
+        \item \textbf{Quyền đăng bài:}
+        \begin{itemize}[leftmargin=0.6cm, label=$\circ$, noitemsep]
+            \item Người dùng phải đăng nhập thành công mới được truy cập chức năng đăng bài.
+            \item Người dùng chưa đăng nhập không được phép thực hiện thao tác đăng bài viết.
+        \end{itemize}
+        \item \textbf{Nội dung bài viết:}
+        \begin{itemize}[leftmargin=0.6cm, label=$\circ$, noitemsep]
+            \item Nội dung (\texttt{Content}) không được để trống hoặc chỉ chứa khoảng trắng.
+            \item Nội dung phải có độ dài từ 1 đến 5.000 ký tự.
+            \item Nội dung dài phải tự động xuống dòng, không làm tràn khung hiển thị.
+        \end{itemize}
+        \item \textbf{Hình ảnh đính kèm:}
+        \begin{itemize}[leftmargin=0.6cm, label=$\circ$, noitemsep]
+            \item Hình ảnh là thành phần tùy chọn.
+            \item Nếu có đính kèm, ảnh phải thuộc các định dạng JPG, JPEG, PNG, GIF hoặc WebP.
+            \item Dung lượng ảnh không được vượt quá 5 MB.
+            \item Hệ thống không cho phép đăng bài viết chỉ có hình ảnh mà không có nội dung văn bản.
+        \end{itemize}
+        \item \textbf{Xử lý đăng bài:}
+        \begin{itemize}[leftmargin=0.6cm, label=$\circ$, noitemsep]
+            \item Khi dữ liệu hợp lệ, hệ thống tạo và lưu bài viết mới.
+            \item Sau khi đăng thành công, biểu mẫu được làm mới và bài viết xuất hiện trên Bảng tin.
+            \item Bài viết mới được đồng bộ theo thời gian thực qua SignalR.
+            \item Bạn bè của người đăng có thể nhận được thông báo theo quy định của hệ thống.
+            \item Khi dữ liệu không hợp lệ, hệ thống từ chối đăng bài, hiển thị lỗi và không tạo bài viết mới.
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|C{1.5cm}|X|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{T\#} & \textbf{Mô tả} \tabularnewline
+\hline
+\textbf{T64} & Người dùng phải đăng nhập mới có quyền đăng bài viết và xem Bảng tin. \\ \hline
+\textbf{T65} & Không được đăng bài viết khi nội dung (\texttt{Content}) để trống hoặc chỉ chứa khoảng trắng. \\ \hline
+\textbf{T66} & Nội dung bài viết phải có độ dài từ 1 đến tối đa 5.000 ký tự. \\ \hline
+\textbf{T67} & Nội dung dài phải tự động xuống dòng, không làm tràn hoặc phá vỡ khung bài viết. \\ \hline
+\textbf{T68} & Cho phép đính kèm ảnh JPG, JPEG, PNG, GIF hoặc WebP với dung lượng tối đa 5 MB. \\ \hline
+\textbf{T69} & Từ chối tệp ảnh có dung lượng vượt quá 5 MB hoặc sai định dạng cho phép. \\ \hline
+\textbf{T70} & Đăng bài thành công, biểu mẫu được làm mới và bài viết mới xuất hiện trên Bảng tin. \\ \hline
+\textbf{T71} & Bài viết mới được đồng bộ theo thời gian thực qua SignalR. \\ \hline
+\textbf{T72} & Bạn bè của người đăng nhận được thông báo khi có bài viết mới. \\ \hline
+\end{tabularx}
+\caption{Bảng TRD liên quan chức năng Đăng bài viết (\texttt{T64--T72})}
+\end{table}
+
+\noindent\textbf{b. Bảng xác định biến, giá trị \& Bảng kiểm thử cặp đôi (Pairwise)}
 
 \begin{table}[H]
 \centering
@@ -2768,9 +3246,113 @@ PW49 & Đã đăng nhập & 5001 ký tự & Có & WebP & Dưới 5 MB \\ \hline
 
 
 \subsubsection{Chức năng B12 -- Tìm kiếm toàn hệ thống}
-\begin{tcolorbox}[colback=yellow!10, colframe=orange!70!black, title=\textbf{Ghi chú tài liệu}, fonttitle=\bfseries]
-\textbf{Chưa có tài liệu thiết kế Kiểm thử cặp đôi (Pairwise) cho chức năng B12 trong thư mục KTPM.} Cần bổ sung bảng tham số (loại đối tượng tìm kiếm, từ khóa, debounce, giới hạn 50 kết quả) và bảng tổ hợp cặp đôi cho B12.
-\end{tcolorbox}
+
+\noindent\textbf{a. Mô tả nghiệp vụ \& Yêu cầu kỹ thuật (TRD)}
+\begin{itemize}[leftmargin=1.2cm, noitemsep]
+    \item[\textbf{--}] \textbf{Mã BRD:} B12
+    \item[\textbf{--}] \textbf{Tên chức năng:} Tìm kiếm toàn hệ thống (Search \& Discovery) -- Tìm kiếm người dùng, bài viết, nhóm cộng đồng và lọc cuộc trò chuyện tin nhắn.
+    \item[\textbf{--}] \textbf{Tóm tắt Requirement từ tài liệu hệ thống:}
+    \begin{itemize}[leftmargin=0.8cm, label=$\ast$, noitemsep]
+        \item \textbf{Tìm kiếm trên Header \& Bảng tin:} Hỗ trợ tìm kiếm người dùng theo tên/username từ thanh tiêu đề (Header) và tìm kiếm bài viết trên Bảng tin chung theo từ khóa nội dung hoặc tên tác giả.
+        \item \textbf{Tìm kiếm trong Nhóm cộng đồng:} Hỗ trợ lọc danh sách nhóm theo tên trên trang \texttt{/groups} và tìm kiếm nhanh bài viết trong phạm vi một nhóm cụ thể.
+        \item \textbf{Lọc danh sách Tin nhắn:} Hỗ trợ lọc tức thì danh sách cuộc trò chuyện theo tên bạn bè hoặc tên nhóm chat.
+        \item \textbf{Phản hồi giao diện:} Hỗ trợ lọc tức thì khi nhập liệu hoặc khi nhấn Enter; xử lý an toàn các từ khóa trống, ký tự đặc biệt hoặc không có kết quả phù hợp.
+    \end{itemize}
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|C{1.5cm}|X|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{T\#} & \textbf{Mô tả} \tabularnewline
+\hline
+\textbf{T142} & Tìm kiếm người dùng từ thanh tìm kiếm Header theo tên hoặc username. \\ \hline
+\textbf{T143} & Tìm kiếm bài viết trên Bảng tin chung (Feed) theo từ khóa nội dung hoặc tên tác giả. \\ \hline
+\textbf{T144} & Tìm kiếm và lọc nhóm theo tên trên trang danh sách Nhóm cộng đồng (\texttt{/groups}). \\ \hline
+\textbf{T145} & Tìm kiếm nhanh bài viết trong phạm vi một nhóm cụ thể. \\ \hline
+\textbf{T146} & Lọc danh sách cuộc trò chuyện tin nhắn theo tên bạn bè hoặc nhóm chat. \\ \hline
+\end{tabularx}
+\caption{Bảng TRD liên quan chức năng Tìm kiếm toàn hệ thống (\texttt{T142--T146})}
+\end{table}
+
+\noindent\textbf{b. Bảng xác định biến, giá trị \& Bảng kiểm thử cặp đôi (Pairwise)}
+
+Từ đặc tả chức năng B12, xác định 4 biến đầu vào với kích thước $4^2\,2^2$ ($4 \times 4 \times 2 \times 2 = 64$ tổ hợp toàn phần). Áp dụng kỹ thuật cặp đôi theo ma trận trực giao $L_{16}(4^2\,2^2)$ (từ tệp \texttt{B12.xlsx}) rút gọn xuống còn \textbf{16 ca kiểm thử} (\texttt{PW01}--\texttt{PW16}) mà vẫn phủ 100\% mọi cặp giá trị giữa 2 biến bất kỳ:
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|L{4.5cm}|X|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{Yếu tố (Parameter)} & \textbf{Các giá trị kiểm thử (Values)} \tabularnewline
+\hline
+Phạm vi tìm kiếm & Người dùng; Bài viết; Nhóm; Tin nhắn \\ \hline
+Loại từ khóa & Hợp lệ; Không tồn tại kết quả; Trống / Khoảng trắng; Ký tự đặc biệt \\ \hline
+Thao tác kích hoạt & Gõ trực tiếp; Nhấn Enter \\ \hline
+Trạng thái người dùng & Đã đăng nhập; Chưa đăng nhập \\ \hline
+\end{tabularx}
+\caption{Bảng xác định biến và giá trị kiểm thử cặp đôi cho chức năng Tìm kiếm (B12)}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|C{1.4cm}|L{2.5cm}|X|L{2.8cm}|L{3.0cm}|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{Mã ca} & \textbf{Phạm vi tìm kiếm} & \textbf{Loại từ khóa} & \textbf{Thao tác kích hoạt} & \textbf{Trạng thái người dùng} \tabularnewline
+\hline
+PW01 & Người dùng & Hợp lệ & Nhấn Enter & Chưa đăng nhập \\ \hline
+PW02 & Người dùng & Không tồn tại kết quả & Gõ trực tiếp & Đã đăng nhập \\ \hline
+PW03 & Người dùng & Trống / Khoảng trắng & Nhấn Enter & Đã đăng nhập \\ \hline
+PW04 & Người dùng & Ký tự đặc biệt & Gõ trực tiếp & Đã đăng nhập \\ \hline
+PW05 & Bài viết & Hợp lệ & Gõ trực tiếp & Đã đăng nhập \\ \hline
+PW06 & Bài viết & Không tồn tại kết quả & Nhấn Enter & Chưa đăng nhập \\ \hline
+PW07 & Bài viết & Trống / Khoảng trắng & Gõ trực tiếp & Chưa đăng nhập \\ \hline
+PW08 & Bài viết & Ký tự đặc biệt & Nhấn Enter & Chưa đăng nhập \\ \hline
+PW09 & Nhóm & Hợp lệ & Gõ trực tiếp & Chưa đăng nhập \\ \hline
+PW10 & Nhóm & Không tồn tại kết quả & Nhấn Enter & Đã đăng nhập \\ \hline
+PW11 & Nhóm & Trống / Khoảng trắng & Nhấn Enter & Đã đăng nhập \\ \hline
+PW12 & Nhóm & Ký tự đặc biệt & Gõ trực tiếp & Chưa đăng nhập \\ \hline
+PW13 & Tin nhắn & Hợp lệ & Gõ trực tiếp & Chưa đăng nhập \\ \hline
+PW14 & Tin nhắn & Không tồn tại kết quả & Nhấn Enter & Đã đăng nhập \\ \hline
+PW15 & Tin nhắn & Trống / Khoảng trắng & Nhấn Enter & Chưa đăng nhập \\ \hline
+PW16 & Tin nhắn & Ký tự đặc biệt & Nhấn Enter & Chưa đăng nhập \\ \hline
+\end{tabularx}
+\caption{Bảng tổ hợp kiểm thử cặp đôi chức năng Tìm kiếm toàn hệ thống (B12)}
+\end{table}
+
+\noindent\textbf{c. Bảng Test Cases chi tiết chức năng B12 (Tìm kiếm toàn hệ thống):}
+\begingroup
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{0.92}
+\begin{longtable}{|C{0.8cm}|C{0.75cm}|C{0.95cm}|L{2.0cm}|L{3.0cm}|L{2.25cm}|L{2.6cm}|L{2.5cm}|C{0.85cm}|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{TC\#} & \textbf{BR\#} & \textbf{TR\#} & \textbf{TestCase} & \textbf{TestSteps} & \textbf{Test Data} & \textbf{Expected} & \textbf{Result} & \textbf{P/F} \tabularnewline
+\hline
+\endfirsthead
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{TC\#} & \textbf{BR\#} & \textbf{TR\#} & \textbf{TestCase} & \textbf{TestSteps} & \textbf{Test Data} & \textbf{Expected} & \textbf{Result} & \textbf{P/F} \tabularnewline
+\hline
+\endhead
+\hline
+\endfoot
+\hline
+\caption{Bảng Test Cases chức năng B12 -- Tìm kiếm toàn hệ thống (Pairwise)}
+\endlastfoot
+\textbf{195} & B12 & T142 & Tìm kiếm người dùng từ thanh tìm kiếm Header & 1. Đăng nhập tài khoản hợp lệ\newline 2. Nhấp vào ô tìm kiếm trên thanh tiêu đề (Header)\newline 3. Nhập từ khóa tên người dùng & Tài khoản: User 4\newline TK tìm kiếm: John Doe & Hiển thị đúng các tài khoản có tên/username khớp từ khóa. & Hiển thị đúng các tài khoản có tên/username khớp từ khóa. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{196} & B12 & T143 & Tìm kiếm bài viết trên Bảng tin theo từ khóa nội dung & 1. Ở trang Bảng tin chung (Feed)\newline 2. Nhập từ khóa nội dung bài viết ``bầu trời''\newline 3. Nhấn Enter hoặc bấm nút tìm kiếm & Từ khóa: ``bầu trời''\newline Tài khoản: User 4 & Bảng tin lọc và hiển thị danh sách các bài viết có chứa từ khóa nội dung tương ứng. & Bảng tin lọc và hiển thị danh sách các bài viết có chứa từ khóa tương ứng. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{197} & B12 & T144 & Tìm kiếm và lọc nhóm theo tên trên trang danh sách nhóm & 1. Truy cập trang Nhóm cộng đồng (\texttt{/groups})\newline 2. Nhấp vào ô ``Tìm kiếm nhóm...''\newline 3. Nhập từ khóa tên nhóm ``Tech'' & Từ khóa: ``tech''\newline Tài khoản: User 4 & Danh sách nhóm lọc tức thì, chỉ hiển thị các nhóm có tên chứa từ khóa ``Tech''. & Danh sách nhóm lọc tức thì, chỉ hiển thị các nhóm chứa ``Tech''. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{198} & B12 & T145 & Tìm kiếm nhanh bài viết trong phạm vi một nhóm cụ thể & 1. Truy cập trang chi tiết nhóm đã tham gia\newline 2. Tìm đến ô tìm kiếm bài viết nội bộ\newline 3. Nhập từ khóa nội dung bài viết & Từ khóa: ``thông báo''\newline Tài khoản: User 4 & Danh sách bài viết trong nhóm tự động lọc và chỉ hiển thị bài khớp từ khóa. & Danh sách bài viết trong nhóm tự động lọc đúng theo từ khóa. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{199} & B12 & T146 & Lọc danh sách cuộc trò chuyện tin nhắn theo tên bạn bè/nhóm & 1. Truy cập trang Tin nhắn\newline 2. Nhấp vào ô tìm kiếm phía trên danh sách hội thoại\newline 3. Nhập từ khóa tên bạn bè ``Doe'' & Tài khoản: User 4\newline Từ khóa: ``Doe'' & Danh sách cuộc trò chuyện tự động lọc ngay lập tức, giữ lại hội thoại chứa ``Doe''. & Danh sách cuộc trò chuyện lọc tức thì đúng hội thoại chứa ``Doe''. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\end{longtable}
+\endgroup
 
 
 \pagebreak
