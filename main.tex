@@ -1720,23 +1720,28 @@ $C_4$ & \texttt{Password == ConfirmPassword} \\ \hline
 \begin{table}[H]
 \centering
 \small
-\begin{tabularx}{\textwidth}{|X|C{2.0cm}|C{1.2cm}|C{0.9cm}|C{0.9cm}|C{0.9cm}|C{0.9cm}|C{0.9cm}|C{0.9cm}|}
+\begin{tabularx}{\textwidth}{|X|C{2.0cm}|C{1.1cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|}
 \hline
-\rowcolor[RGB]{179, 205, 255}
-\textbf{Biến} & \textbf{Điều kiện} & \textbf{Loại} & \textbf{TC1} & \textbf{TC2} & \textbf{TC3} & \textbf{TC4} & \textbf{TC5} & \textbf{TC6} \tabularnewline
+\multicolumn{3}{|c|}{\cellcolor[RGB]{255, 224, 130}\textbf{Boundary}} & \multicolumn{7}{c|}{\cellcolor[RGB]{179, 205, 255}\textbf{Test-cases}} \tabularnewline
 \hline
-\multirow{5}{*}{$x$ (độ dài Password)} & \multirow{2}{*}{$x \ge 8$} & On & 8 & & & & & \\ \cline{3-9}
- & & Off & & 7 & & & & \\ \cline{2-9}
- & \multirow{2}{*}{$x \le 100$} & On & & & 100 & & & \\ \cline{3-9}
- & & Off & & & & 101 & & \\ \cline{2-9}
- & Typical & In & & & & & 10 & 14 \\ \hline
-\multirow{3}{*}{$y$ (độ dài Confirm)} & \multirow{2}{*}{$y = x$} & On & & & & & 10 & \\ \cline{3-9}
- & & Off & & & & & & 13 \\ \cline{2-9}
- & Typical & In & 8 & 7 & 100 & 101 & & \\ \hline
-\multicolumn{3}{|c|}{\textbf{Kết quả mong đợi}} & \textcolor{blue}{$\checkmark$} & \textcolor{red}{$\times$} & \textcolor{blue}{$\checkmark$} & \textcolor{red}{$\times$} & \textcolor{blue}{$\checkmark$} & \textcolor{red}{$\times$} \\ \hline
+\rowcolor{gray!20}
+\textbf{Biến} & \textbf{Điều kiện} & \textbf{Loại} & \textbf{TC1} & \textbf{TC2} & \textbf{TC3} & \textbf{TC4} & \textbf{TC5} & \textbf{TC6} & \textbf{TC7} \tabularnewline
+\hline
+\multirow{5}{*}{$x$ (độ dài Password)} & \multirow{2}{*}{$x \ge 8$} & On & 8 & & & & & & \\ \cline{3-10}
+ & & Off & & 7 & & & & & \\ \cline{2-10}
+ & \multirow{2}{*}{$x \le 100$} & On & & & 100 & & & & \\ \cline{3-10}
+ & & Off & & & & 101 & & & \\ \cline{2-10}
+ & Typical & In & & & & & 10 & 14 & 15 \\ \hline
+\multirow{4}{*}{$y$ (độ dài Confirm)} & \multirow{3}{*}{$y = x$} & On & & & & & 10 & & \\ \cline{3-10}
+ & & Off$-$ & & & & & & 13 & \\ \cline{3-10}
+ & & Off$+$ & & & & & & & 16 \\ \cline{2-10}
+ & Typical & In & 8 & 7 & 100 & 101 & & & \\ \hline
+\multicolumn{3}{|c|}{\textbf{Kết quả mong đợi}} & \textcolor{blue}{$\checkmark$} & \textcolor{red}{$\times$} & \textcolor{blue}{$\checkmark$} & \textcolor{red}{$\times$} & \textcolor{blue}{$\checkmark$} & \textcolor{red}{$\times$} & \textcolor{red}{$\times$} \\ \hline
 \end{tabularx}
 \caption{Ma trận Domain Analysis cho độ dài Mật khẩu và Xác nhận mật khẩu (B2)}
 \end{table}
+
+\noindent\textit{Ghi chú:} Ở \texttt{TC1}--\texttt{TC4}, giá trị của $y$ được giữ bằng $x$ nhằm bảo toàn quan hệ $y = x$ khi kiểm thử độc lập từng biên của $x$ theo tiêu chí \textit{one-by-one}; hai điểm ngoài của điều kiện $y = x$ được kiểm thử đầy đủ tại \texttt{TC6} ($\text{Off}-$, $y < x$) và \texttt{TC7} ($\text{Off}+$, $y > x$).
 
 \noindent\textbf{c. Bảng Test Cases chi tiết chức năng B2 (Đăng ký tài khoản -- Ràng buộc mật khẩu):}
 \begingroup
@@ -1755,13 +1760,16 @@ $C_4$ & \texttt{Password == ConfirmPassword} \\ \hline
 \endhead
 \hline
 \endfoot
+\hline
+\caption{Bảng Test Cases chức năng B2 -- Đăng ký tài khoản (Domain Analysis)}
+\endlastfoot
 \textbf{26} & B2 & T23--T27 & Đăng ký với Mật khẩu 8 ký tự (On $x \ge 8$, $y = 8$) & 1. Nhập mật khẩu đúng 8 ký tự đủ 4 nhóm\newline 2. Nhập Confirm 8 ký tự trùng khớp, nhấn Đăng ký & MK: Test@123 ($x=8$)\newline XN: Test@123 ($y=8$) & Đăng ký thành công, chuyển hướng về trang Đăng nhập. & Đăng ký thành công, chuyển về /login. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{27} & B2 & T23 & Đăng ký với Mật khẩu 7 ký tự (Off $x \ge 8$, $y = 7$) & 1. Nhập mật khẩu 7 ký tự đủ 4 nhóm\newline 2. Nhập Confirm 7 ký tự trùng khớp, nhấn Đăng ký & MK: Test@12 ($x=7$)\newline XN: Test@12 ($y=7$) & Hệ thống từ chối do mật khẩu dưới 8 ký tự. & Server từ chối vì yêu cầu >= 8 ký tự. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{28} & B2 & T23--T27 & Đăng ký với Mật khẩu 100 ký tự (On $x \le 100$, $y = 100$) & 1. Nhập mật khẩu đúng 100 ký tự đủ 4 nhóm\newline 2. Nhập Confirm 100 ký tự trùng khớp, nhấn Đăng ký & MK: 100 ký tự ($x=100$)\newline XN: 100 ký tự ($y=100$) & Hệ thống chấp nhận độ dài biên trên 100 ký tự, đăng ký thành công. & Đăng ký thành công với mật khẩu 100 ký tự. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{28} & B2 & T23--T27 & Đăng ký với Mật khẩu 101 ký tự (Off $x \le 100$, $y = 101$) & 1. Nhập mật khẩu 101 ký tự đủ 4 nhóm\newline 2. Nhập Confirm 101 ký tự trùng khớp, nhấn Đăng ký & MK: 101 ký tự ($x=101$)\newline XN: 101 ký tự ($y=101$) & Hệ thống từ chối, báo lỗi độ dài mật khẩu vượt quá 100 ký tự. & Hệ thống chặn và báo lỗi vượt quá 100 ký tự. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{29} & B2 & T30, T32 & Đăng ký thành công với Mật khẩu 10 ký tự (On $y = x$, $x = 10$) & 1. Nhập đầy đủ thông tin hợp lệ, MK 10 ký tự\newline 2. Nhập Confirm 10 ký tự trùng khớp, nhấn Đăng ký & Tên: testuser\_ok\newline MK/XN: Test@12345 ($x=10, y=10$) & Tạo tài khoản, gán role ``User'', chuyển hướng về /login. & Đăng ký thành công, chuyển về /login. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{30} & B2 & T23--T27 & Đăng ký khi độ dài Xác nhận không bằng Mật khẩu (Off $y = x$, $x = 14, y = 13$) & 1. Nhập MK hợp lệ dài 14 ký tự\newline 2. Nhập Confirm dài 13 ký tự & MK: Test@123456789 ($x=14$)\newline XN: Test@12345678 ($y=13$) & Hiển thị ``Mật khẩu không trùng khớp. Vui lòng kiểm tra lại!''. & Frontend chặn và hiển thị đúng thông báo. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\caption{Bảng Test Cases chức năng B2 -- Đăng ký tài khoản (Domain Analysis)}
+\textbf{29} & B2 & T23--T27 & Đăng ký với Mật khẩu 101 ký tự (Off $x \le 100$, $y = 101$) & 1. Nhập mật khẩu 101 ký tự đủ 4 nhóm\newline 2. Nhập Confirm 101 ký tự trùng khớp, nhấn Đăng ký & MK: 101 ký tự ($x=101$)\newline XN: 101 ký tự ($y=101$) & Hệ thống từ chối, báo lỗi độ dài mật khẩu vượt quá 100 ký tự. & Hệ thống chặn và báo lỗi vượt quá 100 ký tự. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{30} & B2 & T30, T32 & Đăng ký thành công với Mật khẩu 10 ký tự (On $y = x$, $x = 10$) & 1. Nhập đầy đủ thông tin hợp lệ, MK 10 ký tự\newline 2. Nhập Confirm 10 ký tự trùng khớp, nhấn Đăng ký & Tên: testuser\_ok\newline MK/XN: Test@12345 ($x=10, y=10$) & Tạo tài khoản, gán role ``User'', chuyển hướng về /login. & Đăng ký thành công, chuyển về /login. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{31} & B2 & T23--T27 & Đăng ký khi độ dài Xác nhận nhỏ hơn Mật khẩu (Off$-$ $y = x$, $x = 14, y = 13$) & 1. Nhập MK hợp lệ dài 14 ký tự\newline 2. Nhập Confirm dài 13 ký tự & MK: Test@123456789 ($x=14$)\newline XN: Test@12345678 ($y=13$) & Hiển thị ``Mật khẩu không trùng khớp. Vui lòng kiểm tra lại!''. & Frontend chặn và hiển thị đúng thông báo. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{32} & B2 & T23--T27 & Đăng ký khi độ dài Xác nhận lớn hơn Mật khẩu (Off$+$ $y = x$, $x = 15, y = 16$) & 1. Nhập MK hợp lệ dài 15 ký tự\newline 2. Nhập Confirm dài 16 ký tự & MK: Test@1234567890 ($x=15$)\newline XN: Test@12345678901 ($y=16$) & Hiển thị ``Mật khẩu không trùng khớp. Vui lòng kiểm tra lại!''. & Frontend chặn và hiển thị đúng thông báo. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \end{longtable}
 \endgroup
 
@@ -1832,7 +1840,9 @@ $C_3$ & $y = 24 - x$ (ràng buộc liên biến thời gian) \\ \hline
 \small
 \begin{tabularx}{\textwidth}{|X|C{2.0cm}|C{1.1cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|}
 \hline
-\rowcolor[RGB]{179, 205, 255}
+\multicolumn{3}{|c|}{\cellcolor[RGB]{255, 224, 130}\textbf{Boundary}} & \multicolumn{7}{c|}{\cellcolor[RGB]{179, 205, 255}\textbf{Test-cases}} \tabularnewline
+\hline
+\rowcolor{gray!20}
 \textbf{Biến} & \textbf{Điều kiện} & \textbf{Loại} & \textbf{TC1} & \textbf{TC2} & \textbf{TC3} & \textbf{TC4} & \textbf{TC5} & \textbf{TC6} & \textbf{TC7} \tabularnewline
 \hline
 \multirow{5}{*}{$x$ (giờ đã tồn tại)} & \multirow{2}{*}{$x \ge 0$} & On & 0 & & & & & & \\ \cline{3-10}
