@@ -913,6 +913,8 @@ B16 & T183 & 236 \\ \hline
 \caption{Bảng mã yêu cầu kỹ thuật cập nhật thông tin hồ sơ (B3)}
 \end{table}
 
+\noindent\textit{Ghi chú mã yêu cầu:} Bảng TRD trên trích theo tài liệu thiết kế phân lớp tương đương (\texttt{T36--T46}), còn cột \texttt{TR\#} trong bảng Test Cases chi tiết bên dưới giữ nguyên theo Ma trận truy xuất yêu cầu (RTM) của hệ thống (\texttt{T34--T63}).
+
 \noindent\textbf{Độ dài Họ tên khi cập nhật (FullName Length - BVA):}
 \begin{figure}[H]
 \centering
@@ -2870,11 +2872,12 @@ Module B13 là một chu trình chuyển đổi trạng thái đa vai trò (Ngư
     \end{itemize}
 \end{itemize}
 
+\pagebreak
 \noindent\textbf{c. Đồ thị nhân -- quả (Cause--Effect Graph)}
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[
-    scale=0.82, transform shape,
+    scale=0.84, transform shape,
     ce/.style={circle, draw=black, thick, fill=white, minimum size=0.84cm, font=\bfseries\color{blue!85!black}, inner sep=1pt},
     edge/.style={draw=red!55!black, thick},
     logic/.style={font=\small\bfseries\color{blue!85!black}, fill=white, inner sep=1pt},
@@ -2883,72 +2886,72 @@ Module B13 là một chu trình chuyển đổi trạng thái đa vai trò (Ngư
     % Nguyên nhân (Causes)
     \node[ce] (C1) at (0, 6.2) {C1};
     \node[ce] (C2) at (0, 4.4) {C2};
-    \node[ce] (C3) at (0, 1.8) {C3};
-    \node[ce] (C4) at (0, 0.0) {C4};
+    \node[ce] (C3) at (0, 2.2) {C3};
+    \node[ce] (C4) at (0, 0.2) {C4};
     \node[ce] (C5) at (0, -1.8) {C5};
 
     % Nút trung gian
-    \node[ce] (M1) at (3.6, 4.4) {M1};
-    \node[ce] (M4) at (3.6, 2.6) {M4};
+    \node[ce] (M1) at (3.6, 4.2) {M1};
+    \node[ce] (M4) at (3.6, 2.2) {M4};
     \node[ce] (M2) at (3.6, -1.4) {M2};
-    \node[ce] (M3) at (7.6, -1.6) {M3};
+    \node[ce] (M3) at (7.4, -1.4) {M3};
 
     % Kết quả (Effects)
     \node[ce] (E2) at (11.4, 6.2) {E2};
-    \node[ce] (E1) at (11.4, 3.8) {E1};
+    \node[ce] (E1) at (11.4, 4.0) {E1};
     \node[ce] (E4) at (11.4, 1.2) {E4};
-    \node[ce] (E3) at (11.4, -1.6) {E3};
+    \node[ce] (E3) at (11.4, -1.4) {E3};
 
     % M1 = C1 and C2
     \draw[edge] (C1) -- (M1);
     \draw[edge] (C2) -- (M1);
-    \draw[edge] (M1) ++(155:0.88cm) arc (155:190:0.88cm);
-    \node[logic] at ([xshift=-1.18cm, yshift=0.14cm]M1.center) {$\cap$};
+    \draw[edge] (M1) ++(148:0.90cm) arc (148:179:0.90cm);
+    \node[logic] at ([shift=(163.5:1.22cm)]M1.center) {$\cap$};
 
     % E2 = (not C1) or (not C2)
-    \draw[edge] (C1) -- node[notmark, pos=0.50] {$\sim$} (E2);
-    \draw[edge] (C2) -- node[notmark, pos=0.65] {$\sim$} (E2);
-    \draw[edge] (E2) ++(175:1.05cm) arc (175:198:1.05cm);
-    \node[logic] at ([xshift=-1.35cm, yshift=-0.12cm]E2.center) {$\cup$};
+    \draw[edge] (C1) -- node[notmark, pos=0.48] {$\sim$} (E2);
+    \draw[edge] (C2) -- node[notmark, pos=0.58] {$\sim$} (E2);
+    \draw[edge] (E2) ++(177:1.70cm) arc (177:192:1.70cm);
+    \node[logic] at ([shift=(184.5:2.05cm)]E2.center) {$\cup$};
 
     % M4 = C3 and C4 and C5
     \draw[edge] (C3) -- (M4);
     \draw[edge] (C4) -- (M4);
     \draw[edge] (C5) -- (M4);
-    \draw[edge] (M4) ++(185:0.90cm) arc (185:235:0.90cm);
-    \node[logic] at ([xshift=-1.15cm, yshift=-0.42cm]M4.center) {$\cap$};
+    \draw[edge] (M4) ++(178:1.05cm) arc (178:230:1.05cm);
+    \node[logic] at ([shift=(195:1.38cm)]M4.center) {$\cap$};
 
     % M2 = C3 and C4 and (not C5)
     \draw[edge] (C3) -- (M2);
     \draw[edge] (C4) -- (M2);
     \draw[edge] (C5) -- node[notmark, pos=0.45] {$\sim$} (M2);
-    \draw[edge] (M2) ++(135:0.90cm) arc (135:195:0.90cm);
-    \node[logic] at ([xshift=-1.18cm, yshift=0.22cm]M2.center) {$\cap$};
+    \draw[edge] (M2) ++(133:0.85cm) arc (133:188:0.85cm);
+    \node[logic] at ([shift=(171:1.15cm)]M2.center) {$\cap$};
 
     % M3 = (not C3) or M2
     \draw[edge] (C3) -- node[notmark, pos=0.72] {$\sim$} (M3);
     \draw[edge] (M2) -- (M3);
-    \draw[edge] (M3) ++(152:0.90cm) arc (152:186:0.90cm);
-    \node[logic] at ([xshift=-1.22cm, yshift=0.18cm]M3.center) {$\cup$};
+    \draw[edge] (M3) ++(152:0.85cm) arc (152:182:0.85cm);
+    \node[logic] at ([shift=(167:1.15cm)]M3.center) {$\cup$};
 
     % E1 = M1 and M4
     \draw[edge] (M1) -- (E1);
     \draw[edge] (M4) -- (E1);
-    \draw[edge] (E1) ++(170:1.00cm) arc (170:196:1.00cm);
-    \node[logic] at ([xshift=-1.32cm, yshift=-0.06cm]E1.center) {$\cap$};
+    \draw[edge] (E1) ++(170:1.00cm) arc (170:195:1.00cm);
+    \node[logic] at ([shift=(182.5:1.30cm)]E1.center) {$\cap$};
 
     % E4 = M1 and C3 and (not C4)
     \draw[edge] (M1) -- (E4);
     \draw[edge] (C3) -- (E4);
     \draw[edge] (C4) -- node[notmark, pos=0.78] {$\sim$} (E4);
-    \draw[edge] (E4) ++(154:1.05cm) arc (154:188:1.05cm);
-    \node[logic] at ([xshift=-1.35cm, yshift=0.18cm]E4.center) {$\cap$};
+    \draw[edge] (E4) ++(152:1.05cm) arc (152:187:1.05cm);
+    \node[logic] at ([shift=(164.5:1.35cm)]E4.center) {$\cap$};
 
     % E3 = M1 and M3
     \draw[edge] (M1) -- (E3);
     \draw[edge] (M3) -- (E3);
-    \draw[edge] (E3) ++(140:0.95cm) arc (140:182:0.95cm);
-    \node[logic] at ([xshift=-1.25cm, yshift=0.30cm]E3.center) {$\cap$};
+    \draw[edge] (E3) ++(138:0.95cm) arc (138:182:0.95cm);
+    \node[logic] at ([shift=(160:1.25cm)]E3.center) {$\cap$};
 \end{tikzpicture}
 \caption{Đồ thị nhân -- quả chức năng Đăng nhập người dùng (B1)}
 \end{figure}
@@ -3431,11 +3434,11 @@ PW16 & Tin nhắn & Ký tự đặc biệt & Nhấn Enter & Chưa đăng nhập 
 \hline
 \caption{Bảng Test Cases chức năng B12 -- Tìm kiếm toàn hệ thống (Pairwise)}
 \endlastfoot
-\textbf{195} & B12 & T142 & Tìm kiếm người dùng từ thanh tìm kiếm Header & 1. Đăng nhập tài khoản hợp lệ\newline 2. Nhấp vào ô tìm kiếm trên thanh tiêu đề (Header)\newline 3. Nhập từ khóa tên người dùng & Tài khoản: User 4\newline TK tìm kiếm: John Doe & Hiển thị đúng các tài khoản có tên/username khớp từ khóa. & Hiển thị đúng các tài khoản có tên/username khớp từ khóa. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{196} & B12 & T143 & Tìm kiếm bài viết trên Bảng tin theo từ khóa nội dung & 1. Ở trang Bảng tin chung (Feed)\newline 2. Nhập từ khóa nội dung bài viết ``bầu trời''\newline 3. Nhấn Enter hoặc bấm nút tìm kiếm & Từ khóa: ``bầu trời''\newline Tài khoản: User 4 & Bảng tin lọc và hiển thị danh sách các bài viết có chứa từ khóa nội dung tương ứng. & Bảng tin lọc và hiển thị danh sách các bài viết có chứa từ khóa tương ứng. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{197} & B12 & T144 & Tìm kiếm và lọc nhóm theo tên trên trang danh sách nhóm & 1. Truy cập trang Nhóm cộng đồng (\texttt{/groups})\newline 2. Nhấp vào ô ``Tìm kiếm nhóm...''\newline 3. Nhập từ khóa tên nhóm ``Tech'' & Từ khóa: ``tech''\newline Tài khoản: User 4 & Danh sách nhóm lọc tức thì, chỉ hiển thị các nhóm có tên chứa từ khóa ``Tech''. & Danh sách nhóm lọc tức thì, chỉ hiển thị các nhóm chứa ``Tech''. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{198} & B12 & T145 & Tìm kiếm nhanh bài viết trong phạm vi một nhóm cụ thể & 1. Truy cập trang chi tiết nhóm đã tham gia\newline 2. Tìm đến ô tìm kiếm bài viết nội bộ\newline 3. Nhập từ khóa nội dung bài viết & Từ khóa: ``thông báo''\newline Tài khoản: User 4 & Danh sách bài viết trong nhóm tự động lọc và chỉ hiển thị bài khớp từ khóa. & Danh sách bài viết trong nhóm tự động lọc đúng theo từ khóa. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{199} & B12 & T146 & Lọc danh sách cuộc trò chuyện tin nhắn theo tên bạn bè/nhóm & 1. Truy cập trang Tin nhắn\newline 2. Nhấp vào ô tìm kiếm phía trên danh sách hội thoại\newline 3. Nhập từ khóa tên bạn bè ``Doe'' & Tài khoản: User 4\newline Từ khóa: ``Doe'' & Danh sách cuộc trò chuyện tự động lọc ngay lập tức, giữ lại hội thoại chứa ``Doe''. & Danh sách cuộc trò chuyện lọc tức thì đúng hội thoại chứa ``Doe''. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{200} & B12 & T142 & Tìm kiếm người dùng từ thanh tìm kiếm Header & 1. Đăng nhập tài khoản hợp lệ\newline 2. Nhấp vào ô tìm kiếm trên thanh tiêu đề (Header)\newline 3. Nhập từ khóa tên người dùng & Tài khoản: User 4\newline TK tìm kiếm: John Doe & Hiển thị đúng các tài khoản có tên/username khớp từ khóa. & Hiển thị đúng các tài khoản có tên/username khớp từ khóa. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{201} & B12 & T143 & Tìm kiếm bài viết trên Bảng tin theo từ khóa nội dung & 1. Ở trang Bảng tin chung (Feed)\newline 2. Nhập từ khóa nội dung bài viết ``bầu trời''\newline 3. Nhấn Enter hoặc bấm nút tìm kiếm & Từ khóa: ``bầu trời''\newline Tài khoản: User 4 & Bảng tin lọc và hiển thị danh sách các bài viết có chứa từ khóa nội dung tương ứng. & Bảng tin lọc và hiển thị danh sách các bài viết có chứa từ khóa tương ứng. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{202} & B12 & T144 & Tìm kiếm và lọc nhóm theo tên trên trang danh sách nhóm & 1. Truy cập trang Nhóm cộng đồng (\texttt{/groups})\newline 2. Nhấp vào ô ``Tìm kiếm nhóm...''\newline 3. Nhập từ khóa tên nhóm ``Tech'' & Từ khóa: ``tech''\newline Tài khoản: User 4 & Danh sách nhóm lọc tức thì, chỉ hiển thị các nhóm có tên chứa từ khóa ``Tech''. & Danh sách nhóm lọc tức thì, chỉ hiển thị các nhóm chứa ``Tech''. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{203} & B12 & T145 & Tìm kiếm nhanh bài viết trong phạm vi một nhóm cụ thể & 1. Truy cập trang chi tiết nhóm đã tham gia\newline 2. Tìm đến ô tìm kiếm bài viết nội bộ\newline 3. Nhập từ khóa nội dung bài viết & Từ khóa: ``thông báo''\newline Tài khoản: User 4 & Danh sách bài viết trong nhóm tự động lọc và chỉ hiển thị bài khớp từ khóa. & Danh sách bài viết trong nhóm tự động lọc đúng theo từ khóa. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{204} & B12 & T146 & Lọc danh sách cuộc trò chuyện tin nhắn theo tên bạn bè/nhóm & 1. Truy cập trang Tin nhắn\newline 2. Nhấp vào ô tìm kiếm phía trên danh sách hội thoại\newline 3. Nhập từ khóa tên bạn bè ``Doe'' & Tài khoản: User 4\newline Từ khóa: ``Doe'' & Danh sách cuộc trò chuyện tự động lọc ngay lập tức, giữ lại hội thoại chứa ``Doe''. & Danh sách cuộc trò chuyện lọc tức thì đúng hội thoại chứa ``Doe''. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \end{longtable}
 \endgroup
 
