@@ -1267,9 +1267,6 @@ EC2\_TargetUser & Tài khoản không tồn tại (ID không có trong CSDL) & \
 
 
 \subsubsection{Chức năng B11 -- Hashtag \& Phân loại nội dung}
-\begin{tcolorbox}[colback=yellow!10, colframe=orange!70!black, title=\textbf{Ghi chú -- Chưa hoàn thành}, fonttitle=\bfseries]
-Mục 3.1.2 hiện mới dừng ở phân lớp đơn lẻ ($n=1$) cho phần \textit{Nhận diện Hashtag} và \textit{Tìm kiếm Hashtag}; cần bổ sung thêm biến đầu vào để lập bảng \textbf{Tổ hợp lớp tương đương ($n+2$)} ở bước sau.
-\end{tcolorbox}
 
 \begin{itemize}[leftmargin=1.2cm, noitemsep]
     \item[\textbf{--}] \textbf{Mã BRD:} B11
@@ -1319,6 +1316,41 @@ EC4\_Hashtag & Ký tự \texttt{\#} đứng riêng hoặc không kèm chuỗi ch
 \caption{Phân chia lớp tương đương nhận diện Hashtag (B11)}
 \end{table}
 
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|L{2.6cm}|X|L{4.2cm}|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{Lớp} & \textbf{Điều kiện} & \textbf{Tính hợp lệ} \tabularnewline
+\hline
+EC1\_Auth & Người dùng đã đăng nhập hợp lệ & \textcolor{blue}{\textbf{Hợp lệ}} \\ \hline
+EC2\_Auth & Người dùng chưa đăng nhập hoặc phiên hết hạn & \textcolor{red}{\textbf{Không hợp lệ}} \\ \hline
+\end{tabularx}
+\caption{Phân chia lớp tương đương Trạng thái đăng nhập khi đăng bài chứa Hashtag (B11)}
+\end{table}
+
+\noindent\textbf{Tổ hợp lớp tương đương theo phương pháp $n+2$ (Nhận diện Hashtag):}
+\begin{itemize}[leftmargin=1.2cm, noitemsep]
+    \item[\textbf{--}] Có 2 loại dữ liệu đầu vào: Trạng thái đăng nhập, Định dạng Hashtag trong bài viết.
+    \item[\textbf{--}] Với $n = 2$: $n + 2 = 2 + 2 = 4$ test-case.
+\end{itemize}
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|c|X|X|L{4.2cm}|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{Test-case} & \textbf{Trạng thái đăng nhập} & \textbf{Định dạng Hashtag} & \textbf{Kết quả} \tabularnewline
+\hline
+\textbf{TC1} & Đã đăng nhập (\texttt{EC1\_Auth}) & Hợp lệ, ví dụ \texttt{\#dulich} (\texttt{EC1\_Hashtag}) & \textcolor{blue}{\textbf{Hợp lệ}} -- Đăng bài và nhận diện hashtag thành liên kết \\ \hline
+\textbf{TC2} & Chưa đăng nhập (\texttt{EC2\_Auth}) & Ký tự \texttt{\#} đứng riêng / \texttt{\#@!} (\texttt{EC4\_Hashtag}) & \textcolor{red}{\textbf{Không hợp lệ}} -- 401 Unauthorized, từ chối đăng bài \\ \hline
+\textbf{TC3} & Đã đăng nhập (\texttt{EC1\_Auth}) & Ký tự \texttt{\#} đứng riêng / \texttt{\#@!} (\texttt{EC4\_Hashtag}) & \textcolor{red}{\textbf{Không tạo hashtag}} -- Hiển thị văn bản thường \\ \hline
+\textbf{TC4} & Chưa đăng nhập (\texttt{EC2\_Auth}) & Hợp lệ, ví dụ \texttt{\#dulich} (\texttt{EC1\_Hashtag}) & \textcolor{red}{\textbf{Không hợp lệ}} -- 401 Unauthorized, chuyển hướng đăng nhập \\ \hline
+\end{tabularx}
+\caption{Bảng tổ hợp kiểm thử nhận diện Hashtag theo phương pháp $n+2$ (B11)}
+\end{table}
+
 \noindent\textbf{b. Tìm kiếm Hashtag}
 
 \noindent -- Phân chia lớp tương đương:
@@ -1336,6 +1368,41 @@ EC3\_Search & Hashtag không tồn tại trong hệ thống & \textcolor{red}{\t
 EC4\_Search & Hashtag từng tồn tại nhưng bài viết duy nhất gắn hashtag đó đã bị xóa & \textcolor{red}{\textbf{Không hợp lệ về mặt kết quả}} -- không còn bài viết phù hợp \\ \hline
 \end{tabularx}
 \caption{Phân chia lớp tương đương tìm kiếm Hashtag (B11)}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|L{2.6cm}|X|L{4.8cm}|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{Lớp} & \textbf{Điều kiện} & \textbf{Tính hợp lệ} \tabularnewline
+\hline
+EC1\_Syntax & Từ khóa có tiền tố \texttt{\#} kèm tên chủ đề hợp lệ (ví dụ \texttt{\#dulich}) & \textcolor{blue}{\textbf{Hợp lệ}} -- kích hoạt bộ lọc theo thẻ chủ đề \\ \hline
+EC2\_Syntax & Từ khóa chỉ chứa ký tự \texttt{\#} đơn lẻ hoặc thiếu tên chủ đề & \textcolor{red}{\textbf{Không hợp lệ}} -- không lọc được theo tên hashtag cụ thể \\ \hline
+\end{tabularx}
+\caption{Phân chia lớp tương đương Cú pháp từ khóa tìm kiếm Hashtag (B11)}
+\end{table}
+
+\noindent\textbf{Tổ hợp lớp tương đương theo phương pháp $n+2$ (Tìm kiếm Hashtag):}
+\begin{itemize}[leftmargin=1.2cm, noitemsep]
+    \item[\textbf{--}] Có 2 loại dữ liệu đầu vào: Cú pháp từ khóa tìm kiếm, Tình trạng tồn tại của Hashtag.
+    \item[\textbf{--}] Với $n = 2$: $n + 2 = 2 + 2 = 4$ test-case.
+\end{itemize}
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|c|X|X|L{4.2cm}|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{Test-case} & \textbf{Cú pháp từ khóa} & \textbf{Tình trạng Hashtag} & \textbf{Kết quả} \tabularnewline
+\hline
+\textbf{TC5} & Có tiền tố \texttt{\#} hợp lệ: \texttt{\#dulich} (\texttt{EC1\_Syntax}) & Tồn tại trong hệ thống (\texttt{EC1\_Search}) & \textcolor{blue}{\textbf{Hợp lệ}} -- Trả về danh sách bài viết gắn \texttt{\#dulich} \\ \hline
+\textbf{TC6} & Chỉ nhập \texttt{\#} đơn lẻ (\texttt{EC2\_Syntax}) & Không tồn tại trong hệ thống (\texttt{EC3\_Search}) & \textcolor{red}{\textbf{Không hợp lệ}} -- Không trả về kết quả lọc theo chủ đề \\ \hline
+\textbf{TC7} & Có tiền tố \texttt{\#} hợp lệ: \texttt{\#khongtontai999} (\texttt{EC1\_Syntax}) & Không tồn tại / Bài đã bị xóa (\texttt{EC3\_Search}/\texttt{EC4\_Search}) & \textcolor{red}{\textbf{Không có kết quả}} -- Báo ``Không tìm thấy bài viết nào phù hợp'' \\ \hline
+\textbf{TC8} & Chỉ nhập \texttt{\#} đơn lẻ (\texttt{EC2\_Syntax}) & Hashtag \texttt{\#dulich} có tồn tại (\texttt{EC1\_Search}) & \textcolor{red}{\textbf{Không hợp lệ}} -- Không lọc đúng theo \texttt{\#dulich} \\ \hline
+\end{tabularx}
+\caption{Bảng tổ hợp kiểm thử tìm kiếm Hashtag theo phương pháp $n+2$ (B11)}
 \end{table}
 
 \noindent\textbf{c. Bảng Test Cases chi tiết chức năng B11 (Hashtag \& Phân loại nội dung):}
@@ -1688,7 +1755,7 @@ EC4\_Search & Hashtag từng tồn tại nhưng bài viết duy nhất gắn has
 \centering
 \small
 \begin{minipage}[t]{0.48\textwidth}
-\begin{tabularx}{\linewidth}{|C{1.4cm}|X|}
+\begin{tabularx}{\linewidth}{|C{1.2cm}|>{\raggedright\arraybackslash}X|}
 \hline
 \rowcolor[RGB]{179, 205, 255}
 \textbf{Biến} & \textbf{Ý nghĩa} \tabularnewline
@@ -1699,7 +1766,7 @@ $y$ & Độ dài chuỗi Mật khẩu xác nhận (\texttt{ConfirmPassword}) \\ 
 \caption{Biến đầu vào chức năng Đăng ký (B2)}
 \end{minipage}\hfill
 \begin{minipage}[t]{0.48\textwidth}
-\begin{tabularx}{\linewidth}{|C{1.4cm}|X|}
+\begin{tabularx}{\linewidth}{|C{1.2cm}|>{\raggedright\arraybackslash}X|}
 \hline
 \rowcolor[RGB]{179, 205, 255}
 \textbf{Mã} & \textbf{Điều kiện kiểm thử} \tabularnewline
@@ -1707,20 +1774,21 @@ $y$ & Độ dài chuỗi Mật khẩu xác nhận (\texttt{ConfirmPassword}) \\ 
 $C_1$ & $x \ge 8$ (độ dài tối thiểu) \\ \hline
 $C_2$ & $x \le 100$ (độ dài tối đa) \\ \hline
 $C_3$ & $y = x$ (độ dài xác nhận bằng mật khẩu) \\ \hline
-$C_4$ & \texttt{Password == ConfirmPassword} \\ \hline
+$C_4$ & \texttt{Password == ConfirmPassword} (trùng khớp nội dung, kiểm thử bổ sung khi $y = x$) \\ \hline
 \end{tabularx}
 \caption{Các điều kiện kiểm thử (\texttt{C1}--\texttt{C4}) cho B2}
 \end{minipage}
 \end{table}
 
 \begin{itemize}[leftmargin=1.2cm, noitemsep]
-    \item[\textbf{--}] \textbf{Ràng buộc miền:} $8 \le x \le 100$ và $y = x$ (điều kiện trùng khớp nội dung \texttt{Password == ConfirmPassword} được kiểm tra bổ sung).
+    \item[\textbf{--}] \textbf{Ràng buộc miền:} $8 \le x \le 100$ và $y = x$ (điều kiện \texttt{C4}: \texttt{Password == ConfirmPassword} không thuộc biến có thứ tự tự nhiên trên trục số nên được kiểm thử bổ sung ngoài ma trận với 2 ca cùng độ dài nhưng khác nội dung).
 \end{itemize}
 
 \begin{table}[H]
 \centering
 \small
-\begin{tabularx}{\textwidth}{|X|C{2.0cm}|C{1.1cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|}
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}X|C{1.8cm}|C{1.1cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|}
 \hline
 \multicolumn{3}{|c|}{\cellcolor[RGB]{255, 224, 130}\textbf{Boundary}} & \multicolumn{7}{c|}{\cellcolor[RGB]{179, 205, 255}\textbf{Test-cases}} \tabularnewline
 \hline
@@ -1741,7 +1809,7 @@ $C_4$ & \texttt{Password == ConfirmPassword} \\ \hline
 \caption{Ma trận Domain Analysis cho độ dài Mật khẩu và Xác nhận mật khẩu (B2)}
 \end{table}
 
-\noindent\textit{Ghi chú:} Ở \texttt{TC1}--\texttt{TC4}, giá trị của $y$ được giữ bằng $x$ nhằm bảo toàn quan hệ $y = x$ khi kiểm thử độc lập từng biên của $x$ theo tiêu chí \textit{one-by-one}; hai điểm ngoài của điều kiện $y = x$ được kiểm thử đầy đủ tại \texttt{TC6} ($\text{Off}-$, $y < x$) và \texttt{TC7} ($\text{Off}+$, $y > x$).
+\noindent\textit{Ghi chú:} Ở \texttt{TC1}--\texttt{TC4}, giữ $y = x$ và hai chuỗi trùng nội dung để cô lập biên của $x$; \texttt{TC6}--\texttt{TC7} là điểm $\text{Off}-$ và $\text{Off}+$ của $C_3$. Điều kiện $C_4$ có điểm \texttt{On} tại \texttt{TC1}--\texttt{TC5} và hai điểm \texttt{Off} tại \texttt{TC33}, \texttt{TC34} ($x = y = 11$, ký tự khác nhau đầu tiên của \texttt{ConfirmPassword} nhỏ hơn và lớn hơn \texttt{Password}).
 
 \noindent\textbf{c. Bảng Test Cases chi tiết chức năng B2 (Đăng ký tài khoản -- Ràng buộc mật khẩu):}
 \begingroup
@@ -1769,7 +1837,9 @@ $C_4$ & \texttt{Password == ConfirmPassword} \\ \hline
 \textbf{29} & B2 & T23--T27 & Đăng ký với Mật khẩu 101 ký tự (Off $x \le 100$, $y = 101$) & 1. Nhập mật khẩu 101 ký tự đủ 4 nhóm\newline 2. Nhập Confirm 101 ký tự trùng khớp, nhấn Đăng ký & MK: 101 ký tự ($x=101$)\newline XN: 101 ký tự ($y=101$) & Hệ thống từ chối, báo lỗi độ dài mật khẩu vượt quá 100 ký tự. & Hệ thống chặn và báo lỗi vượt quá 100 ký tự. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{30} & B2 & T30, T32 & Đăng ký thành công với Mật khẩu 10 ký tự (On $y = x$, $x = 10$) & 1. Nhập đầy đủ thông tin hợp lệ, MK 10 ký tự\newline 2. Nhập Confirm 10 ký tự trùng khớp, nhấn Đăng ký & Tên: testuser\_ok\newline MK/XN: Test@12345 ($x=10, y=10$) & Tạo tài khoản, gán role ``User'', chuyển hướng về /login. & Đăng ký thành công, chuyển về /login. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{31} & B2 & T23--T27 & Đăng ký khi độ dài Xác nhận nhỏ hơn Mật khẩu (Off$-$ $y = x$, $x = 14, y = 13$) & 1. Nhập MK hợp lệ dài 14 ký tự\newline 2. Nhập Confirm dài 13 ký tự & MK: Test@123456789 ($x=14$)\newline XN: Test@12345678 ($y=13$) & Hiển thị ``Mật khẩu không trùng khớp. Vui lòng kiểm tra lại!''. & Frontend chặn và hiển thị đúng thông báo. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{32} & B2 & T23--T27 & Đăng ký khi độ dài Xác nhận lớn hơn Mật khẩu (Off$+$ $y = x$, $x = 15, y = 16$) & 1. Nhập MK hợp lệ dài 15 ký tự\newline 2. Nhập Confirm dài 16 ký tự & MK: Test@1234567890 ($x=15$)\newline XN: Test@12345678901 ($y=16$) & Hiển thị ``Mật khẩu không trùng khớp. Vui lòng kiểm tra lại!''. & Frontend chặn và hiển thị đúng thông báo. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{32} & B2 & T23--T27 & Đăng ký khi độ dài Xác nhận lớn hơn Mật khẩu (Off$+$ $y = x$, $x = 15, y = 16$) & 1. Nhập MK hợp lệ dài 15 ký tự\newline 2. Nhập Confirm dài 16 ký tự & MK: Test@12345\allowbreak 67890 ($x=15$)\newline XN: Test@12345\allowbreak 678901 ($y=16$) & Hiển thị ``Mật khẩu không trùng khớp. Vui lòng kiểm tra lại!''. & Frontend chặn và hiển thị đúng thông báo. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{33} & B2 & T23--T27 & Đăng ký khi Xác nhận cùng độ dài nhưng khác nội dung -- lệch dưới (Bổ sung $C_4$, $x = y = 11$) & 1. Nhập MK hợp lệ dài 11 ký tự\newline 2. Nhập Confirm dài 11 ký tự khác ký tự cuối (nhỏ hơn MK) & MK: Abcdef@1234 ($x=11$)\newline XN: Abcdef@1233 ($y=11$) & Hiển thị ``Mật khẩu không trùng khớp. Vui lòng kiểm tra lại!''. & Frontend chặn và hiển thị đúng thông báo. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{34} & B2 & T23--T27 & Đăng ký khi Xác nhận cùng độ dài nhưng khác nội dung -- lệch trên (Bổ sung $C_4$, $x = y = 11$) & 1. Nhập MK hợp lệ dài 11 ký tự\newline 2. Nhập Confirm dài 11 ký tự khác ký tự cuối (lớn hơn MK) & MK: Abcdef@1234 ($x=11$)\newline XN: Abcdef@1235 ($y=11$) & Hiển thị ``Mật khẩu không trùng khớp. Vui lòng kiểm tra lại!''. & Frontend chặn và hiển thị đúng thông báo. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \end{longtable}
 \endgroup
 
@@ -1801,38 +1871,41 @@ $C_4$ & \texttt{Password == ConfirmPassword} \\ \hline
 \caption{Bảng mã yêu cầu kỹ thuật chức năng Khoảnh khắc 24h (B10)}
 \end{table}
 
+\noindent\textit{Ghi chú phạm vi:} Yêu cầu \texttt{T125} là điều kiện đầu vào khi tạo Story, nằm ngoài phạm vi phân tích miền về thời hạn hiển thị 24 giờ (\texttt{T132}).
+
+\pagebreak
 \noindent\textbf{b. Xác định biến đầu vào, điều kiện kiểm thử \& Ma trận Domain Analysis}
 
 \begin{table}[H]
 \centering
 \small
 \begin{minipage}[t]{0.48\textwidth}
-\begin{tabularx}{\linewidth}{|C{1.4cm}|X|}
+\begin{tabularx}{\linewidth}{|C{1.2cm}|>{\raggedright\arraybackslash}X|}
 \hline
 \rowcolor[RGB]{179, 205, 255}
 \textbf{Biến} & \textbf{Ý nghĩa} \tabularnewline
 \hline
 $x$ & Số giờ đã trôi qua kể từ lúc đăng Story \\ \hline
-$y$ & Số giờ còn lại trước khi Story hết hạn \\ \hline
+$y$ & Số giờ còn lại hiển thị trên giao diện/API trước khi Story hết hạn \\ \hline
 \end{tabularx}
 \caption{Biến đầu vào chức năng Story 24h (B10)}
 \end{minipage}\hfill
 \begin{minipage}[t]{0.48\textwidth}
-\begin{tabularx}{\linewidth}{|C{1.4cm}|X|}
+\begin{tabularx}{\linewidth}{|C{1.2cm}|>{\raggedright\arraybackslash}X|}
 \hline
 \rowcolor[RGB]{179, 205, 255}
 \textbf{Mã} & \textbf{Điều kiện kiểm thử} \tabularnewline
 \hline
 $C_1$ & $x \ge 0$ (thời gian tồn tại không âm) \\ \hline
 $C_2$ & $x < 24$ (trong hạn 24 giờ) \\ \hline
-$C_3$ & $y = 24 - x$ (ràng buộc liên biến thời gian) \\ \hline
+$C_3$ & $y = 24 - x$ (thời gian còn lại hiển thị khớp $24 - x$) \\ \hline
 \end{tabularx}
 \caption{Các điều kiện kiểm thử (\texttt{C1}--\texttt{C3}) cho B10}
 \end{minipage}
 \end{table}
 
 \begin{itemize}[leftmargin=1.2cm, noitemsep]
-    \item[\textbf{--}] \textbf{Ràng buộc miền:} $0 \le x < 24$ và $y = 24 - x$ (với \texttt{TC2}, giá trị $x = -1$ nằm ngoài miền hợp lệ trước lúc đăng, $y = 25$ chỉ dùng đối chiếu công thức).
+    \item[\textbf{--}] \textbf{Ràng buộc miền:} $0 \le x < 24$ và $y = 24 - x$ (giả định xét $x, y$ theo đơn vị giờ nguyên). Với \texttt{TC2}, $x = -1$ là thời điểm trước lúc đăng (ngoài miền); $y = 25$ chỉ để thỏa công thức $y = 24 - x$.
 \end{itemize}
 
 \begin{table}[H]
@@ -1876,14 +1949,16 @@ $C_3$ & $y = 24 - x$ (ràng buộc liên biến thời gian) \\ \hline
 \endhead
 \hline
 \endfoot
+\hline
+\caption{Bảng Test Cases chức năng B10 -- Khoảnh khắc 24h (Domain Analysis)}
+\endlastfoot
 \textbf{153} & B10 & T132 & Kiểm tra Story tại thời điểm vừa đăng (On $x \ge 0$) & 1. Đăng một Story mới\newline 2. Kiểm tra ngay tại thời điểm $x = 0$ giờ & $x = 0$ giờ\newline $y = 24$ giờ & Story hợp lệ, hiển thị ngay trên thanh Khoảnh khắc. & Story hiển thị bình thường. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{154} & B10 & T132 & Kiểm tra thời gian trước khi đăng (Off $x \ge 0$) & 1. Thiết lập mốc kiểm tra $x = -1$ giờ (trước thời điểm tạo)\newline 2. Truy vấn danh sách Story & $x = -1$ giờ\newline $y = 25$ giờ & Không hợp lệ; Story chưa tồn tại và không hiển thị. & Hệ thống không hiển thị Story. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{154} & B10 & T132 & Kiểm tra thời gian trước khi đăng (Off $x \ge 0$) & 1. Giả lập $x = -1$ giờ (chỉnh \texttt{CreatedAt} trong CSDL hoặc giờ server trước lúc đăng 1 giờ)\newline 2. Truy vấn danh sách Story & $x = -1$ giờ\newline $y = 25$ giờ & Không hợp lệ; Story chưa tồn tại và không hiển thị. & Hệ thống không hiển thị Story. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{155} & B10 & T132 & Kiểm tra Story tại đúng mốc hết hạn 24 giờ (On $x < 24$) & 1. Đăng Story mới\newline 2. Chờ/chỉnh thời gian đúng mốc 24 giờ, quan sát & $x = 24$ giờ\newline $y = 0$ giờ & Hết hạn ($x < 24$ sai); hệ thống tự động lọc bỏ Story khỏi danh sách. & Sau 24 giờ Story tự động biến mất. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{156} & B10 & T132 & Kiểm tra Story sát biên trên 23 giờ (Off $x < 24$) & 1. Đăng Story mới\newline 2. Kiểm tra tại mốc 23 giờ sau khi đăng & $x = 23$ giờ\newline $y = 1$ giờ & Story vẫn còn hạn và hiển thị bình thường trên thanh Khoảnh khắc. & Story vẫn xuất hiện và có thể xem. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{157} & B10 & T132 & Kiểm tra ràng buộc liên biến đúng $y = 24 - x$ (On $y = 24 - x$) & 1. Đăng Story mới\newline 2. Kiểm tra sau 1 giờ ($x = 1$) & $x = 1$ giờ\newline $y = 23$ giờ & Thỏa mãn $y = 24 - x$; Story hiển thị đúng trạng thái còn hạn. & Story hiển thị đúng thời hạn còn lại. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{158} & B10 & T132 & Kiểm tra sai lệch ràng buộc dưới $y < 24 - x$ (Off$-$ $y = 24 - x$) & 1. Truyền/giả lập $x = 2$ giờ\newline 2. Kiểm tra trạng thái khi $y = 21$ giờ ($y \ne 22$) & $x = 2$ giờ\newline $y = 21$ giờ & Không hợp lệ do vi phạm ràng buộc $y = 24 - x$. & Hệ thống phát hiện sai lệch thời hạn. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{159} & B10 & T132 & Kiểm tra sai lệch ràng buộc trên $y > 24 - x$ (Off$+$ $y = 24 - x$) & 1. Truyền/giả lập $x = 3$ giờ\newline 2. Kiểm tra trạng thái khi $y = 22$ giờ ($y \ne 21$) & $x = 3$ giờ\newline $y = 22$ giờ & Không hợp lệ do vi phạm ràng buộc $y = 24 - x$. & Hệ thống phát hiện sai lệch thời hạn. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\caption{Bảng Test Cases chức năng B10 -- Khoảnh khắc 24h (Domain Analysis)}
+\textbf{158} & B10 & T132 & Kiểm tra sai lệch hiển thị dưới $y < 24 - x$ (Off$-$ $y = 24 - x$) & 1. Giả lập sau đăng $x = 2$ giờ\newline 2. Quan sát nhãn thời gian còn lại hiển thị trên giao diện & $x = 2$ giờ\newline Đối chiếu (Off$-$): $y = 21$ giờ & Nhãn hiển thị 22 giờ ($= 24 - x$), không hiển thị 21 giờ. & Nhãn hiển thị 22 giờ, đúng với $24 - x$. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{159} & B10 & T132 & Kiểm tra sai lệch hiển thị trên $y > 24 - x$ (Off$+$ $y = 24 - x$) & 1. Giả lập sau đăng $x = 3$ giờ\newline 2. Quan sát nhãn thời gian còn lại hiển thị trên giao diện & $x = 3$ giờ\newline Đối chiếu (Off$+$): $y = 22$ giờ & Nhãn hiển thị 21 giờ ($= 24 - x$), không hiển thị 22 giờ. & Nhãn hiển thị 21 giờ, đúng với $24 - x$. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \end{longtable}
 \endgroup
 
