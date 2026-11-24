@@ -2863,12 +2863,16 @@ Module B13 là một chu trình chuyển đổi trạng thái đa vai trò (Ngư
 \end{table}
 
 \begin{itemize}[leftmargin=1.2cm, noitemsep]
-    \item[\textbf{--}] \textbf{Biểu thức logic dẫn xuất (với nút trung gian $M1 = C1 \land C2$, $M2 = C3 \land C4 \land \neg C5$, $M3 = \neg C3 \lor M2$, $M4 = C3 \land C4 \land C5$):}
+    \item[\textbf{--}] \textbf{Gọi:}
     \begin{itemize}[leftmargin=0.8cm, label=$\bullet$, noitemsep]
-        \item $E1 = M1 \land M4 = C1 \land C2 \land C3 \land C4 \land C5$
+        \item $M1 = C3 \land C5$
+    \end{itemize}
+    \item[\textbf{--}] \textbf{Biểu thức logic dẫn xuất:}
+    \begin{itemize}[leftmargin=0.8cm, label=$\bullet$, noitemsep]
+        \item $E1 = C1 \land C2 \land C3 \land C4 \land C5$
         \item $E2 = \neg C1 \lor \neg C2$
-        \item $E3 = M1 \land M3 = (C1 \land C2) \land (\neg C3 \lor (C3 \land C4 \land \neg C5))$
-        \item $E4 = M1 \land C3 \land \neg C4 = C1 \land C2 \land C3 \land \neg C4$
+        \item $E3 = C1 \land C2 \land \neg M1 = C1 \land C2 \land \neg( C3 \land C5)$
+        \item $E4 = C1 \land C2 \land C3 \land \neg C4 \land C5$
     \end{itemize}
 \end{itemize}
 
@@ -2876,83 +2880,7 @@ Module B13 là một chu trình chuyển đổi trạng thái đa vai trò (Ngư
 \noindent\textbf{c. Đồ thị nhân -- quả (Cause--Effect Graph)}
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[
-    scale=0.84, transform shape,
-    ce/.style={circle, draw=black, thick, fill=white, minimum size=0.84cm, font=\bfseries\color{blue!85!black}, inner sep=1pt},
-    edge/.style={draw=red!55!black, thick},
-    logic/.style={font=\small\bfseries\color{blue!85!black}, fill=white, inner sep=1pt},
-    notmark/.style={sloped, font=\Large\bfseries, text=black, fill=white, inner sep=1pt}
-]
-    % Nguyên nhân (Causes)
-    \node[ce] (C1) at (0, 6.2) {C1};
-    \node[ce] (C2) at (0, 4.4) {C2};
-    \node[ce] (C3) at (0, 2.2) {C3};
-    \node[ce] (C4) at (0, 0.2) {C4};
-    \node[ce] (C5) at (0, -1.8) {C5};
-
-    % Nút trung gian
-    \node[ce] (M1) at (3.6, 4.2) {M1};
-    \node[ce] (M4) at (3.6, 2.2) {M4};
-    \node[ce] (M2) at (3.6, -1.4) {M2};
-    \node[ce] (M3) at (7.4, -1.4) {M3};
-
-    % Kết quả (Effects)
-    \node[ce] (E2) at (11.4, 6.2) {E2};
-    \node[ce] (E1) at (11.4, 4.0) {E1};
-    \node[ce] (E4) at (11.4, 1.2) {E4};
-    \node[ce] (E3) at (11.4, -1.4) {E3};
-
-    % M1 = C1 and C2
-    \draw[edge] (C1) -- (M1);
-    \draw[edge] (C2) -- (M1);
-    \draw[edge] (M1) ++(148:0.90cm) arc (148:179:0.90cm);
-    \node[logic] at ([shift=(163.5:1.22cm)]M1.center) {$\cap$};
-
-    % E2 = (not C1) or (not C2)
-    \draw[edge] (C1) -- node[notmark, pos=0.48] {$\sim$} (E2);
-    \draw[edge] (C2) -- node[notmark, pos=0.58] {$\sim$} (E2);
-    \draw[edge] (E2) ++(177:1.70cm) arc (177:192:1.70cm);
-    \node[logic] at ([shift=(184.5:2.05cm)]E2.center) {$\cup$};
-
-    % M4 = C3 and C4 and C5
-    \draw[edge] (C3) -- (M4);
-    \draw[edge] (C4) -- (M4);
-    \draw[edge] (C5) -- (M4);
-    \draw[edge] (M4) ++(178:1.05cm) arc (178:230:1.05cm);
-    \node[logic] at ([shift=(195:1.38cm)]M4.center) {$\cap$};
-
-    % M2 = C3 and C4 and (not C5)
-    \draw[edge] (C3) -- (M2);
-    \draw[edge] (C4) -- (M2);
-    \draw[edge] (C5) -- node[notmark, pos=0.45] {$\sim$} (M2);
-    \draw[edge] (M2) ++(133:0.85cm) arc (133:188:0.85cm);
-    \node[logic] at ([shift=(171:1.15cm)]M2.center) {$\cap$};
-
-    % M3 = (not C3) or M2
-    \draw[edge] (C3) -- node[notmark, pos=0.72] {$\sim$} (M3);
-    \draw[edge] (M2) -- (M3);
-    \draw[edge] (M3) ++(152:0.85cm) arc (152:182:0.85cm);
-    \node[logic] at ([shift=(167:1.15cm)]M3.center) {$\cup$};
-
-    % E1 = M1 and M4
-    \draw[edge] (M1) -- (E1);
-    \draw[edge] (M4) -- (E1);
-    \draw[edge] (E1) ++(170:1.00cm) arc (170:195:1.00cm);
-    \node[logic] at ([shift=(182.5:1.30cm)]E1.center) {$\cap$};
-
-    % E4 = M1 and C3 and (not C4)
-    \draw[edge] (M1) -- (E4);
-    \draw[edge] (C3) -- (E4);
-    \draw[edge] (C4) -- node[notmark, pos=0.78] {$\sim$} (E4);
-    \draw[edge] (E4) ++(152:1.05cm) arc (152:187:1.05cm);
-    \node[logic] at ([shift=(164.5:1.35cm)]E4.center) {$\cap$};
-
-    % E3 = M1 and M3
-    \draw[edge] (M1) -- (E3);
-    \draw[edge] (M3) -- (E3);
-    \draw[edge] (E3) ++(138:0.95cm) arc (138:182:0.95cm);
-    \node[logic] at ([shift=(160:1.25cm)]E3.center) {$\cap$};
-\end{tikzpicture}
+\includegraphics[width=0.82\textwidth,keepaspectratio]{CauseEffect_B1.png}
 \caption{Đồ thị nhân -- quả chức năng Đăng nhập người dùng (B1)}
 \end{figure}
 
@@ -3056,54 +2984,15 @@ Module B13 là một chu trình chuyển đổi trạng thái đa vai trò (Ngư
     \begin{itemize}[leftmargin=0.8cm, label=$\bullet$, noitemsep]
         \item $E1 = C1 \land C2$
         \item $E2 = C1 \land \neg C2$
-        \item $E3 = C1$ (áp dụng đồng bộ tức thời cho cả thao tác Thích và Bỏ thích)
-        \item $E4 = C1 \land C2 \land C3$ (chỉ gửi thông báo khi là thao tác Thích và người bấm không phải tác giả)
+        \item $E3 = C1$
+        \item $E4 = C1 \land C2 \land C3$
     \end{itemize}
 \end{itemize}
 
 \noindent\textbf{c. Đồ thị nhân -- quả (Cause--Effect Graph)}
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[
-    scale=0.95, transform shape,
-    ce/.style={circle, draw=black, thick, fill=white, minimum size=0.84cm, font=\bfseries\color{blue!85!black}, inner sep=1pt},
-    edge/.style={draw=red!55!black, thick},
-    logic/.style={font=\small\bfseries\color{blue!85!black}, fill=white, inner sep=1pt},
-    notmark/.style={sloped, font=\Large\bfseries, text=black, fill=white, inner sep=1pt}
-]
-    % Nguyên nhân (Causes)
-    \node[ce] (C1) at (0, 4.0) {C1};
-    \node[ce] (C2) at (0, 2.0) {C2};
-    \node[ce] (C3) at (0, 0.0) {C3};
-
-    % Kết quả (Effects) — xếp E3 lên trên cùng để giảm giao cắt
-    \node[ce] (E3) at (7.6, 4.5) {E3};
-    \node[ce] (E1) at (7.6, 3.0) {E1};
-    \node[ce] (E2) at (7.6, 1.5) {E2};
-    \node[ce] (E4) at (7.6, 0.0) {E4};
-
-    % E3 = C1 (identity)
-    \draw[edge] (C1) -- (E3);
-
-    % E1 = C1 and C2
-    \draw[edge] (C1) -- (E1);
-    \draw[edge] (C2) -- (E1);
-    \draw[edge] (E1) ++(175:0.95cm) arc (175:202:0.95cm);
-    \node[logic] at ([xshift=-1.28cm, yshift=-0.08cm]E1.center) {$\cap$};
-
-    % E2 = C1 and (not C2)
-    \draw[edge] (C1) -- (E2);
-    \draw[edge] (C2) -- node[notmark, pos=0.62] {$\sim$} (E2);
-    \draw[edge] (E2) ++(158:0.95cm) arc (158:186:0.95cm);
-    \node[logic] at ([xshift=-1.28cm, yshift=0.14cm]E2.center) {$\cap$};
-
-    % E4 = C1 and C2 and C3
-    \draw[edge] (C1) -- (E4);
-    \draw[edge] (C2) -- (E4);
-    \draw[edge] (C3) -- (E4);
-    \draw[edge] (E4) ++(150:0.95cm) arc (150:182:0.95cm);
-    \node[logic] at ([xshift=-1.28cm, yshift=0.24cm]E4.center) {$\cap$};
-\end{tikzpicture}
+\includegraphics[width=0.82\textwidth,keepaspectratio]{CauseEffect_B5.png}
 \caption{Đồ thị nhân -- quả chức năng Thích bài viết \& Bình luận (B5)}
 \end{figure}
 \vspace{-10pt}
