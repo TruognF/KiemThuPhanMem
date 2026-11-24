@@ -169,8 +169,9 @@ Phạm vi kiểm thử bao gồm toàn bộ \textbf{16 nhóm chức năng nghi�
 \subsubsection{Tiêu chí kết thúc (Exit Criteria)}
 \begin{itemize}[leftmargin=1.2cm, noitemsep]
     \item[\textbf{--}] 100\% yêu cầu nghiệp vụ từ \texttt{B1} đến \texttt{B16} được ánh xạ và kiểm thử qua ma trận truy xuất (RTM).
-    \item[\textbf{--}] Toàn bộ các ca kiểm thử hộp đen và hộp trắng đã thiết kế đều được thực thi.
-    \item[\textbf{--}] Không còn lỗi mức độ nghiêm trọng cao (Critical/Blocker) chưa được xử lý hoặc chưa có phương án khắc phục.
+    \item[\textbf{--}] 100\% tổng số ca kiểm thử hộp đen và hộp trắng đã thiết kế đều được thực thi.
+    \item[\textbf{--}] Không còn lỗi mức độ nghiêm trọng cao (\texttt{Critical / High}) ở trạng thái mở chưa được xử lý.
+    \item[\textbf{--}] Đạt mục tiêu bao phủ hộp trắng đã đặt ra tại Mục 1.6.2 cho các hàm trọng tâm (\texttt{B4, B8}).
     \item[\textbf{--}] Báo cáo tổng hợp kết quả kiểm thử và danh sách lỗi (Defect Report) được hoàn thiện và nghiệm thu.
 \end{itemize}
 
@@ -223,7 +224,7 @@ Nhằm đảm bảo tất cả \textbf{16 nhóm chức năng (\texttt{B1}--\text
 \hline
 1 & Kiểm thử dòng điều khiển (Control Flow) & \textbf{B1, B2} & Phủ đường đi độc lập theo độ phức tạp Cyclomatic trên \texttt{Login} và \texttt{Register}. \\ \hline
 2 & Kiểm thử dòng dữ liệu (Data Flow) & \textbf{B7, B14} & Theo dõi cặp \texttt{def--use} trên \texttt{SendFriendRequestAsync} và \texttt{AssignRoleToUser}. \\ \hline
-3 & Kiểm thử mức độ bao phủ (White-box Coverage) & \textbf{B4, B8} & Đo lường và đảm bảo 100\% độ bao phủ Câu lệnh (Statement), Nhánh (Branch), Điều kiện (Condition) và Đường đi (Path) trên \texttt{PostsController.Create} và \texttt{SendPersonalMessageAsync}. \\ \hline
+3 & Kiểm thử mức độ bao phủ (White-box Coverage) & \textbf{B4, B8} & Đo lường Statement, Branch, Condition và Path Coverage trên \texttt{PostsController.Create} và \texttt{SendPersonalMessageAsync}: \texttt{B4} đạt 100\% cả 4 tiêu chí; \texttt{B8} đạt 100\% Statement, Branch (4 nút \texttt{if}) và Path Coverage trên 5 đường cơ bản đã xác định, Condition Coverage chưa đạt 100\%. \\ \hline
 \end{tabularx}
 \end{table}
 
@@ -326,6 +327,7 @@ Từ tài liệu đặc tả yêu cầu phần mềm SRS v1.0, hệ thống \tex
     \item \textbf{T64} Người dùng phải đăng nhập mới có quyền đăng bài và xem Bảng tin.
     \item \textbf{T65} Không thể đăng bài viết nếu để trống nội dung hoặc chỉ gõ toàn dấu cách.
     \item \textbf{T66} Nội dung bài viết phải dài từ 1 đến tối đa 5.000 ký tự.
+    \item \textbf{T66.1} Khi không đọc lại được bài viết vừa tạo sau khi lưu, hệ thống trả về HTTP 500 với thông báo ``Failed to retrieve created post'', không phát sự kiện \texttt{PostCreated} và không gửi thông báo bài viết mới.
     \item \textbf{T67} Chữ trong bài viết phải tự động xuống dòng gọn gàng, không bị tràn khung hay vỡ giao diện.
     \item \textbf{T68} Có thể đính kèm ảnh hợp lệ thuộc định dạng JPEG, PNG, GIF, WebP với dung lượng tối đa 5 MB.
     \item \textbf{T69} Hệ thống từ chối nếu ảnh đính kèm vượt quá 5 MB hoặc sai định dạng cho phép.
@@ -575,10 +577,11 @@ TS58 & B16 & Xử lý bài viết đã xóa từ thông báo & Thông báo rõ r
 \end{longtable}
 
 \subsection{Ma trận truy xuất yêu cầu (RTM -- Requirement Traceability Matrix)}
-Ma trận truy xuất yêu cầu (RTM) thiết lập mối liên kết hai chiều giữa \textbf{Yêu cầu nghiệp vụ (\texttt{B1}--\texttt{B16})}, \textbf{Yêu cầu kỹ thuật (\texttt{T01}--\texttt{T183})}, \textbf{Kịch bản kiểm thử (\texttt{TS01}--\texttt{TS58})} và \textbf{236 ca kiểm thử (\texttt{TC\_1}--\texttt{TC\_236})}, giúp kiểm chứng độ bao phủ 100\% yêu cầu và truy vết nhanh nguồn gốc khi phát sinh lỗi.
+Ma trận truy xuất yêu cầu (RTM) thiết lập mối liên kết hai chiều giữa \textbf{Yêu cầu nghiệp vụ (\texttt{B1}--\texttt{B16})}, \textbf{Yêu cầu kỹ thuật (\texttt{T01}--\texttt{T183})}, \textbf{Kịch bản kiểm thử (\texttt{TS01}--\texttt{TS58})} và toàn bộ \textbf{246 ca kiểm thử} của dự án (gồm \textbf{236 ca kiểm thử hệ thống hộp đen \texttt{1}--\texttt{236}} và \textbf{10 ca kiểm thử hộp trắng đơn vị bổ sung \texttt{237}--\texttt{246}}), đảm bảo bao phủ 100\% yêu cầu và truy vết nhanh nguồn gốc khi phát sinh lỗi.
 
-\noindent\textbf{a. Bảng tổng hợp Ma trận truy xuất yêu cầu theo 16 nhóm chức năng (\texttt{B1}--\texttt{B16}):}
-\begin{longtable}{|C{1.0cm}|L{3.9cm}|C{2.2cm}|C{2.2cm}|C{2.0cm}|C{2.3cm}|C{1.2cm}|}
+\noindent\textit{Ghi chú phạm vi trình bày:} Chương 3 và Chương 4 trình bày chi tiết \textbf{173 lượt kiểm thử thực thi} (\textbf{162 mã TC duy nhất}: 137 ca hộp đen tại Chương 3 và 36 ca hộp trắng tại Chương 4, trong đó 11 mã được kiểm chứng chéo ở cả hai cấp độ; kèm 8 ca biên mở rộng theo Domain Analysis) gắn trực tiếp với 10 kỹ thuật thiết kế kiểm thử; toàn bộ 246 ca kiểm thử chi tiết được lưu trữ và đồng bộ trong bảng tính RTM của dự án, kết quả tổng hợp thực thi được thống kê đầy đủ tại Chương 5.
+
+\begin{longtable}{|C{0.9cm}|L{3.5cm}|C{1.9cm}|C{1.9cm}|C{1.8cm}|C{3.5cm}|C{1.1cm}|}
 \hline
 \rowcolor[RGB]{179, 205, 255}
 \textbf{BRD} & \textbf{Tên chức năng} & \textbf{Mã TRD} & \textbf{Mã ở RTM} & \textbf{Kịch bản} & \textbf{Test Case ID} & \textbf{Số TC} \tabularnewline
@@ -591,23 +594,26 @@ Ma trận truy xuất yêu cầu (RTM) thiết lập mối liên kết hai chi�
 \endhead
 \hline
 \endfoot
+\hline
+\caption{Bảng tổng hợp Ma trận truy xuất yêu cầu (RTM) theo 16 nhóm chức năng (\texttt{B1}--\texttt{B16})}
+\endlastfoot
 \textbf{B1} & Đăng nhập người dùng & T01 -- T10 & T24 -- T33 & TS01 -- TS03 & 1 -- 10 & 10 \\ \hline
-\textbf{B2} & Đăng ký tài khoản & T11 -- T33 & T01 -- T22 & TS04 -- TS08 & 11 -- 41 & 31 \\ \hline
+\textbf{B2} & Đăng ký tài khoản & T11 -- T33 & T01 -- T23 & TS04 -- TS08 & 11 -- 41 & 31 \\ \hline
 \textbf{B3} & Thông tin cá nhân (Profile) & T34 -- T63 & T34 -- T63 & TS09 -- TS12 & 42 -- 55 & 14 \\ \hline
-\textbf{B4} & Bảng tin \& Bài viết & T64 -- T81 & T64 -- T81 & TS13 -- TS19 & 56 -- 102 & 47 \\ \hline
+\textbf{B4} & Bảng tin \& Bài viết & T64 -- T81 & T64 -- T81 & TS13 -- TS19 & 56 -- 102; 242, 243, 246 & 50 \\ \hline
 \textbf{B5} & Thích bài viết & T82 -- T87 & T82 -- T87 & TS20 -- TS21 & 103 -- 109 & 7 \\ \hline
 \textbf{B6} & Bình luận & T88 -- T95 & T88 -- T95 & TS22 -- TS25 & 110 -- 116 & 7 \\ \hline
-\textbf{B7} & Kết bạn \& Mạng lưới & T96 -- T106 & T96 -- T106 & TS26 -- TS29 & 117 -- 127 & 11 \\ \hline
-\textbf{B8} & Nhắn tin tức thời 1-1 & T107 -- T115 & T107 -- T115 & TS30 -- TS33 & 128 -- 136 & 9 \\ \hline
+\textbf{B7} & Kết bạn \& Mạng lưới & T96 -- T106 & T96 -- T106 & TS26 -- TS29 & 117 -- 127; 237, 245 & 13 \\ \hline
+\textbf{B8} & Nhắn tin tức thời 1-1 & T107 -- T115 & T107 -- T115 & TS30 -- TS33 & 128 -- 136; 244 & 10 \\ \hline
 \textbf{B9} & Nhóm cộng đồng & T116 -- T123 & T116 -- T123 & TS34 -- TS36 & 137 -- 151 & 15 \\ \hline
 \textbf{B10} & Khoảnh khắc 24h & T124 -- T134 & T124 -- T134 & TS37 -- TS40 & 152 -- 178 & 27 \\ \hline
 \textbf{B11} & Hashtag \& Phân loại & T135 -- T141 & T135 -- T141 & TS41 -- TS42 & 179 -- 199 & 21 \\ \hline
 \textbf{B12} & Tìm kiếm toàn hệ thống & T142 -- T146 & T142 -- T146 & TS43 -- TS44 & 200 -- 204 & 5 \\ \hline
 \textbf{B13} & Báo cáo \& Kháng cáo & T147 -- T158 & T147 -- T158 & TS45 -- TS49 & 205 -- 216 & 12 \\ \hline
-\textbf{B14} & Quản trị \& Người dùng & T159 -- T167 & T159 -- T167 & TS50 -- TS52 & 217 -- 225 & 9 \\ \hline
+\textbf{B14} & Quản trị \& Người dùng & T159 -- T167 & T159 -- T167 & TS50 -- TS52 & 217 -- 225; 238 -- 241 & 13 \\ \hline
 \textbf{B15} & Chia sẻ bài viết & T168 -- T174 & T168 -- T174 & TS53 -- TS54 & 226 -- 231 & 6 \\ \hline
 \textbf{B16} & Thông báo \& Mở bài viết & T175 -- T183 & T175 -- T183 & TS55 -- TS58 & 232 -- 236 & 5 \\ \hline
-\multicolumn{2}{|c|}{\textbf{Tổng cộng (16 BRD)}} & \textbf{183 mã T\#} & \textbf{183 mã T\#} & \textbf{58 TS} & \textbf{1 -- 236} & \textbf{236} \\ \hline
+\multicolumn{2}{|c|}{\textbf{Tổng cộng (16 BRD)}} & \textbf{183 mã T\#} & \textbf{183 mã T\#} & \textbf{58 TS} & \textbf{1 -- 236 (HT); 237 -- 246 (UT)} & \textbf{246} \\ \hline
 \end{longtable}
 
 
@@ -909,6 +915,8 @@ EC3\_FileSize & Dung lượng vượt quá 5 MB & \textcolor{red}{\textbf{Không
 \end{longtable}
 \endgroup
 
+\noindent\textit{Ghi chú ánh xạ ECP -- bảng Test Cases gốc (Sheet):} Các ca thực thi \texttt{TC 45--52} tương ứng trực tiếp với các tổ hợp trên bảng phân lớp (\texttt{TC1} $\leftrightarrow$ \texttt{TC 45, 46}; \texttt{TC4} $\leftrightarrow$ \texttt{TC 47}; \texttt{TC5} $\leftrightarrow$ \texttt{TC 48, 49}; \texttt{TC7} $\leftrightarrow$ \texttt{TC 51}; \texttt{TC8} $\leftrightarrow$ \texttt{TC 50}). Các tổ hợp lớp không hợp lệ mở rộng gồm \texttt{TC2, TC3} (Họ tên trống / $< 2$ / $> 100$ ký tự) và gọi trực tiếp API tải ảnh đại diện không kèm tệp (\texttt{T51} -- khác với \texttt{TC 52} sửa hồ sơ không đổi ảnh theo \texttt{T45}) chưa có ca riêng trong phạm vi \texttt{TC 45--52} trên bảng Test Cases gốc và được ghi nhận đề xuất bổ sung thực thi.
+
 
 \subsubsection{Chức năng B11 -- Hashtag \& Phân loại nội dung}
 
@@ -933,10 +941,12 @@ EC3\_FileSize & Dung lượng vượt quá 5 MB & \textcolor{red}{\textbf{Không
 \textbf{T\#} & \textbf{Mô tả} \tabularnewline
 \hline
 \textbf{T135} & Khi đăng bài viết có chứa ký tự \texttt{\#} (ví dụ: \texttt{\#dulich}, \texttt{\#congnghe}), hệ thống tự động nhận diện và lưu thẻ chủ đề. \\ \hline
+\textbf{T136} & Hashtag trong bài viết được hiển thị nổi bật bằng màu xanh, có hiệu ứng hover và có thể nhấp chuột. \\ \hline
 \textbf{T137} & Khi nhấp chuột vào một hashtag trong bài viết, hệ thống tự động lọc và hiển thị tất cả bài viết có gắn hashtag đó trên Bảng tin. \\ \hline
 \textbf{T138} & Người dùng có thể nhập từ khóa bắt đầu bằng \texttt{\#} trên thanh tìm kiếm để tìm các bài viết liên quan. \\ \hline
 \textbf{T139} & Khi tìm kiếm hashtag có tồn tại, hệ thống trả về danh sách các bài viết gắn thẻ tương ứng. \\ \hline
 \textbf{T140} & Khi tìm kiếm hashtag không tồn tại hoặc chưa có bài viết nào, hệ thống hiển thị thông báo ``Không tìm thấy bài viết nào phù hợp''. \\ \hline
+\textbf{T141} & Giao diện hỗ trợ nút ``Quay về trang chủ'', xóa trắng ô tìm kiếm hoặc bấm Home/Logo để thoát chế độ lọc hashtag. \\ \hline
 \end{tabularx}
 \caption{Bảng mã yêu cầu kỹ thuật chức năng Hashtag \& Phân loại nội dung (B11)}
 \end{table}
@@ -1023,7 +1033,7 @@ EC4\_Search & Hashtag từng tồn tại nhưng bài viết duy nhất gắn has
 \textbf{Lớp} & \textbf{Điều kiện} & \textbf{Tính hợp lệ} \tabularnewline
 \hline
 EC1\_Syntax & Từ khóa có tiền tố \texttt{\#} kèm tên chủ đề hợp lệ (ví dụ \texttt{\#dulich}) & \textcolor{blue}{\textbf{Hợp lệ}} -- kích hoạt bộ lọc theo thẻ chủ đề \\ \hline
-EC2\_Syntax & Từ khóa chỉ chứa ký tự \texttt{\#} đơn lẻ hoặc thiếu tên chủ đề & \textcolor{red}{\textbf{Không hợp lệ}} -- không lọc được theo tên hashtag cụ thể \\ \hline
+EC2\_Syntax & Từ khóa chỉ chứa ký tự \texttt{\#} đơn lẻ (không kèm tên chủ đề cụ thể) & \textcolor{blue}{\textbf{Hợp lệ tổng quát}} -- kích hoạt lọc tất cả bài có chứa hashtag \\ \hline
 \end{tabularx}
 \caption{Phân chia lớp tương đương Cú pháp từ khóa tìm kiếm Hashtag (B11)}
 \end{table}
@@ -1042,9 +1052,9 @@ EC2\_Syntax & Từ khóa chỉ chứa ký tự \texttt{\#} đơn lẻ hoặc thi
 \textbf{Test-case} & \textbf{Cú pháp từ khóa} & \textbf{Tình trạng Hashtag} & \textbf{Kết quả} \tabularnewline
 \hline
 \textbf{TC5} & Có tiền tố \texttt{\#} hợp lệ: \texttt{\#dulich} (\texttt{EC1\_Syntax}) & Tồn tại trong hệ thống (\texttt{EC1\_Search}) & \textcolor{blue}{\textbf{Hợp lệ}} -- Trả về danh sách bài viết gắn \texttt{\#dulich} \\ \hline
-\textbf{TC6} & Chỉ nhập \texttt{\#} đơn lẻ (\texttt{EC2\_Syntax}) & Không tồn tại trong hệ thống (\texttt{EC3\_Search}) & \textcolor{red}{\textbf{Không hợp lệ}} -- Không trả về kết quả lọc theo chủ đề \\ \hline
+\textbf{TC6} & Chỉ nhập \texttt{\#} đơn lẻ (\texttt{EC2\_Syntax}) & Không có bài gắn hashtag nào (\texttt{EC3\_Search}) & \textcolor{red}{\textbf{Không có kết quả}} -- Danh sách trống, hiển thị nút thoát lọc \\ \hline
 \textbf{TC7} & Có tiền tố \texttt{\#} hợp lệ: \texttt{\#khongtontai999} (\texttt{EC1\_Syntax}) & Không tồn tại / Bài đã bị xóa (\texttt{EC3\_Search}/\texttt{EC4\_Search}) & \textcolor{red}{\textbf{Không có kết quả}} -- Báo ``Không tìm thấy bài viết nào phù hợp'' \\ \hline
-\textbf{TC8} & Chỉ nhập \texttt{\#} đơn lẻ (\texttt{EC2\_Syntax}) & Hashtag \texttt{\#dulich} có tồn tại (\texttt{EC1\_Search}) & \textcolor{red}{\textbf{Không hợp lệ}} -- Không lọc đúng theo \texttt{\#dulich} \\ \hline
+\textbf{TC8} & Chỉ nhập \texttt{\#} đơn lẻ (\texttt{EC2\_Syntax}) & Hệ thống có bài gắn hashtag (\texttt{EC1\_Search}) & \textcolor{blue}{\textbf{Lọc tổng quát}} -- Hiển thị các bài viết có chứa hashtag và nút ``Quay về trang chủ'' (\texttt{TC 191}) \\ \hline
 \end{tabularx}
 \caption{Bảng tổ hợp kiểm thử tìm kiếm Hashtag theo phương pháp $n+2$ (B11)}
 \end{table}
@@ -1073,16 +1083,27 @@ EC2\_Syntax & Từ khóa chỉ chứa ký tự \texttt{\#} đơn lẻ hoặc thi
 \textbf{180} & B11 & T135 & Nhận diện đồng thời nhiều hashtag & 1. Nhập bài có nhiều hashtag\newline 2. Nhấn Đăng bài & ``...\#capstone \#reactjs \#dotnet2026'' & Nhận diện chính xác cả 3 thẻ hashtag riêng biệt. & Nhận diện đủ 3 thẻ liên kết riêng biệt. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{181} & B11 & T135 & Xử lý ký tự \# đứng riêng lẻ không kèm chữ/số & 1. Nhập bài có \# đơn lẻ hoặc ký tự đặc biệt\newline 2. Nhấn Đăng bài & ``Phòng số \# 102 và mã \#@!'' & Ký tự \# đơn lẻ hiển thị như văn bản thường, không tạo liên kết. & Hiển thị văn bản thuần túy, không tạo hashtag. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{182} & B11 & T135 & Nhận diện nhiều hashtag viết liền nhau & 1. Nhập bài chứa \#dulich\#friend\newline 2. Nhấn Đăng bài & ``...đi \#dulich\#friend cùng bạn bè'' & Tách \#dulich\#friend thành 2 hashtag riêng biệt. & Tách đúng thành \#dulich và \#friend. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{183} & B11 & T136 & Hiển thị nổi bật màu sắc và định dạng thẻ hashtag & 1. Mở Bảng tin có bài chứa \#dulich\newline 2. Quan sát định dạng hiển thị & Bài viết chứa \#dulich & Thẻ hashtag hiển thị màu liên kết nổi bật, phân biệt với chữ thường. & \#dulich hiển thị liên kết màu xanh nổi bật. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{184} & B11 & T136 & Hiệu ứng tương tác khi rê chuột (Hover) lên hashtag & 1. Rê chuột lên thẻ \#dulich\newline 2. Rê chuột ra ngoài & Bài viết chứa \#dulich & Con trỏ đổi bàn tay, xuất hiện hiệu ứng hover nổi bật. & Giao diện hiển thị hiệu ứng hover phù hợp. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{185} & B11 & T136 & Khả năng nhận sự kiện nhấp chuột (Clickable) & 1. Nhấp chuột trái vào liên kết \#dulich\newline 2. Quan sát phản hồi & Bài viết chứa \#dulich & Thẻ nhận sự kiện click mà không tải lại toàn bộ trang. & \#dulich nhấp được và phản hồi đúng. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{186} & B11 & T137 & Nhấp vào hashtag để kích hoạt bộ lọc bài viết & 1. Nhấp trực tiếp liên kết \#dulich\newline 2. Quan sát danh sách và URL & Bài viết chứa \#dulich & Chỉ hiện bài có \#dulich, URL /home?hashtag=dulich, hiện nút thoát. & Lọc đúng \#dulich, cập nhật URL và hiện nút thoát. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{187} & B11 & T137 & Ẩn bài viết không chứa hashtag khi đang lọc & 1. Có bài \#dulich, \#congnghe\newline 2. Nhấp \#dulich, kiểm tra danh sách & Bài \#dulich, \#congnghe & Tất cả bài không chứa \#dulich bị ẩn khỏi danh sách. & Chỉ giữ bài chứa \#dulich, ẩn \#congnghe. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{188} & B11 & T137 & Lọc hashtag không phân biệt chữ hoa/thường & 1. Có bài \#DuLich và \#dulich\newline 2. Nhấp thẻ \#dulich & Bài \#DuLich, \#dulich & Hiển thị đủ cả hai bài viết bất kể hoa/thường. & Hiển thị chính xác cả hai bài viết. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{189} & B11 & T138 & Nhập từ khóa có dấu \# trên thanh tìm kiếm Header & 1. Nhấp ô Tìm kiếm Header\newline 2. Nhập \#dulich và nhấn Enter & Từ khóa: \#dulich & Kích hoạt bộ lọc chủ đề, URL /home?hashtag=dulich. & Thực hiện tìm kiếm bài viết theo \#dulich. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{190} & B11 & T138 & Tìm kiếm hashtag khi gõ hỗn hợp chữ hoa/thường & 1. Nhập \#Dulich trên Header\newline 2. Nhấn Enter & Từ khóa: \#Dulich & Chuẩn hóa và tìm thấy tất cả bài chứa \#dulich, \#Dulich. & Hiển thị đầy đủ kết quả không phân biệt hoa/thường. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{191} & B11 & T138 & Nhập duy nhất ký tự \# trên ô tìm kiếm Header & 1. Nhấp ô tìm kiếm Header\newline 2. Gõ duy nhất ký tự \# & Từ khóa: \# & Hiển thị các bài có chứa hashtag và nút Quay về trang chủ. & Hiển thị các bài có hashtag và nút thoát. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{191} & B11 & T138 & Nhập duy nhất ký tự \# trên ô tìm kiếm Header & 1. Nhấp ô tìm kiếm Header\newline 2. Gõ duy nhất ký tự \# & Từ khóa: \# & Chấp nhận \# làm từ khóa, hiện các bài có hashtag và nút ``Quay về trang chủ''. & Hiển thị các bài có hashtag và nút ``Quay về trang chủ''. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{192} & B11 & T139 & Hiển thị danh sách bài khi tìm hashtag tồn tại & 1. Nhập \#dulich vào thanh tìm kiếm\newline 2. Nhấn Enter & Từ khóa: \#dulich & Hiển thị danh sách bài có \#dulich với đủ thông tin. & Hiển thị đúng danh sách bài có \#dulich. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{193} & B11 & T139 & Kết quả tìm kiếm không hiển thị bài không gắn hashtag & 1. Nhập \#dulich và nhấn Enter\newline 2. Kiểm tra danh sách & Từ khóa: \#dulich & Trả về đúng các bài chứa \#dulich, ẩn bài \#congnghe. & Chỉ hiển thị bài gắn \#dulich. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{194} & B11 & T139 & Hiển thị nhiều bài viết cùng gắn chung một hashtag & 1. Có nhiều bài chứa \#dulich\newline 2. Tìm \#dulich & Từ khóa: \#dulich & Hiển thị đầy đủ tất cả bài viết có gắn \#dulich. & Hiển thị đầy đủ các bài viết. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{195} & B11 & T140 & Tìm kiếm một hashtag không tồn tại trong hệ thống & 1. Nhập \#khongtontai999 trên Header\newline 2. Nhấn Enter & Từ khóa: \#khongtontai999 & Hiển thị ``Không có bài viết nào với \#khongtontai999.'' & Không hiện bài nào, báo rỗng đúng quy định. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{196} & B11 & T140 & Tìm kiếm hashtag mà bài duy nhất đã bị xóa & 1. Đăng bài \#CongngheJava rồi xóa\newline 2. Tìm \#CongngheJava & Từ khóa: \#CongngheJava & Không hiển thị bài đã xóa, báo không có bài viết nào. & Không hiển thị bài cũ, báo rỗng đúng. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{197} & B11 & T141 & Thoát lọc hashtag bằng nút ``Quay về trang chủ'' & 1. Đang lọc /home?hashtag=dulich\newline 2. Nhấp nút ``Quay về trang chủ'' & Đang lọc \#dulich & Chuyển về /home, thoát lọc và hiển thị đầy đủ Bảng tin. & Thoát chế độ lọc, hiển thị lại Bảng tin bình thường. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{198} & B11 & T141 & Thoát lọc hashtag bằng cách xóa trắng ô tìm kiếm & 1. Nhấp ô tìm kiếm đang chứa \#dulich\newline 2. Xóa hết ký tự trong ô & Từ khóa: (xóa trắng) & Tự động hủy bộ lọc và hiển thị đầy đủ Bảng tin ngay lập tức. & Thoát chế độ lọc và hiển thị Bảng tin bình thường. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{199} & B11 & T141 & Thoát lọc hashtag bằng cách bấm Home/Logo & 1. Đang ở trạng thái lọc hashtag\newline 2. Nhấp biểu tượng Home trên Header & Đang lọc \#dulich & Điều hướng về /home, thoát lọc và hiện Bảng tin bình thường. & Điều hướng về Bảng tin chính và thoát lọc. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \end{longtable}
 \endgroup
+
+\noindent\textit{Ghi chú phạm vi:} Toàn bộ 21 ca kiểm thử \texttt{TC 179--199} của \texttt{B11} trên bảng Test Cases gốc đã được trình bày đầy đủ và đạt 100\% \texttt{Pass}; hai tổ hợp kiểm tra chưa đăng nhập (\texttt{TC2, TC4} $\rightarrow$ 401) trong bảng $n+2$ là kịch bản bảo mật bổ trợ (tương đồng luồng chặn chưa đăng nhập đã kiểm chứng ở \texttt{TC 55, 56}).
 
 
 % ----------------------------------------------------------
@@ -1206,19 +1227,19 @@ EC2\_Syntax & Từ khóa chỉ chứa ký tự \texttt{\#} đơn lẻ hoặc thi
 \begin{table}[H]
 \centering
 \small
-\begin{tabularx}{\textwidth}{|c|C{3.2cm}|X|C{2.8cm}|}
+\begin{tabularx}{\textwidth}{|c|C{2.9cm}|X|C{2.4cm}|L{3.0cm}|}
 \hline
 \rowcolor[RGB]{179, 205, 255}
-\textbf{Test-case} & \textbf{Giá trị biên} & \textbf{Dữ liệu độ dài sau khi sửa} & \textbf{Kết quả} \tabularnewline
+\textbf{Test-case} & \textbf{Giá trị biên} & \textbf{Dữ liệu độ dài sau khi sửa} & \textbf{Kết quả} & \textbf{Ánh xạ TC gốc} \tabularnewline
 \hline
-\textbf{BVA\_E1} & Biên dưới ($x < 1$) & $x = 0$ ký tự (chuỗi rỗng / khoảng trắng) & \textcolor{red}{\textbf{Không hợp lệ}} \\ \hline
-\textbf{BVA\_E2} & Biên dưới ($x = 1$) & $x = 1$ ký tự hợp lệ & \textcolor{blue}{\textbf{Hợp lệ}} \\ \hline
-\textbf{BVA\_E3} & Cận biên dưới ($x = 2$) & $x = 2$ ký tự hợp lệ & \textcolor{blue}{\textbf{Hợp lệ}} \\ \hline
-\textbf{BVA\_E4} & Cận biên trên ($x = 499$) & $x = 499$ ký tự hợp lệ & \textcolor{blue}{\textbf{Hợp lệ}} \\ \hline
-\textbf{BVA\_E5} & Biên trên ($x = 500$) & $x = 500$ ký tự hợp lệ & \textcolor{blue}{\textbf{Hợp lệ}} \\ \hline
-\textbf{BVA\_E6} & Biên trên ($x > 500$) & $x = 501$ ký tự & \textcolor{red}{\textbf{Không hợp lệ}} \\ \hline
+\textbf{BVA\_E1} & Biên dưới ($x < 1$) & $x = 0$ ký tự (chuỗi rỗng / khoảng trắng) & \textcolor{red}{\textbf{Không hợp lệ}} & Tạo mới: \texttt{TC 111}; Sửa: bổ sung thiết kế \\ \hline
+\textbf{BVA\_E2} & Biên dưới ($x = 1$) & $x = 1$ ký tự hợp lệ & \textcolor{blue}{\textbf{Hợp lệ}} & Bổ sung biên (tương ứng \texttt{TC 112}) \\ \hline
+\textbf{BVA\_E3} & Cận biên dưới ($x = 2$) & $x = 2$ ký tự hợp lệ & \textcolor{blue}{\textbf{Hợp lệ}} & Bổ sung biên (tương ứng \texttt{TC 112}) \\ \hline
+\textbf{BVA\_E4} & Cận biên trên ($x = 499$) & $x = 499$ ký tự hợp lệ & \textcolor{blue}{\textbf{Hợp lệ}} & Bổ sung biên (tương ứng \texttt{TC 112}) \\ \hline
+\textbf{BVA\_E5} & Biên trên ($x = 500$) & $x = 500$ ký tự hợp lệ & \textcolor{blue}{\textbf{Hợp lệ}} & Bổ sung biên (tương ứng \texttt{TC 112}) \\ \hline
+\textbf{BVA\_E6} & Biên trên ($x > 500$) & $x = 501$ ký tự & \textcolor{red}{\textbf{Không hợp lệ}} & Bổ sung thiết kế (chưa có mã riêng trên Sheet) \\ \hline
 \end{tabularx}
-\caption{Bảng giá trị biên kiểm thử chỉnh sửa nội dung bình luận (B6)}
+\caption{Bảng giá trị biên kiểm thử độ dài nội dung bình luận khi tạo mới \& chỉnh sửa (B6)}
 \end{table}
 
 \noindent\textbf{c. Bảng Test Cases chi tiết chức năng B6 (Bình luận \& Phản hồi):}
@@ -1280,8 +1301,11 @@ EC2\_Syntax & Từ khóa chỉ chứa ký tự \texttt{\#} đơn lẻ hoặc thi
 \hline
 \textbf{T175} & Biểu tượng chuông thông báo trên thanh điều hướng tự động hiện chấm đỏ và số đếm khi có ai đó tương tác bài viết của mình. \\ \hline
 \textbf{T176} & Bấm vào biểu tượng chuông sẽ mở ra danh sách các thông báo xếp từ mới nhất xuống cũ hơn. \\ \hline
+\textbf{T177--T179} & Hiển thị định dạng thời gian tương đối: dưới 1 phút (``vừa xong''), 1--59 phút (``x phút trước''), 1--23 giờ (``x giờ trước''). \\ \hline
+\textbf{T180--T182} & Rê chuột lên thông báo đổi con trỏ bàn tay; nhấp thông báo tự động đánh dấu Đã đọc và mở đúng trang chi tiết bài viết. \\ \hline
+\textbf{T183} & Khi nhấp thông báo của bài viết đã bị xóa, hiển thị thông báo rõ ràng và an toàn, không lỗi trắng trang. \\ \hline
 \end{tabularx}
-\caption{Bảng mã yêu cầu kỹ thuật chức năng đếm số lượng thông báo chưa đọc (B16)}
+\caption{Bảng mã yêu cầu kỹ thuật chức năng Thông báo \& Mở bài viết (B16)}
 \end{table}
 
 \noindent\textbf{Phân tích giá trị biên số lượng thông báo (Badge Count -- BVA):}
@@ -1308,17 +1332,17 @@ EC2\_Syntax & Từ khóa chỉ chứa ký tự \texttt{\#} đơn lẻ hoặc thi
 \begin{table}[H]
 \centering
 \small
-\begin{tabularx}{\textwidth}{|c|C{3.2cm}|X|C{3.6cm}|}
+\begin{tabularx}{\textwidth}{|c|C{2.9cm}|X|C{3.1cm}|L{2.8cm}|}
 \hline
 \rowcolor[RGB]{179, 205, 255}
-\textbf{Test-case} & \textbf{Giá trị biên} & \textbf{Số lượng thông báo chưa đọc} & \textbf{Hiển thị mong đợi} \tabularnewline
+\textbf{Test-case} & \textbf{Giá trị biên} & \textbf{Số lượng thông báo chưa đọc} & \textbf{Hiển thị mong đợi} & \textbf{Ánh xạ TC gốc} \tabularnewline
 \hline
-\textbf{BVA\_N1} & Biên dưới ($x < 1$) & $x = 0$ thông báo chưa đọc & Ẩn chấm đỏ và số đếm \\ \hline
-\textbf{BVA\_N2} & Biên dưới ($x = 1$) & $x = 1$ thông báo chưa đọc & Bật chấm đỏ, hiện số \texttt{1} \\ \hline
-\textbf{BVA\_N3} & Cận biên dưới ($x = 2$) & $x = 2$ thông báo chưa đọc & Bật chấm đỏ, hiện số \texttt{2} \\ \hline
-\textbf{BVA\_N4} & Cận biên trên ($x = 98$) & $x = 98$ thông báo chưa đọc & Bật chấm đỏ, hiện số \texttt{98} \\ \hline
-\textbf{BVA\_N5} & Biên trên ($x = 99$) & $x = 99$ thông báo chưa đọc & Bật chấm đỏ, hiện số \texttt{99} \\ \hline
-\textbf{BVA\_N6} & Biên trên ($x > 99$) & $x = 100$ thông báo chưa đọc & Hiện nhãn rút gọn \texttt{99+} \\ \hline
+\textbf{BVA\_N1} & Biên dưới ($x < 1$) & $x = 0$ thông báo chưa đọc & Ẩn chấm đỏ và số đếm & \texttt{TC 232} (trạng thái ban đầu / đã đọc) \\ \hline
+\textbf{BVA\_N2} & Biên dưới ($x = 1$) & $x = 1$ thông báo chưa đọc & Bật chấm đỏ, hiện số \texttt{1} & \texttt{TC 232} (nhảy số khi có 1 tương tác) \\ \hline
+\textbf{BVA\_N3} & Cận biên dưới ($x = 2$) & $x = 2$ thông báo chưa đọc & Bật chấm đỏ, hiện số \texttt{2} & Mở rộng biên từ \texttt{TC 232} \\ \hline
+\textbf{BVA\_N4} & Cận biên trên ($x = 98$) & $x = 98$ thông báo chưa đọc & Bật chấm đỏ, hiện số \texttt{98} & Thiết kế bổ sung (chưa chạy trên Sheet) \\ \hline
+\textbf{BVA\_N5} & Biên trên ($x = 99$) & $x = 99$ thông báo chưa đọc & Bật chấm đỏ, hiện số \texttt{99} & Thiết kế bổ sung (chưa chạy trên Sheet) \\ \hline
+\textbf{BVA\_N6} & Biên trên ($x > 99$) & $x = 100$ thông báo chưa đọc & Hiện nhãn rút gọn \texttt{99+} & Thiết kế bổ sung (chưa chạy trên Sheet) \\ \hline
 \end{tabularx}
 \caption{Bảng giá trị biên kiểm thử Badge thông báo chưa đọc (B16)}
 \end{table}
@@ -1446,13 +1470,13 @@ $C_4$ & \texttt{Password == ConfirmPassword} (trùng khớp nội dung, kiểm t
 \caption{Ma trận Domain Analysis cho độ dài Mật khẩu và Xác nhận mật khẩu (B2)}
 \end{table}
 
-\noindent\textit{Ghi chú:} Ở \texttt{TC1}--\texttt{TC4}, giữ $y = x$ và hai chuỗi trùng nội dung để cô lập biên của $x$; \texttt{TC6}--\texttt{TC7} là điểm $\text{Off}-$ và $\text{Off}+$ của $C_3$. Điều kiện $C_4$ có điểm \texttt{On} tại \texttt{TC1}--\texttt{TC5} và hai điểm \texttt{Off} tại \texttt{TC33}, \texttt{TC34} ($x = y = 11$, ký tự khác nhau đầu tiên của \texttt{ConfirmPassword} nhỏ hơn và lớn hơn \texttt{Password}).
+\noindent\textit{Ghi chú:} Ở \texttt{TC1}--\texttt{TC4}, giữ $y = x$ và hai chuỗi trùng nội dung để cô lập biên của $x$; \texttt{TC6}--\texttt{TC7} là điểm $\text{Off}-$ và $\text{Off}+$ của $C_3$. Điều kiện $C_4$ có điểm \texttt{On} tại \texttt{TC1}--\texttt{TC5} và hai điểm \texttt{Off} tại \texttt{TC 33} (khớp Sheet gốc: $x = y = 10$, \texttt{XN} lệch trên) và \texttt{DA-B2-08} ($x = y = 11$, \texttt{XN} lệch dưới). Trong bảng chi tiết dưới đây, các mã số nguyên (\texttt{27, 28, 33, 34}) giữ nguyên đúng mã \texttt{TC\#} và \texttt{TR\#} từ bảng Test Cases gốc (Sheet); các ca mang mã \texttt{DA-B2-*} là các ca biên mở rộng theo Domain Analysis.
 
 \noindent\textbf{c. Bảng Test Cases chi tiết chức năng B2 (Đăng ký tài khoản -- Ràng buộc mật khẩu):}
 \begingroup
 \scriptsize
 \setlength{\tabcolsep}{3pt}
-\begin{longtable}{|C{0.8cm}|C{0.85cm}|C{0.95cm}|L{2.0cm}|L{3.0cm}|L{2.15cm}|L{2.6cm}|L{2.5cm}|C{0.85cm}|}
+\begin{longtable}{|C{0.95cm}|C{0.75cm}|C{0.95cm}|L{2.0cm}|L{2.95cm}|L{2.15cm}|L{2.6cm}|L{2.45cm}|C{0.85cm}|}
 \hline
 \rowcolor[RGB]{179, 205, 255}
 \textbf{TC\#} & \textbf{BR\#} & \textbf{TR\#} & \textbf{TestCase} & \textbf{TestSteps} & \textbf{Test Data} & \textbf{Expected} & \textbf{Result} & \textbf{P/F} \tabularnewline
@@ -1468,15 +1492,15 @@ $C_4$ & \texttt{Password == ConfirmPassword} (trùng khớp nội dung, kiểm t
 \hline
 \caption{Bảng Test Cases chức năng B2 -- Đăng ký tài khoản (Domain Analysis)}
 \endlastfoot
-\textbf{26} & B2 & T23--T27 & Đăng ký với Mật khẩu 8 ký tự (On $x \ge 8$, $y = 8$) & 1. Nhập mật khẩu đúng 8 ký tự đủ 4 nhóm\newline 2. Nhập Confirm 8 ký tự trùng khớp, nhấn Đăng ký & MK: Test@123 ($x=8$)\newline XN: Test@123 ($y=8$) & Đăng ký thành công, chuyển hướng về trang Đăng nhập. & Đăng ký thành công, chuyển về /login. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{27} & B2 & T23 & Đăng ký với Mật khẩu 7 ký tự (Off $x \ge 8$, $y = 7$) & 1. Nhập mật khẩu 7 ký tự đủ 4 nhóm\newline 2. Nhập Confirm 7 ký tự trùng khớp, nhấn Đăng ký & MK: Test@12 ($x=7$)\newline XN: Test@12 ($y=7$) & Hệ thống từ chối do mật khẩu dưới 8 ký tự. & Server từ chối vì yêu cầu >= 8 ký tự. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{28} & B2 & T23--T27 & Đăng ký với Mật khẩu 100 ký tự (On $x \le 100$, $y = 100$) & 1. Nhập mật khẩu đúng 100 ký tự đủ 4 nhóm\newline 2. Nhập Confirm 100 ký tự trùng khớp, nhấn Đăng ký & MK: 100 ký tự ($x=100$)\newline XN: 100 ký tự ($y=100$) & Hệ thống chấp nhận độ dài biên trên 100 ký tự, đăng ký thành công. & Đăng ký thành công với mật khẩu 100 ký tự. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{29} & B2 & T23--T27 & Đăng ký với Mật khẩu 101 ký tự (Off $x \le 100$, $y = 101$) & 1. Nhập mật khẩu 101 ký tự đủ 4 nhóm\newline 2. Nhập Confirm 101 ký tự trùng khớp, nhấn Đăng ký & MK: 101 ký tự ($x=101$)\newline XN: 101 ký tự ($y=101$) & Hệ thống từ chối, báo lỗi độ dài mật khẩu vượt quá 100 ký tự. & Hệ thống chặn và báo lỗi vượt quá 100 ký tự. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{30} & B2 & T30, T32 & Đăng ký thành công với Mật khẩu 10 ký tự (On $y = x$, $x = 10$) & 1. Nhập đầy đủ thông tin hợp lệ, MK 10 ký tự\newline 2. Nhập Confirm 10 ký tự trùng khớp, nhấn Đăng ký & Tên: testuser\_ok\newline MK/XN: Test@12345 ($x=10, y=10$) & Tạo tài khoản, gán role ``User'', chuyển hướng về /login. & Đăng ký thành công, chuyển về /login. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{31} & B2 & T23--T27 & Đăng ký khi độ dài Xác nhận nhỏ hơn Mật khẩu (Off$-$ $y = x$, $x = 14, y = 13$) & 1. Nhập MK hợp lệ dài 14 ký tự\newline 2. Nhập Confirm dài 13 ký tự & MK: Test@123456789 ($x=14$)\newline XN: Test@12345678 ($y=13$) & Hiển thị ``Mật khẩu không trùng khớp. Vui lòng kiểm tra lại!''. & Frontend chặn và hiển thị đúng thông báo. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{32} & B2 & T23--T27 & Đăng ký khi độ dài Xác nhận lớn hơn Mật khẩu (Off$+$ $y = x$, $x = 15, y = 16$) & 1. Nhập MK hợp lệ dài 15 ký tự\newline 2. Nhập Confirm dài 16 ký tự & MK: Test@12345\allowbreak 67890 ($x=15$)\newline XN: Test@12345\allowbreak 678901 ($y=16$) & Hiển thị ``Mật khẩu không trùng khớp. Vui lòng kiểm tra lại!''. & Frontend chặn và hiển thị đúng thông báo. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{33} & B2 & T23--T27 & Đăng ký khi Xác nhận cùng độ dài nhưng khác nội dung -- lệch dưới (Bổ sung $C_4$, $x = y = 11$) & 1. Nhập MK hợp lệ dài 11 ký tự\newline 2. Nhập Confirm dài 11 ký tự khác ký tự cuối (nhỏ hơn MK) & MK: Abcdef@1234 ($x=11$)\newline XN: Abcdef@1233 ($y=11$) & Hiển thị ``Mật khẩu không trùng khớp. Vui lòng kiểm tra lại!''. & Frontend chặn và hiển thị đúng thông báo. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{34} & B2 & T23--T27 & Đăng ký khi Xác nhận cùng độ dài nhưng khác nội dung -- lệch trên (Bổ sung $C_4$, $x = y = 11$) & 1. Nhập MK hợp lệ dài 11 ký tự\newline 2. Nhập Confirm dài 11 ký tự khác ký tự cuối (lớn hơn MK) & MK: Abcdef@1234 ($x=11$)\newline XN: Abcdef@1235 ($y=11$) & Hiển thị ``Mật khẩu không trùng khớp. Vui lòng kiểm tra lại!''. & Frontend chặn và hiển thị đúng thông báo. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{28} & B2 & T13--T17 & Đăng ký với Mật khẩu 8 ký tự đủ tiêu chí (On $x \ge 8$, $y = 8$) & 1. Nhập mật khẩu đúng 8 ký tự đủ 4 nhóm\newline 2. Nhập Confirm 8 ký tự trùng khớp, nhấn Đăng ký & Tên: newuser11\newline MK/XN: Test@123 ($x=y=8$) & Đăng ký thành công, chuyển hướng về trang Đăng nhập. & Đăng ký thành công, chuyển về /login. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{27} & B2 & T13 & Đăng ký với Mật khẩu 7 ký tự (Off $x \ge 8$, $y = 7$) & 1. Nhập mật khẩu 7 ký tự đủ 4 nhóm\newline 2. Nhập Confirm 7 ký tự trùng khớp, nhấn Đăng ký & Tên: newuser10\newline MK/XN: Test@12 ($x=y=7$) & Hệ thống từ chối do mật khẩu dưới 8 ký tự. & Server từ chối vì yêu cầu >= 8 ký tự. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{DA-B2-03} & B2 & T13--T17 & Đăng ký với Mật khẩu 100 ký tự (On $x \le 100$, $y = 100$) & 1. Nhập mật khẩu 100 ký tự đủ 4 nhóm\newline 2. Nhập Confirm 100 ký tự trùng khớp, nhấn Đăng ký & MK/XN: \texttt{Aa1@} + 96 ký tự `a' ($x=y=100$) & Hệ thống chấp nhận độ dài biên trên 100 ký tự, đăng ký thành công. & Ca biên mở rộng (Domain Analysis). & \textcolor{gray}{\textbf{Mở rộng}} \\ \hline
+\textbf{DA-B2-04} & B2 & T13--T17 & Đăng ký với Mật khẩu 101 ký tự (Off $x \le 100$, $y = 101$) & 1. Nhập mật khẩu 101 ký tự đủ 4 nhóm\newline 2. Nhập Confirm 101 ký tự trùng khớp, nhấn Đăng ký & MK/XN: \texttt{Aa1@} + 97 ký tự `a' ($x=y=101$) & Hệ thống từ chối, báo lỗi độ dài mật khẩu vượt quá 100 ký tự. & Ca biên mở rộng (Domain Analysis). & \textcolor{gray}{\textbf{Mở rộng}} \\ \hline
+\textbf{34} & B2 & T20, T22 & Đăng ký thành công với thông tin hợp lệ (On $y = x$, $x = 10$) & 1. Nhập đầy đủ thông tin hợp lệ, MK 10 ký tự\newline 2. Nhập Confirm 10 ký tự trùng khớp, nhấn Đăng ký & Tên: testuser\_ok\newline MK/XN: Test@12345 ($x=y=10$) & Tạo tài khoản, gán role ``User'', chuyển hướng về /login. & Đăng ký thành công, chuyển về /login. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{DA-B2-06} & B2 & N/A & Độ dài Xác nhận nhỏ hơn Mật khẩu (Off$-$ $y = x$, $x = 14, y = 13$) & 1. Nhập MK hợp lệ dài 14 ký tự\newline 2. Nhập Confirm dài 13 ký tự, nhấn Đăng ký & MK: Test@123456789 ($x=14$)\newline XN: Test@12345678 ($y=13$) & Hiển thị ``Mật khẩu không trùng khớp. Vui lòng kiểm tra lại!''. & Ca biên mở rộng từ \texttt{TC 33}. & \textcolor{gray}{\textbf{Mở rộng}} \\ \hline
+\textbf{DA-B2-07} & B2 & N/A & Độ dài Xác nhận lớn hơn Mật khẩu (Off$+$ $y = x$, $x = 15, y = 16$) & 1. Nhập MK hợp lệ dài 15 ký tự\newline 2. Nhập Confirm dài 16 ký tự, nhấn Đăng ký & MK: Test@12345\allowbreak 67890 ($x=15$)\newline XN: Test@12345\allowbreak 678901 ($y=16$) & Hiển thị ``Mật khẩu không trùng khớp. Vui lòng kiểm tra lại!''. & Ca biên mở rộng từ \texttt{TC 33}. & \textcolor{gray}{\textbf{Mở rộng}} \\ \hline
+\textbf{DA-B2-08} & B2 & N/A & Xác nhận cùng độ dài nhưng khác nội dung -- lệch dưới ($C_4$, $x = y = 11$) & 1. Nhập MK hợp lệ dài 11 ký tự\newline 2. Nhập Confirm dài 11 ký tự khác ký tự cuối (nhỏ hơn MK) & MK: Abcdef@1234 ($x=11$)\newline XN: Abcdef@1233 ($y=11$) & Hiển thị ``Mật khẩu không trùng khớp. Vui lòng kiểm tra lại!''. & Ca biên mở rộng từ \texttt{TC 33}. & \textcolor{gray}{\textbf{Mở rộng}} \\ \hline
+\textbf{33} & B2 & N/A & Đăng ký khi Mật khẩu xác nhận không trùng khớp -- lệch trên ($C_4$, $x = y = 10$) & 1. Nhập MK hợp lệ dài 10 ký tự\newline 2. Nhập Confirm dài 10 ký tự khác nội dung, nhấn Đăng ký & Tên: newuser16\newline MK: Test@12345\newline XN: Test@99999 & Hiển thị ``Mật khẩu không trùng khớp. Vui lòng kiểm tra lại!''. & Frontend chặn và hiển thị đúng thông báo. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \end{longtable}
 \endgroup
 
@@ -1522,58 +1546,55 @@ $C_4$ & \texttt{Password == ConfirmPassword} (trùng khớp nội dung, kiểm t
 \rowcolor[RGB]{179, 205, 255}
 \textbf{Biến} & \textbf{Ý nghĩa} \tabularnewline
 \hline
-$x$ & Số giờ đã trôi qua kể từ lúc đăng Story \\ \hline
-$y$ & Số giờ còn lại hiển thị trên giao diện/API trước khi Story hết hạn \\ \hline
+$t_1$ & Thời điểm đăng Story (\texttt{CreatedAt}, tính theo giờ, $t_1 \ge 0$) \\ \hline
+$t_2$ & Thời điểm truy vấn/xem Story (\texttt{CurrentTime}, tính theo giờ) \\ \hline
 \end{tabularx}
-\caption{Biến đầu vào chức năng Story 24h (B10)}
+\caption{Hai biến đầu vào chức năng Story 24h (B10)}
 \end{minipage}\hfill
 \begin{minipage}[t]{0.48\textwidth}
 \begin{tabularx}{\linewidth}{|C{1.2cm}|>{\raggedright\arraybackslash}X|}
 \hline
 \rowcolor[RGB]{179, 205, 255}
-\textbf{Mã} & \textbf{Điều kiện kiểm thử} \tabularnewline
+\textbf{Mã} & \textbf{Điều kiện ràng buộc liên biến} \tabularnewline
 \hline
-$C_1$ & $x \ge 0$ (thời gian tồn tại không âm) \\ \hline
-$C_2$ & $x < 24$ (trong hạn 24 giờ) \\ \hline
-$C_3$ & $y = 24 - x$ (thời gian còn lại hiển thị khớp $24 - x$) \\ \hline
+$C_1$ & $t_2 - t_1 \ge 0$ (thời điểm xem không trước lúc đăng) \\ \hline
+$C_2$ & $t_2 - t_1 < 24$ (tuổi Story trong hạn 24 giờ) \\ \hline
 \end{tabularx}
-\caption{Các điều kiện kiểm thử (\texttt{C1}--\texttt{C3}) cho B10}
+\caption{Các điều kiện kiểm thử (\texttt{C1}--\texttt{C2}) cho B10}
 \end{minipage}
 \end{table}
 
 \begin{itemize}[leftmargin=1.2cm, noitemsep]
-    \item[\textbf{--}] \textbf{Ràng buộc miền:} $0 \le x < 24$ và $y = 24 - x$ (giả định xét $x, y$ theo đơn vị giờ nguyên). Với \texttt{TC2}, $x = -1$ là thời điểm trước lúc đăng (ngoài miền); $y = 25$ chỉ để thỏa công thức $y = 24 - x$.
+    \item[\textbf{--}] \textbf{Ràng buộc miền liên biến:} $0 \le t_2 - t_1 < 24$ (cả $t_1$ và $t_2$ đều là biến đầu vào/trạng thái thời gian có thể điều khiển được theo đơn vị giờ nguyên; tuổi Story $\Delta t = t_2 - t_1$).
 \end{itemize}
 
 \begin{table}[H]
 \centering
 \small
-\begin{tabularx}{\textwidth}{|X|C{2.0cm}|C{1.1cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|C{0.75cm}|}
+\begin{tabularx}{\textwidth}{|X|C{2.1cm}|C{1.1cm}|C{1.0cm}|C{1.0cm}|C{1.0cm}|C{1.0cm}|C{1.0cm}|}
 \hline
-\multicolumn{3}{|c|}{\cellcolor[RGB]{255, 224, 130}\textbf{Boundary}} & \multicolumn{7}{c|}{\cellcolor[RGB]{179, 205, 255}\textbf{Test-cases}} \tabularnewline
+\multicolumn{3}{|c|}{\cellcolor[RGB]{255, 224, 130}\textbf{Boundary}} & \multicolumn{5}{c|}{\cellcolor[RGB]{179, 205, 255}\textbf{Test-cases}} \tabularnewline
 \hline
 \rowcolor{gray!20}
-\textbf{Biến} & \textbf{Điều kiện} & \textbf{Loại} & \textbf{TC1} & \textbf{TC2} & \textbf{TC3} & \textbf{TC4} & \textbf{TC5} & \textbf{TC6} & \textbf{TC7} \tabularnewline
+\textbf{Biến} & \textbf{Điều kiện} & \textbf{Loại} & \textbf{TC1} & \textbf{TC2} & \textbf{TC3} & \textbf{TC4} & \textbf{TC5} \tabularnewline
 \hline
-\multirow{5}{*}{$x$ (giờ đã tồn tại)} & \multirow{2}{*}{$x \ge 0$} & On & 0 & & & & & & \\ \cline{3-10}
- & & Off & & -1 & & & & & \\ \cline{2-10}
- & \multirow{2}{*}{$x < 24$} & On & & & 24 & & & & \\ \cline{3-10}
- & & Off & & & & 23 & & & \\ \cline{2-10}
- & Typical & In & & & & & 1 & 2 & 3 \\ \hline
-\multirow{4}{*}{$y$ (giờ còn lại)} & \multirow{3}{*}{$y = 24 - x$} & On & & & & & 23 & & \\ \cline{3-10}
- & & Off$-$ & & & & & & 21 & \\ \cline{3-10}
- & & Off$+$ & & & & & & & 22 \\ \cline{2-10}
- & Typical & In & 24 & 25 & 0 & 1 & & & \\ \hline
-\multicolumn{3}{|c|}{\textbf{Kết quả mong đợi}} & \textcolor{blue}{$\checkmark$} & \textcolor{red}{$\times$} & \textcolor{red}{$\times$} & \textcolor{blue}{$\checkmark$} & \textcolor{blue}{$\checkmark$} & \textcolor{red}{$\times$} & \textcolor{red}{$\times$} \\ \hline
+$t_1$ (\texttt{CreatedAt}) & Typical (cố định) & In & 10 & 10 & 10 & 10 & 10 \\ \hline
+\multirow{5}{*}{$t_2$ (\texttt{CurrentTime})} & \multirow{2}{*}{$t_2 - t_1 \ge 0$} & On & 10 & & & & \\ \cline{3-8}
+ & & Off & & 9 & & & \\ \cline{2-8}
+ & \multirow{2}{*}{$t_2 - t_1 < 24$} & On & & & 34 & & \\ \cline{3-8}
+ & & Off & & & & 33 & \\ \cline{2-8}
+ & Typical & In & & & & & 15 \\ \hline
+\multicolumn{3}{|c|}{\textbf{Tuổi Story $\Delta t = t_2 - t_1$ (giờ)}} & 0 & $-1$ & 24 & 23 & 5 \\ \hline
+\multicolumn{3}{|c|}{\textbf{Kết quả mong đợi (Hiển thị Story)}} & \textcolor{blue}{$\checkmark$} & \textcolor{red}{$\times$} & \textcolor{red}{$\times$} & \textcolor{blue}{$\checkmark$} & \textcolor{blue}{$\checkmark$} \\ \hline
 \end{tabularx}
-\caption{Ma trận Domain Analysis cho thời hạn hiển thị Story 24h (B10)}
+\caption{Ma trận Domain Analysis cho hai biến thời gian $(t_1, t_2)$ của Story 24h (B10)}
 \end{table}
 
-\noindent\textbf{c. Bảng Test Cases chi tiết chức năng B10 (Khoảnh khắc 24h -- Stories):}
+\noindent\textbf{c. Bảng Test Cases chi tiết chức năng B10 (Khoảnh khắc 24h -- Thời hạn \texttt{T132}):}
 \begingroup
 \scriptsize
 \setlength{\tabcolsep}{3pt}
-\begin{longtable}{|C{0.8cm}|C{0.85cm}|C{0.95cm}|L{2.0cm}|L{3.0cm}|L{2.15cm}|L{2.6cm}|L{2.5cm}|C{0.85cm}|}
+\begin{longtable}{|C{0.95cm}|C{0.75cm}|C{0.95cm}|L{2.0cm}|L{2.95cm}|L{2.15cm}|L{2.6cm}|L{2.45cm}|C{0.85cm}|}
 \hline
 \rowcolor[RGB]{179, 205, 255}
 \textbf{TC\#} & \textbf{BR\#} & \textbf{TR\#} & \textbf{TestCase} & \textbf{TestSteps} & \textbf{Test Data} & \textbf{Expected} & \textbf{Result} & \textbf{P/F} \tabularnewline
@@ -1587,17 +1608,17 @@ $C_3$ & $y = 24 - x$ (thời gian còn lại hiển thị khớp $24 - x$) \\ \h
 \hline
 \endfoot
 \hline
-\caption{Bảng Test Cases chức năng B10 -- Khoảnh khắc 24h (Domain Analysis)}
+\caption{Bảng Test Cases chức năng B10 -- Khoảnh khắc 24h (Domain Analysis, đồng bộ mã \texttt{T132} từ Sheet gốc)}
 \endlastfoot
-\textbf{153} & B10 & T132 & Kiểm tra Story tại thời điểm vừa đăng (On $x \ge 0$) & 1. Đăng một Story mới\newline 2. Kiểm tra ngay tại thời điểm $x = 0$ giờ & $x = 0$ giờ\newline $y = 24$ giờ & Story hợp lệ, hiển thị ngay trên thanh Khoảnh khắc. & Story hiển thị bình thường. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{154} & B10 & T132 & Kiểm tra thời gian trước khi đăng (Off $x \ge 0$) & 1. Giả lập $x = -1$ giờ (chỉnh \texttt{CreatedAt} trong CSDL hoặc giờ server trước lúc đăng 1 giờ)\newline 2. Truy vấn danh sách Story & $x = -1$ giờ\newline $y = 25$ giờ & Không hợp lệ; Story chưa tồn tại và không hiển thị. & Hệ thống không hiển thị Story. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{155} & B10 & T132 & Kiểm tra Story tại đúng mốc hết hạn 24 giờ (On $x < 24$) & 1. Đăng Story mới\newline 2. Chờ/chỉnh thời gian đúng mốc 24 giờ, quan sát & $x = 24$ giờ\newline $y = 0$ giờ & Hết hạn ($x < 24$ sai); hệ thống tự động lọc bỏ Story khỏi danh sách. & Sau 24 giờ Story tự động biến mất. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{156} & B10 & T132 & Kiểm tra Story sát biên trên 23 giờ (Off $x < 24$) & 1. Đăng Story mới\newline 2. Kiểm tra tại mốc 23 giờ sau khi đăng & $x = 23$ giờ\newline $y = 1$ giờ & Story vẫn còn hạn và hiển thị bình thường trên thanh Khoảnh khắc. & Story vẫn xuất hiện và có thể xem. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{157} & B10 & T132 & Kiểm tra ràng buộc liên biến đúng $y = 24 - x$ (On $y = 24 - x$) & 1. Đăng Story mới\newline 2. Kiểm tra sau 1 giờ ($x = 1$) & $x = 1$ giờ\newline $y = 23$ giờ & Thỏa mãn $y = 24 - x$; Story hiển thị đúng trạng thái còn hạn. & Story hiển thị đúng thời hạn còn lại. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{158} & B10 & T132 & Kiểm tra sai lệch hiển thị dưới $y < 24 - x$ (Off$-$ $y = 24 - x$) & 1. Giả lập sau đăng $x = 2$ giờ\newline 2. Quan sát nhãn thời gian còn lại hiển thị trên giao diện & $x = 2$ giờ\newline Đối chiếu (Off$-$): $y = 21$ giờ & Nhãn hiển thị 22 giờ ($= 24 - x$), không hiển thị 21 giờ. & Nhãn hiển thị 22 giờ, đúng với $24 - x$. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{159} & B10 & T132 & Kiểm tra sai lệch hiển thị trên $y > 24 - x$ (Off$+$ $y = 24 - x$) & 1. Giả lập sau đăng $x = 3$ giờ\newline 2. Quan sát nhãn thời gian còn lại hiển thị trên giao diện & $x = 3$ giờ\newline Đối chiếu (Off$+$): $y = 22$ giờ & Nhãn hiển thị 21 giờ ($= 24 - x$), không hiển thị 22 giờ. & Nhãn hiển thị 21 giờ, đúng với $24 - x$. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{DA-B10-01} & B10 & T132 & Kiểm tra Story tại thời điểm vừa đăng (On $C_1$: $\Delta t = 0$) & 1. Đăng một Story mới tại $t_1 = 10\text{h}$\newline 2. Kiểm tra ngay tại $t_2 = 10\text{h}$ & $t_1 = 10\text{h}, t_2 = 10\text{h}$\newline ($\Delta t = 0$ giờ) & Story hợp lệ, hiển thị ngay trên thanh Khoảnh khắc. & Ca biên mở rộng từ \texttt{TC 172}. & \textcolor{gray}{\textbf{Mở rộng}} \\ \hline
+\textbf{DA-B10-02} & B10 & T132 & Kiểm tra thời điểm trước lúc đăng (Off $C_1$: $\Delta t = -1$) & 1. Giả lập \texttt{CreatedAt} $t_1 = 10\text{h}$ và giờ máy chủ $t_2 = 9\text{h}$\newline 2. Truy vấn danh sách Story & $t_1 = 10\text{h}, t_2 = 9\text{h}$\newline ($\Delta t = -1$ giờ) & Ngoài miền hợp lệ; Story chưa phát hành và không hiển thị. & Ca biên mở rộng (Domain Analysis). & \textcolor{gray}{\textbf{Mở rộng}} \\ \hline
+\textbf{173} & B10 & T132 & Story tự động biến mất khi hết hạn 24 giờ (On $C_2$: $\Delta t \ge 24$) & 1. Đăng nhập và đăng Story mới\newline 2. Chờ qua 24 giờ hoặc chỉnh giờ hệ thống đạt mốc 24 giờ, quan sát thanh Khoảnh khắc & User1, ND: ``Nice view'', ảnh pic.png (5MB)\newline $t_2 - t_1 = 24$ giờ & Hết hạn ($C_2$ sai); hệ thống tự động lọc bỏ Story khỏi danh sách hiển thị của mọi người dùng. & Sau 24 giờ Story tự động biến mất khỏi danh sách Khoảnh khắc. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{DA-B10-04} & B10 & T132 & Kiểm tra Story sát biên trên 23 giờ (Off $C_2$: $\Delta t = 23$) & 1. Đăng Story tại $t_1 = 10\text{h}$\newline 2. Chỉnh đồng hồ đến $t_2 = 33\text{h}$, quan sát thanh Khoảnh khắc & $t_1 = 10\text{h}, t_2 = 33\text{h}$\newline ($\Delta t = 23$ giờ) & Story vẫn còn hạn ($\Delta t < 24$) và hiển thị bình thường. & Ca biên mở rộng từ \texttt{TC 172}. & \textcolor{gray}{\textbf{Mở rộng}} \\ \hline
+\textbf{172} & B10 & T132 & Story vẫn hiển thị bình thường trong hạn 24 giờ (In: $0 < \Delta t < 24$) & 1. Đăng nhập và đăng Story mới\newline 2. Kiểm tra trên thanh Khoảnh khắc khi còn trong hạn ($< 24$h) và bấm F5 & User1, ND: ``Nice view'', ảnh pic.png (5MB)\newline Thời gian đăng $< 24$ giờ & Story vẫn hiển thị bình thường trên thanh Khoảnh khắc của người đăng và bạn bè. & Story vẫn xuất hiện và có thể xem bình thường. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \end{longtable}
 \endgroup
+
+\noindent\textit{Ghi chú đối chiếu Sheet gốc:} Hai mã \texttt{TC 172} và \texttt{TC 173} khớp trực tiếp với mã kiểm thử \texttt{T132} trên bảng Test Cases gốc của \texttt{B10} (tránh nhầm lẫn với \texttt{TC 153--159} vốn kiểm thử \texttt{T125--T126}, trong đó \texttt{TC 159} có lỗi \texttt{Defect \#5} được ghi nhận tại Chương 5).
 
 
 % ----------------------------------------------------------
@@ -1817,7 +1838,9 @@ A1: Đăng bài chia sẻ lên đầu Bảng tin & \textbf{X} & \textbf{X} & & \
 A2: Hiển thị nhãn ``Bài viết được chia sẻ'' \& khung gốc & \textbf{X} & \textbf{X} & & \\ \hline
 A3: Gửi thông báo cho tác giả bài gốc & \textbf{X} & & & \\ \hline
 A4: Không hiển thị nội dung bài gốc / Báo không khả dụng & & & & \textbf{X} \\ \hline
-A5: Báo lỗi lời dẫn vượt quá 1.000 ký tự & & & \textbf{X} & \\ \hline
+\textbf{A5:} Báo lỗi lời dẫn vượt quá 1.000 ký tự & & & \textbf{X} & \\ \hline
+\rowcolor{gray!15}
+\textbf{Ánh xạ Test Case gốc (Sheet)} & 226--230 & Bổ sung & Bổ sung & 231 (Fail) \\ \hline
 \end{tabularx}
 \caption{Bảng quyết định (Decision Table) cho chức năng Chia sẻ bài viết (B15)}
 \end{table}
@@ -1850,6 +1873,8 @@ A5: Báo lỗi lời dẫn vượt quá 1.000 ký tự & & & \textbf{X} & \\ \hl
 \textbf{231} & B15 & T174 & Kiểm tra bài chia sẻ sau khi tác giả xóa bài viết gốc & 1. User2 chia sẻ bài của User1\newline 2. User1 xóa bài gốc\newline 3. User2 tải lại Bảng tin & Tác giả gốc: User1\newline Người chia sẻ: User2 & Bài chia sẻ không còn hiển thị nội dung bài gốc đã bị xóa (báo không còn khả dụng). & Bài chia sẻ vẫn hiển thị đầy đủ nội dung bài viết đã bị xóa (Defect \#17). & \textcolor{red}{\textbf{Fail}} \\ \hline
 \end{longtable}
 \endgroup
+
+\noindent\textit{Ghi chú đối chiếu quy tắc Decision Table:} Bộ 6 ca thực thi \texttt{TC 226--231} trên Sheet gốc bao phủ đầy đủ \texttt{Rule 1} và \texttt{Rule 4} (phát hiện \texttt{Defect \#17}). Hai quy tắc biên bổ sung gồm \texttt{Rule 2} (User1 tự chia sẻ bài của chính mình $\rightarrow$ đăng bài thành công nhưng không tự gửi thông báo) và \texttt{Rule 3} (nhập lời dẫn 1.001 ký tự $\rightarrow$ từ chối, báo lỗi vượt quá 1.000 ký tự) được đề xuất bổ sung vào đợt kiểm thử tiếp theo.
 
 % ----------------------------------------------------------
 % 3.5 State Transition
@@ -2624,13 +2649,30 @@ Module B13 là một chu trình chuyển đổi trạng thái đa vai trò (Ngư
     \end{itemize}
 \end{itemize}
 
-\noindent\textbf{c. Đồ thị nhân -- quả (Cause--Effect Graph)}
+\noindent\textbf{c. Đồ thị nhân -- quả (Cause--Effect Graph) \& Bảng quyết định dẫn xuất (\texttt{R1}--\texttt{R4})}
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.82\textwidth,keepaspectratio]{CauseEffect_B5.png}
 \caption{Đồ thị nhân -- quả chức năng Thích bài viết \& Bình luận (B5)}
 \end{figure}
-\vspace{-10pt}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|X|C{1.5cm}|C{1.5cm}|C{1.5cm}|C{1.5cm}|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{Nguyên nhân / Kết quả} & \textbf{R1} & \textbf{R2} & \textbf{R3} & \textbf{R4} \tabularnewline
+\hline
+\textbf{C1:} Người dùng nhấn nút trái tim & F & T & T & T \\ \hline
+\textbf{C2:} Trạng thái trước khi nhấn là chưa thích & --- & T & T & F \\ \hline
+\textbf{C3:} Người nhấn không phải tác giả bài viết & --- & T & F & --- \\ \hline
+\rowcolor{gray!15}
+\textbf{Kết quả kích hoạt (Effects)} & Hiển thị tim & \textbf{E1, E3, E4} & \textbf{E1, E3} & \textbf{E2, E3} \\ \hline
+\textbf{Test Case tương ứng (TC\#)} & 103 & 104, 106, 107, 109 & 104, 108 & 105, 106, 109 \\ \hline
+\end{tabularx}
+\caption{Bảng quyết định dẫn xuất (\texttt{R1}--\texttt{R4}) từ Đồ thị nhân -- quả chức năng Thích bài viết (B5)}
+\end{table}
 
 \noindent\textbf{d. Bảng Test Cases chi tiết chức năng B5 (Thích bài viết \& Bình luận):}
 \begingroup
@@ -2836,7 +2878,7 @@ PW49 & Đã đăng nhập & 5001 ký tự & Có & WebP & Dưới 5 MB \\ \hline
 \textbf{61} & B4 & T65 & Đăng bài có cả hình ảnh và nội dung & 1. Đăng nhập, nhập ``Nice view''\newline 2. Chọn pic1.png, bấm Đăng & ND: ``Nice view''\newline Ảnh: pic1.png & Đăng bài thành công, hiển thị cả chữ và ảnh ở đầu trang. & Đăng thành công ở đầu trang. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{62} & B4 & T66 & Đăng bài độ dài tối thiểu 1 ký tự & 1. Đăng nhập\newline 2. Nhập 1 ký tự ``D'', bấm Đăng & ND: ``D'' & Đăng bài thành công, xuất hiện đầu bảng tin. & Đăng thành công. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{63} & B4 & T66 & Đăng bài với nội dung đúng 5000 ký tự & 1. Đăng nhập\newline 2. Nhập đúng 5000 ký tự, bấm Đăng & ND: 5000 ký tự & Đăng bài thành công, xuất hiện đầu bảng tin. & Đăng thành công. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{64} & B4 & T66 & Đăng bài với nội dung lớn hơn 5000 ký tự & 1. Đăng nhập\newline 2. Nhập > 5000 ký tự, bấm Đăng & ND: > 5000 ký tự & Chặn đăng, báo lỗi vượt quá giới hạn 5000 ký tự. & Vẫn đăng thành công bài > 5000 ký tự (Defect \#1). & \textcolor{red}{\textbf{Fail}} \\ \hline
+\textbf{64} & B4 & T66 & Đăng bài với nội dung lớn hơn 5000 ký tự & 1. Đăng nhập\newline 2. Nhập chuỗi 5001 ký tự, bấm Đăng & ND: 5001 ký tự (``a'' $\times$ 5001) & Chặn đăng, báo lỗi vượt quá giới hạn 5000 ký tự. & Vẫn đăng thành công bài > 5000 ký tự trên UI v1.0 (Defect \#1). & \textcolor{red}{\textbf{Fail}} \\ \hline
 \textbf{65} & B4 & T67 & Hiển thị bài viết dài có khoảng trắng & 1. Nhập chuỗi >= 119 ký tự có khoảng trắng\newline 2. Nhấn Đăng & ND >= 119 kt (có dấu cách) & Tự động xuống dòng, nằm gọn trong khung bài viết. & Tự động xuống dòng đúng. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{66} & B4 & T67 & Hiển thị bài viết chuỗi dài không khoảng trắng & 1. Nhập chuỗi >= 119 ký tự liên tục không dấu cách\newline 2. Nhấn Đăng & ND >= 119 kt (không dấu cách) & Tự động ngắt dòng, không làm tràn khung giao diện. & Chuỗi không xuống dòng đúng và gây tràn UI (Defect \#2). & \textcolor{red}{\textbf{Fail}} \\ \hline
 \textbf{67} & B4 & T68 & Đăng bài kèm tệp ảnh JPG hợp lệ & 1. Nhập ``Nice view''\newline 2. Đính kèm pic.jpg (1.7MB), nhấn Đăng & Ảnh: pic.jpg (1.7MB) & Đăng bài thành công, hiển thị đầy đủ nội dung và ảnh. & Đăng thành công. & \textcolor{blue}{\textbf{Pass}} \\ \hline
@@ -2965,6 +3007,8 @@ PW16 & Tin nhắn & Ký tự đặc biệt & Nhấn Enter & Chưa đăng nhập 
 \textbf{204} & B12 & T146 & Lọc danh sách cuộc trò chuyện tin nhắn theo tên bạn bè/nhóm & 1. Truy cập trang Tin nhắn\newline 2. Nhấp vào ô tìm kiếm phía trên danh sách hội thoại\newline 3. Nhập từ khóa tên bạn bè ``Doe'' & Tài khoản: User 4\newline Từ khóa: ``Doe'' & Danh sách cuộc trò chuyện tự động lọc ngay lập tức, giữ lại hội thoại chứa ``Doe''. & Danh sách cuộc trò chuyện lọc tức thì đúng hội thoại chứa ``Doe''. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \end{longtable}
 \endgroup
+
+\noindent\textit{Ghi chú đối chiếu Pairwise -- Sheet gốc:} Bảng Test Cases gốc của \texttt{B12} gồm 5 ca thực thi dương tính trọng tâm (\texttt{TC 200--204}) phủ đầy đủ 4 phạm vi tìm kiếm (\textit{Người dùng, Bài viết, Nhóm, Tin nhắn}) và cả 5 yêu cầu \texttt{T142--T146} (tương ứng \texttt{PW05} và các nhánh hợp lệ đã đăng nhập). Các tổ hợp kiểm thử âm tính/chưa đăng nhập còn lại trong ma trận trực giao \texttt{PW01--PW16} (\textit{không tồn tại kết quả, chuỗi trống/khoảng trắng, ký tự đặc biệt, chưa đăng nhập}) là tập ca thiết kế mở rộng đề xuất thực thi bổ sung ở đợt kiểm thử hồi quy tiếp theo.
 
 
 \pagebreak
@@ -3289,9 +3333,9 @@ public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
 \textbf{19} & B2 & T07 & Đăng ký với Email sai định dạng (Q1 -- TC 19) & 1. Vào trang đăng ký\newline 2. Nhập email sai định dạng, nhấn Đăng ký & Email: new\_user@example & Đăng ký thất bại, thông báo ``Invalid email format''. & Hiển thị ``Invalid email format''. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{12} & B2 & T02 & Đăng ký với Tên đăng nhập 2 ký tự (Q2 -- TC 12) & 1. Vào trang đăng ký\newline 2. Nhập tên đăng nhập 2 ký tự, nhấn Đăng ký & Tên: ab\newline MK: Aa123456! & Đăng ký thất bại, báo ``Username must be 3-20 characters...''. & Hiển thị thông báo lỗi độ dài Username. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{22} & B2 & T10 & Đăng ký với Họ tên 1 ký tự (Q3 -- TC 22) & 1. Vào trang đăng ký\newline 2. Nhập họ tên 1 ký tự, nhấn Đăng ký & HT: A\newline MK: Aa123456! & Đăng ký thất bại, báo ``Full name must be 2-100 characters''. & Hiển thị thông báo lỗi độ dài Họ tên. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{37} & B2 & T28 & Mật khẩu không đạt, điểm độ mạnh $< 30$ (Q4 -- TC 37) & 1. Chuẩn bị Email, Username, FullName hợp lệ\newline 2. Gửi API Register với MK yếu ($<30$ điểm) & MK: \texttt{123} (điểm $< 30$) & HTTP 400 Bad Request ``Password is too weak (must contain uppercase, lowercase, number, special char)''. & API trả về HTTP 400 Bad Request kèm thông báo ``Password is too weak (must contain uppercase, lowercase, number, special char)''. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{38} & B2 & T23, T28 & Mật khẩu không đạt, điểm độ mạnh $30\text{--}59$ (Q5 -- TC 38) & 1. Gửi API Register với MK trung bình (30--59 điểm, tương tự TC 27 ở ngưỡng 30--59) & MK: \texttt{abc1234} (điểm $30\text{--}59$) & HTTP 400 Bad Request ``Password needs improvement (at least 8 chars)''. & API trả về HTTP 400 Bad Request kèm thông báo ``Password needs improvement (at least 8 chars)''. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{39} & B2 & T24--T28 & Mật khẩu không đạt, điểm $\ge 60$ nhưng thiếu tiêu chí (Q6 -- TC 39) & 1. Gửi API Register với MK $\ge 8$ ký tự ($\ge 60$ điểm) nhưng thiếu ký tự đặc biệt & MK: \texttt{Aa12345678} (điểm $\ge 60$) & HTTP 400 Bad Request ``Password does not meet requirements''. & API trả về HTTP 400 Bad Request kèm thông báo ``Password does not meet requirements''. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{37} & B2 & T18 & Mật khẩu không đạt, điểm độ mạnh $< 30$ (Q4 -- TC 37) & 1. Chuẩn bị Email, Username, FullName hợp lệ\newline 2. Gửi API Register với MK yếu ($<30$ điểm) & MK: \texttt{123} (điểm $< 30$) & HTTP 400 Bad Request ``Password is too weak (must contain uppercase, lowercase, number, special char)''. & API trả về HTTP 400 Bad Request kèm thông báo ``Password is too weak (must contain uppercase, lowercase, number, special char)''. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{38} & B2 & T13, T18 & Mật khẩu không đạt, điểm độ mạnh $30\text{--}59$ (Q5 -- TC 38) & 1. Gửi API Register với MK trung bình (30--59 điểm, tương tự TC 27 ở ngưỡng 30--59) & MK: \texttt{abc1234} (điểm $30\text{--}59$) & HTTP 400 Bad Request ``Password needs improvement (at least 8 chars)''. & API trả về HTTP 400 Bad Request kèm thông báo ``Password needs improvement (at least 8 chars)''. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{39} & B2 & T14--T18 & Mật khẩu không đạt, điểm $\ge 60$ nhưng thiếu tiêu chí (Q6 -- TC 39) & 1. Gửi API Register với MK $\ge 8$ ký tự ($\ge 60$ điểm) nhưng thiếu ký tự đặc biệt & MK: \texttt{Aa12345678} (điểm $\ge 60$) & HTTP 400 Bad Request ``Password does not meet requirements''. & API trả về HTTP 400 Bad Request kèm thông báo ``Password does not meet requirements''. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{17} & B2 & T05 & Đăng ký với Tên đăng nhập đã tồn tại (Q7 -- TC 17) & 1. Vào trang đăng ký\newline 2. Nhập Username đã tồn tại, nhấn Đăng ký & Tên: User1\newline MK: Aa123456! & Đăng ký thất bại, báo ``Username already exists''. & Hiển thị ``Username already exists''. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{20} & B2 & T08 & Đăng ký với Email đã tồn tại (Q8 -- TC 20) & 1. Vào trang đăng ký\newline 2. Nhập Email đã có trong hệ thống, nhấn Đăng ký & Email: user1@test.com & Đăng ký thất bại, báo ``Email already registered''. & Hiển thị ``Email already registered''. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{40} & B2 & T33 & Tạo tài khoản thất bại tại Identity \texttt{CreateAsync} (Q9 -- TC 40) & 1. Giả lập \texttt{CreateAsync} trả \texttt{Succeeded = false}\newline 2. Gọi \texttt{AuthController.Register} & Dữ liệu hợp lệ; Mock \texttt{CreateAsync} lỗi & HTTP 400 Bad Request kèm danh sách lỗi mã \texttt{VALIDATION\_ERROR}. & API trả về HTTP 400 Bad Request kèm danh sách lỗi mã \texttt{VALIDATION\_ERROR}. & \textcolor{blue}{\textbf{Pass}} \\ \hline
@@ -3731,12 +3775,14 @@ Không có bất thường.
 \caption{Bảng Test Cases hộp trắng chức năng B7 -- SendFriendRequestAsync (Data Flow)}
 \endlastfoot
 \textbf{118} & B7 & T97 & Từ chối gửi lời mời cho chính mình (P1) & 1. Chuẩn bị u1\newline 2. Gọi SendFriend\allowbreak RequestAsync(``u1'', ``u1'') & senderId = ``u1''\newline receiverId = ``u1'' & Ném InvalidOperation\allowbreak Exception ``Không thể gửi lời mời kết bạn cho chính mình''. & Ném ngoại lệ đúng, không tạo quan hệ. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{127} & B7 & T106 & Từ chối gửi lời mời đến tài khoản Admin (P2) & 1. Gán role Admin cho admin1\newline 2. Gọi SendFriend\allowbreak RequestAsync(``u1'', ``admin1'') & senderId = ``u1''\newline receiverId = ``admin1'' & Ném InvalidOperation\allowbreak Exception ``Không thể gửi lời mời kết bạn cho tài khoản này''. & Ném ngoại lệ đúng, không tạo quan hệ. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{245} & B7 & T106 & Từ chối gửi lời mời đến tài khoản Admin (P2) & 1. Gán role Admin cho admin1\newline 2. Gọi SendFriend\allowbreak RequestAsync(``u1'', ``admin1'') & senderId = ``u1''\newline receiverId = ``admin1'' & Ném InvalidOperation\allowbreak Exception ``Không thể gửi lời mời kết bạn cho tài khoản này''. & Ném ngoại lệ đúng, không tạo quan hệ. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{119} & B7 & T98 & Từ chối gửi trùng khi không có vai trò Admin (P3) & 1. Tạo sẵn quan hệ Pending u1 $\rightarrow$ u2\newline 2. Gọi lại SendFriend\allowbreak RequestAsync(``u1'', ``u2'') & senderId = ``u1'', receiverId = ``u2'' (đã Pending) & Ném InvalidOperation\allowbreak Exception ``Lời mời kết bạn đã tồn tại hoặc đã là bạn bè''. & Ném ngoại lệ quan hệ đã tồn tại. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{120} & B7 & T99 & Gửi thành công khi chưa có vai trò Admin (P4) & 1. Chuẩn bị u1, u2 chưa có quan hệ, F3 trả null\newline 2. Gọi SendFriend\allowbreak RequestAsync(``u1'', ``u2'') & senderId = ``u1''\newline receiverId = ``u2'' & Lưu quan hệ Pending, gọi NotifyFriend\allowbreak RequestAsync 1 lần. & Lưu Pending và gửi thông báo thành công. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{237} & B7 & T99 & Gửi thành công đến người dùng không phải Admin (P5) & 1. Vai trò Admin tồn tại nhưng u2 không phải Admin\newline 2. Gọi SendFriend\allowbreak RequestAsync(``u1'', ``u2'') & senderId = ``u1''\newline receiverId = ``u2'' & Lưu quan hệ Pending, gọi NotifyFriend\allowbreak RequestAsync 1 lần, trả về friendship. & Lưu Pending và trả về quan hệ vừa tạo. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \end{longtable}
 \endgroup
+
+\noindent\textit{Ghi chú đối chiếu hộp trắng -- hộp đen:} Ca kiểm thử \texttt{TC 245} kiểm tra nhánh chặn gửi lời mời tới tài khoản có vai trò \texttt{Admin} (\texttt{F5--F7}) trong \texttt{SendFriendRequestAsync} (Pass), tách biệt hoàn toàn với \texttt{TC 127} ở Mục 3.5.1 kiểm tra việc kết bạn với \textbf{tài khoản người dùng thường đang bị Admin khóa} (Fail -- \texttt{Defect \#10}). Chính kết quả phân tích mã nguồn hộp trắng ở trên cũng chỉ ra nguyên nhân gốc của \texttt{Defect \#10}: phương thức \texttt{SendFriendRequestAsync} hiện chưa có nhánh kiểm tra trạng thái khóa (\texttt{LockoutEnd} / \texttt{IsLocked}) của tài khoản nhận.
 
 
 \subsubsection{Chức năng B14 -- Bảng điều khiển Quản trị \& Quản lý Người dùng (\texttt{AssignRoleToUser})}
@@ -4514,12 +4560,14 @@ COV-POST-06 & False & False & False & False & False \\ \hline
 \endlastfoot
 \textbf{56} & B4 & T64 & Từ chối khi không xác định được người dùng (P1) & 1. Không cung cấp claim userId\newline 2. Gọi PostsController.\allowbreak Create & userId = null\newline Content = ``Bài thử'' & HTTP 401 Unauthorized ``User not authenticated''. & HTTP 401, đạt 18,75\% Stmt, 10,00\% Branch. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{57} & B4 & T65 & Từ chối khi nội dung bài viết rỗng (P2) & 1. Thiết lập userId = ``u1''\newline 2. Đặt Content = ``'' và gọi Create & userId = ``u1''\newline Content = ``'' & HTTP 400 BadRequest ``Content không được để trống''. & HTTP 400, tích lũy 31,25\% Stmt, 30,00\% Branch. & \textcolor{blue}{\textbf{Pass}} \\ \hline
-\textbf{64} & B4 & T66 & Từ chối khi nội dung vượt 5000 ký tự (P3) & 1. Thiết lập userId = ``u1''\newline 2. Đặt Content = 5001 ký tự 'a', gọi Create & userId = ``u1''\newline Content = 5001 chars & HTTP 400 BadRequest ``Content không được vượt quá 5000 ký tự''. & HTTP 400, tích lũy 43,75\% Stmt, 50,00\% Branch. & \textcolor{blue}{\textbf{Pass}} \\ \hline
+\textbf{246} & B4 & T66 & Từ chối khi nội dung vượt 5000 ký tự (P3 -- Unit Test) & 1. Thiết lập userId = ``u1''\newline 2. Đặt Content = 5001 ký tự 'a', gọi Create & userId = ``u1''\newline Content = 5001 chars & HTTP 400 BadRequest ``Content không được vượt quá 5000 ký tự''. & HTTP 400, tích lũy 43,75\% Stmt, 50,00\% Branch. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{242} & B4 & T66.1 & Trả lỗi khi không đọc lại được bài vừa tạo (P4) & 1. Mock CreateAsync trả Id = 20\newline 2. Mock GetByIdDto\allowbreak Async(20) trả null & userId = ``u1''\newline GetByIdDto\allowbreak Async $\rightarrow$ null & HTTP 500 Internal Server Error ``Failed to retrieve created post''. & HTTP 500, tích lũy 75,00\% Stmt, 70,00\% Branch. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{77} & B4 & T65, T71 & Tạo bài gốc thành công và thông báo bạn bè (P5) & 1. Thiết lập SharedPostId = null\newline 2. Gọi Create và kiểm tra SignalR & userId = ``u1'', Content = ``Hợp lệ'', SharedPostId = null & HTTP 201 Created, phát PostCreated và gọi NotifyFriends 1 lần. & HTTP 201, tích lũy 100\% Stmt, 90,00\% Branch. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \textbf{243} & B4 & T65, T71 & Tạo bài chia sẻ thành công, bỏ qua thông báo bạn bè (P6) & 1. Thiết lập SharedPostId = 10\newline 2. Gọi Create và kiểm tra & userId = ``u1'', Content = ``Share'', SharedPostId = 10 & HTTP 201 Created, phát PostCreated, không gọi NotifyFriends. & HTTP 201, hoàn tất 100\% Stmt \& 100\% Branch. & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \end{longtable}
 \endgroup
+
+\noindent\textit{Ghi chú đối chiếu hộp trắng -- hộp đen:} Ca kiểm thử đơn vị \texttt{TC 246} (\texttt{COV-POST-03}) kiểm tra trực tiếp nhánh \texttt{S6} (\texttt{Content.Length > 5000}) của \texttt{PostsController.Create} ở cấp Unit Test và đạt \texttt{Pass}. Kết quả này tách biệt với ca kiểm thử hệ thống hộp đen \texttt{TC 64} ở Mục 3.7.1 (\texttt{Fail -- Defect \#1} trên giao diện phiên bản \texttt{v1.0}), cho thấy tồn tại sự mất đồng bộ giữa tầng giao diện/luồng tích hợp bản \texttt{v1.0} và điều kiện kiểm tra tại Controller, cần được kiểm tra tích hợp và chạy lại (Retesting) sau khi đồng bộ mã nguồn.
 
 \subsubsection{Chức năng B8 -- Nhắn tin tức thời 1-1 (\texttt{SendPersonalMessageAsync})}
 
@@ -4782,12 +4830,29 @@ COV-MSG-05 & $P_5$ & $B_1^-, B_2^-, B_3^-, B_4^+$ & $B_4^+$ & 8 / 8 & \textbf{10
 \textbf{Tổ hợp} & \textbf{Giá trị $c_1$} & \textbf{Giá trị $c_2$} & \textbf{Kết quả $C$} & \textbf{Test Case} & \textbf{Nhánh thực thi} \tabularnewline
 \hline
 1 & True (nội dung trống) & True (ảnh trống) & True & COV-MSG-02 ($P_2$) & $B_2^+$ (vào $S_4$, ném lỗi) \\ \hline
-2 & True (nội dung trống) & False (có ảnh) & False & Bổ trợ ($P_5$ thuần ảnh) & $B_2^-$ (xuống $S_5$) \\ \hline
+2 & True (nội dung trống) & False (có ảnh) & False & Chưa có ca thực thi (thuần ảnh) & $B_2^-$ (xuống $S_5$) \\ \hline
 3 & False (có nội dung) & True (ảnh trống) & False & COV-MSG-04 ($P_4$) & $B_2^-$ (xuống $S_5$) \\ \hline
 4 & False (có nội dung) & False (có ảnh) & False & COV-MSG-05 ($P_5$) & $B_2^-$ (xuống $S_5$) \\ \hline
 \end{tabularx}
 \caption{Bảng chân trị phân tích tổ hợp điều kiện tại $S_3$ (\texttt{SendPersonalMessageAsync} -- B8)}
 \end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|C{1.3cm}|L{2.8cm}|L{2.8cm}|C{1.7cm}|C{2.4cm}|X|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{Tổ hợp} & \textbf{Giá trị $c_3$ (\texttt{content!=null})} & \textbf{Giá trị $c_4$ (\texttt{Length>2000})} & \textbf{Kết quả $C'$} & \textbf{Test Case} & \textbf{Nhánh thực thi} \tabularnewline
+\hline
+1 & True (\texttt{content} có dữ liệu) & True ($> 2000$ ký tự) & True & COV-MSG-03 ($P_3$) & $B_3^+$ (vào $S_6$, ném lỗi) \\ \hline
+2 & True (\texttt{content} có dữ liệu) & False ($\le 2000$ ký tự) & False & COV-MSG-04, 05 ($P_4, P_5$) & $B_3^-$ (xuống $S_7$) \\ \hline
+3 & False (\texttt{content == null}) & \textit{Short-circuit (không xét)} & False & Chưa có ca thực thi (thuần ảnh) & $B_3^-$ (xuống $S_7$, nhánh \texttt{"[Hinh anh]"} tại $S_{12}$) \\ \hline
+\end{tabularx}
+\caption{Bảng chân trị phân tích tổ hợp điều kiện tại $S_5$ (\texttt{SendPersonalMessageAsync} -- B8)}
+\end{table}
+
+\noindent\textit{Nhận xét giới hạn độ bao phủ:} Trên \texttt{SendPersonalMessageAsync} (\texttt{B8}), 5 ca thực thi (\texttt{TC 244, 129, 130, 132, 131}) đạt 100\% Statement, Branch (4 nút \texttt{if}) và Path Coverage trên các đường cơ bản đã xác định; Condition Coverage chưa đạt 100\% (chưa thực thi tổ hợp thuần ảnh với \texttt{content == null} cho nhánh đoản mạch tại $S_5$ và toán tử ba ngôi tại $S_{12}$).
 
 \noindent\textbf{e.4 Bao phủ đường dẫn (Path Coverage)}
 
@@ -4823,5 +4888,206 @@ COV-MSG-05 & $P_5$ & $B_1^-, B_2^-, B_3^-, B_4^+$ & $B_4^+$ & 8 / 8 & \textbf{10
 \textbf{131} & B8 & T110, T111 & Gửi thành công tin nhắn có đính kèm hình ảnh (P5) & 1. Truyền content = ``Ảnh dự án'', imageUrl hợp lệ\newline 2. Gọi hàm & content = ``Ảnh dự án''\newline imageUrl = ``data:image/...'' & Thực thi S9 lưu ảnh, lưu tin nhắn, gửi thông báo và phát SignalR. & Gửi thành công (100\% Stmt, 100\% Branch). & \textcolor{blue}{\textbf{Pass}} \\ \hline
 \end{longtable}
 \endgroup
+
+\noindent\textit{Ghi chú đối chiếu hộp trắng -- hộp đen:} Các ca kiểm thử \texttt{TC 130} và \texttt{TC 131} ở bảng trên phản ánh kết quả \textbf{Unit Test ở tầng Backend} (\texttt{SendPersonalMessageAsync} đã cài đặt kiểm tra \texttt{content.Length > 2000} và xử lý \texttt{imageUrl} $\rightarrow$ \texttt{Pass}), khác với kết quả \textbf{Kiểm thử hệ thống trên giao diện v1.0} (\texttt{Fail -- Defect \#11} và \texttt{Defect \#12} do giao diện Frontend v1.0 chưa chặn vượt 2.000 ký tự và chưa tích hợp nút đính kèm ảnh). Toàn bộ kết quả đối chiếu và danh sách lỗi được tổng hợp chi tiết tại Chương 5.
+
+
+\pagebreak
+% ==========================================================
+% CHƯƠNG 5: TỔNG HỢP KẾT QUẢ THỰC THI, BÁO CÁO LỖI & KẾT LUẬN
+% ==========================================================
+\section{CHƯƠNG 5: TỔNG HỢP KẾT QUẢ THỰC THI, BÁO CÁO LỖI \& KẾT LUẬN}
+
+\subsection{Tổng hợp kết quả thực thi kiểm thử (Test Execution Summary)}
+Quá trình thực thi kiểm thử trên phiên bản \textbf{InteractHub v1.0} được tiến hành trọn vẹn cho toàn bộ \textbf{246 ca kiểm thử} (gồm \textbf{236 ca kiểm thử hệ thống hộp đen \texttt{TC 1}--\texttt{TC 236}} và \textbf{10 ca kiểm thử hộp trắng đơn vị bổ sung \texttt{TC 237}--\texttt{TC 246}}), không có ca kiểm thử nào bị chặn (\texttt{Blocked = 0}).
+
+\begin{table}[H]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\textwidth}{|L{4.0cm}|C{1.2cm}|C{1.05cm}|C{0.95cm}|C{1.35cm}|C{1.65cm}|X|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{Phạm vi / Cấp độ kiểm thử} & \textbf{Tổng TC} & \textbf{Pass} & \textbf{Fail} & \textbf{Blocked} & \textbf{Tỷ lệ Pass} & \textbf{Ghi chú phạm vi} \tabularnewline
+\hline
+Kiểm thử hệ thống hộp đen (\texttt{1}--\texttt{236}) & 236 & 220 & 16 & 0 & 93,22\% & Toàn bộ 16 BRD trên bản \texttt{v1.0} \\ \hline
+Kiểm thử hộp trắng bổ sung (\texttt{237}--\texttt{246}) & 10 & 10 & 0 & 0 & 100,00\% & Nhánh nội bộ/Mock ở Chương 4 \\ \hline
+\rowcolor{gray!15}
+\textbf{Tổng hợp toàn dự án (RTM)} & \textbf{246} & \textbf{230} & \textbf{16} & \textbf{0} & \textbf{93,50\%} & \textbf{Phát hiện 16 lỗi (Defect)} \\ \hline
+\textit{Trích chi tiết tại Chương 3 (Hộp đen)} & \textit{137} & \textit{128} & \textit{9} & \textit{0} & \textit{93,43\%} & \textit{7 kỹ thuật hộp đen (14 mục)} \\ \hline
+\textit{Trích chi tiết tại Chương 4 (Hộp trắng)} & \textit{36} & \textit{36} & \textit{0} & \textit{0} & \textit{100,00\%} & \textit{3 kỹ thuật hộp trắng (6 hàm)} \\ \hline
+\end{tabularx}
+\caption{Bảng tổng hợp kết quả thực thi kiểm thử theo cấp độ và phạm vi báo cáo}
+\end{table}
+
+Bảng dưới đây thống kê chi tiết kết quả thực thi cho từng nhóm chức năng nghiệp vụ \texttt{B1}--\texttt{B16} (tổng hợp cả 236 ca kiểm thử hệ thống và 10 ca hộp trắng bổ sung):
+
+\begin{longtable}{|C{0.9cm}|L{3.55cm}|C{1.25cm}|C{1.15cm}|C{1.05cm}|C{1.45cm}|C{1.6cm}|L{2.8cm}|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{BRD} & \textbf{Tên chức năng} & \textbf{Tổng TC} & \textbf{Pass} & \textbf{Fail} & \textbf{Blocked} & \textbf{Tỷ lệ Pass} & \textbf{Mã Defect} \tabularnewline
+\hline
+\endfirsthead
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{BRD} & \textbf{Tên chức năng} & \textbf{Tổng TC} & \textbf{Pass} & \textbf{Fail} & \textbf{Blocked} & \textbf{Tỷ lệ Pass} & \textbf{Mã Defect} \tabularnewline
+\hline
+\endhead
+\hline
+\endfoot
+\hline
+\caption{Thống kê kết quả thực thi kiểm thử theo 16 nhóm chức năng (\texttt{B1}--\texttt{B16})}
+\endlastfoot
+\textbf{B1} & Đăng nhập người dùng & 10 & 10 & 0 & 0 & 100,00\% & --- \\ \hline
+\textbf{B2} & Đăng ký tài khoản & 31 & 31 & 0 & 0 & 100,00\% & --- \\ \hline
+\textbf{B3} & Thông tin cá nhân (Profile) & 14 & 14 & 0 & 0 & 100,00\% & --- \\ \hline
+\textbf{B4} & Bảng tin \& Bài viết & 50 & 47 & 3 & 0 & 94,00\% & \#1, \#2, \#3 \\ \hline
+\textbf{B5} & Thích bài viết & 7 & 7 & 0 & 0 & 100,00\% & --- \\ \hline
+\textbf{B6} & Bình luận & 7 & 6 & 1 & 0 & 85,71\% & \#7 \\ \hline
+\textbf{B7} & Kết bạn \& Mạng lưới & 13 & 11 & 2 & 0 & 84,62\% & \#9, \#10 \\ \hline
+\textbf{B8} & Nhắn tin tức thời 1-1 & 10 & 6 & 4 & 0 & 60,00\% & \#11, \#12, \#13, \#14 \\ \hline
+\textbf{B9} & Nhóm cộng đồng & 15 & 14 & 1 & 0 & 93,33\% & \#4 \\ \hline
+\textbf{B10} & Khoảnh khắc 24h & 27 & 25 & 2 & 0 & 92,59\% & \#5, \#6 \\ \hline
+\textbf{B11} & Hashtag \& Phân loại & 21 & 21 & 0 & 0 & 100,00\% & --- \\ \hline
+\textbf{B12} & Tìm kiếm toàn hệ thống & 5 & 5 & 0 & 0 & 100,00\% & --- \\ \hline
+\textbf{B13} & Báo cáo \& Kháng cáo & 12 & 11 & 1 & 0 & 91,67\% & \#15 \\ \hline
+\textbf{B14} & Quản trị \& Người dùng & 13 & 12 & 1 & 0 & 92,31\% & \#16 \\ \hline
+\textbf{B15} & Chia sẻ bài viết & 6 & 5 & 1 & 0 & 83,33\% & \#17 \\ \hline
+\textbf{B16} & Thông báo \& Mở bài viết & 5 & 5 & 0 & 0 & 100,00\% & --- \\ \hline
+\rowcolor{gray!15}
+\multicolumn{2}{|c|}{\textbf{Tổng cộng (16 BRD)}} & \textbf{246} & \textbf{230} & \textbf{16} & \textbf{0} & \textbf{93,50\%} & \textbf{16 lỗi} \\ \hline
+\end{longtable}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[xscale=0.095, yscale=0.48]
+    \foreach \idx/\brd/\rate/\fails in {
+        1/{B8 (60,0\%)}/60.0/4,
+        2/{B15 (83,3\%)}/83.33/1,
+        3/{B7 (84,6\%)}/84.62/2,
+        4/{B6 (85,7\%)}/85.71/1,
+        5/{B13 (91,7\%)}/91.67/1,
+        6/{B14 (92,3\%)}/92.31/1,
+        7/{B10 (92,6\%)}/92.59/2,
+        8/{B9 (93,3\%)}/93.33/1,
+        9/{B4 (94,0\%)}/94.0/3
+    }{
+        \node[anchor=east, font=\scriptsize\bfseries] at (-2, \idx) {\brd};
+        \fill[blue!55!cyan] (0, \idx-0.32) rectangle (\rate, \idx+0.32);
+        \fill[red!65!white] (\rate, \idx-0.32) rectangle (100, \idx+0.32);
+        \node[anchor=west, font=\scriptsize] at (102, \idx) {\fails\ Fail};
+    }
+    \draw[thick] (0, 0.3) -- (0, 9.7);
+    \draw[thick] (0, 0.3) -- (100, 0.3);
+    \foreach \x in {0, 20, 40, 60, 80, 100}{
+        \draw (\x, 0.3) -- (\x, 0.1) node[below, font=\scriptsize] {\x\%};
+    }
+    % Legend
+    \fill[blue!55!cyan] (20, 10.3) rectangle (26, 10.8);
+    \node[anchor=west, font=\scriptsize] at (27, 10.55) {Tỷ lệ Pass};
+    \fill[red!65!white] (56, 10.3) rectangle (62, 10.8);
+    \node[anchor=west, font=\scriptsize] at (63, 10.55) {Tỷ lệ Fail};
+\end{tikzpicture}
+\caption{Biểu đồ tỷ lệ Pass/Fail tại 9 nhóm chức năng có phát sinh lỗi (7 nhóm còn lại đạt 100\% Pass)}
+\end{figure}
+
+\subsection{Báo cáo lỗi chi tiết (Defect Report)}
+Tổng số lỗi được phát hiện và ghi nhận trên phiên bản \textbf{InteractHub v1.0} là \textbf{16 lỗi} (được đánh mã \texttt{Defect \#1}--\texttt{\#7} và \texttt{\#9}--\texttt{\#17}; \textit{lưu ý: mã \texttt{\#8} không được cấp trong bộ theo dõi gốc của nhóm nên tổng số lỗi thực tế là 16, khớp chính xác 1-1 với 16 ca kiểm thử \texttt{Fail}}).
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|L{4.0cm}|C{2.0cm}|C{2.0cm}|C{2.0cm}|C{2.0cm}|X|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{Phân loại lỗi} & \textbf{Critical} & \textbf{High} & \textbf{Medium} & \textbf{Low} & \textbf{Tổng cộng} \tabularnewline
+\hline
+\textbf{Theo mức độ nghiêm trọng (Severity)} & 0 & 4 & 10 & 2 & \textbf{16 lỗi} \\ \hline
+\textbf{Theo mức độ ưu tiên (Priority)} & 0 & 5 & 8 & 3 & \textbf{16 lỗi} \\ \hline
+\end{tabularx}
+\caption{Phân bố 16 lỗi theo mức độ nghiêm trọng (Severity) và mức độ ưu tiên (Priority)}
+\end{table}
+
+\begingroup
+\scriptsize
+\setlength{\tabcolsep}{2.8pt}
+\begin{longtable}{|C{1.2cm}|C{0.75cm}|C{1.1cm}|L{1.4cm}|L{3.8cm}|L{3.45cm}|C{1.45cm}|C{1.0cm}|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{Defect\#} & \textbf{TC\#} & \textbf{BRD / TR\#} & \textbf{Người báo / Ver} & \textbf{Mô tả lỗi \& Kết quả thực tế} & \textbf{Kết quả mong đợi} & \textbf{Priority / Severity} & \textbf{Trạng thái} \tabularnewline
+\hline
+\endfirsthead
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{Defect\#} & \textbf{TC\#} & \textbf{BRD / TR\#} & \textbf{Người báo / Ver} & \textbf{Mô tả lỗi \& Kết quả thực tế} & \textbf{Kết quả mong đợi} & \textbf{Priority / Severity} & \textbf{Trạng thái} \tabularnewline
+\hline
+\endhead
+\hline
+\endfoot
+\hline
+\caption{Danh sách chi tiết 16 lỗi (Defect Report) phát hiện trên InteractHub v1.0}
+\endlastfoot
+\textbf{\#1} & 64 & B4 / T66 & Trường\newline v1.0 & Nhập nội dung bài viết $> 5.000$ ký tự trên Bảng tin vẫn đăng thành công và hiển thị ở đầu Feed. & Chặn đăng bài và báo lỗi vượt quá giới hạn 5.000 ký tự. & Medium /\newline Medium & New \\ \hline
+\textbf{\#2} & 66 & B4 / T67 & Trường\newline v1.0 & Bài viết chứa chuỗi ký tự dài liên tục không khoảng trắng không tự ngắt dòng, gây tràn khung giao diện. & Chuỗi tự xuống dòng gọn trong khung bài viết, không vỡ bố cục. & Low /\newline Medium & New \\ \hline
+\textbf{\#3} & 70 & B4 / T68 & Trường\newline v1.0 & Đăng bài kèm ảnh GIF ($\le 5$MB) thành công nhưng ảnh GIF bị lỗi chuyển động trên Bảng tin. & Ảnh GIF hiển thị và chuyển động bình thường trên Bảng tin. & Low /\newline Low & New \\ \hline
+\textbf{\#4} & 144 & B9 / T119 & Trường\newline v1.0 & Nhập nội dung bài viết trong Nhóm $> 5.000$ ký tự vẫn đăng thành công lên đầu danh sách bài viết nhóm. & Chặn đăng bài trong nhóm và báo lỗi vượt quá 5.000 ký tự. & Medium /\newline Medium & New \\ \hline
+\textbf{\#5} & 159 & B10 / T126 & Trường\newline v1.0 & Tạo Story với nội dung chữ $> 500$ ký tự vẫn tạo thành công trên hệ thống. & Chặn tạo Story và báo lỗi ``Content không được vượt quá 500 ký tự''. & Medium /\newline Medium & New \\ \hline
+\textbf{\#6} & 160 & B10 / T127 & Trường\newline v1.0 & Story chứa chuỗi dài không khoảng trắng (ví dụ 200 chữ `a') không tự xuống dòng, tràn khỏi khung Story. & Nội dung tự ngắt dòng gọn gàng trong khung hiển thị Story. & Low /\newline Medium & New \\ \hline
+\textbf{\#7} & 115 & B6 / T94 & Sỹ\newline v1.0 & User1 vẫn nhìn thấy nút ``Sửa'' trên bình luận do User2 viết (vi phạm phân quyền bình luận). & Chỉ hiển thị nút ``Sửa'' và ``Xóa'' trên bình luận của chính chủ. & Medium /\newline Medium & New \\ \hline
+\textbf{\#9} & 123 & B7 / T102 & Tuấn\newline v1.0 & Không tồn tại nút ``Hủy lời mời'' kết bạn trên giao diện trang cá nhân hoặc tab lời mời đã gửi. & Cho phép người gửi hủy lời mời đang chờ, chuyển nút về ``Thêm bạn bè''. & Medium /\newline Medium & New \\ \hline
+\textbf{\#10} & 127 & B7 / T106 & Tuấn\newline v1.0 & User1 vẫn gửi được lời mời kết bạn tới tài khoản User3 đang bị Quản trị viên khóa. & Hiển thị ``Tài khoản không khả dụng'' và ẩn/chặn thao tác kết bạn. & \textcolor{red}{\textbf{High}} /\newline \textcolor{red}{\textbf{High}} & New \\ \hline
+\textbf{\#11} & 130 & B8 / T109 & Tuấn\newline v1.0 & Gửi tin nhắn văn bản dài 2.001 ký tự trên giao diện chat vẫn gửi đi thành công. & Chặn ký tự thứ 2.001 hoặc báo lỗi vượt quá 2.000 ký tự. & Medium /\newline Medium & New \\ \hline
+\textbf{\#12} & 131 & B8 / T110 & Tuấn\newline v1.0 & Giao diện nhắn tin 1-1 chưa có tính năng/nút đính kèm để gửi tệp hình ảnh. & Cho phép chọn ảnh hợp lệ ($\le 5$MB) và hiển thị trong khung chat. & \textcolor{red}{\textbf{High}} /\newline \textcolor{red}{\textbf{High}} & New \\ \hline
+\textbf{\#13} & 134 & B8 / T113 & Tuấn\newline v1.0 & Khi có tin nhắn mới chưa đọc, biểu tượng Tin nhắn chỉ hiện chấm đỏ mà không hiện số lượng chưa đọc. & Hiển thị chấm đỏ kèm bộ đếm số tin nhắn chưa đọc tăng thêm 1. & Medium /\newline Low & New \\ \hline
+\textbf{\#14} & 135 & B8 / T114 & Tuấn\newline v1.0 & User1 vẫn gửi được tin nhắn tới User3 dù tài khoản User3 đã bị Quản trị viên khóa. & Chặn gửi và báo ``Không thể gửi tin nhắn do tài khoản người nhận đã bị khóa''. & \textcolor{red}{\textbf{High}} /\newline \textcolor{red}{\textbf{High}} & New \\ \hline
+\textbf{\#15} & 206 & B13 / T148 & Tuấn\newline v1.0 & Người dùng vẫn gửi trùng lặp nhiều báo cáo cho cùng một bài viết đang ở trạng thái \texttt{Pending}. & Chặn gửi và cảnh báo ``Bạn đã gửi báo cáo cho bài viết này rồi...''. & Medium /\newline Medium & New \\ \hline
+\textbf{\#16} & 224 & B14 / T166 & Tuấn\newline v1.0 & Khi Admin khóa tài khoản User4 đang đăng nhập, User4 không bị đăng xuất ngay và vẫn like/bình luận được. & Ngắt phiên tức thì, đẩy User4 về màn hình đăng nhập kèm thông báo bị khóa. & \textcolor{red}{\textbf{High}} /\newline \textcolor{red}{\textbf{High}} & New \\ \hline
+\textbf{\#17} & 231 & B15 / T174 & Trường\newline v1.0 & Sau khi tác giả xóa bài viết gốc, bài viết chia sẻ lại của User2 vẫn hiển thị toàn bộ nội dung bài gốc đã xóa. & Ẩn nội dung bài gốc đã xóa, hiển thị ``Bài viết gốc không còn khả dụng''. & \textcolor{red}{\textbf{High}} /\newline Medium & New \\ \hline
+\end{longtable}
+\endgroup
+
+\noindent\textbf{Phân tích nguyên nhân gốc qua đối chiếu Hộp đen -- Hộp trắng:}
+\begin{itemize}[leftmargin=1.2cm, noitemsep]
+    \item[\textbf{--}] \textbf{Nhóm lỗi kiểm soát tài khoản bị khóa (\texttt{\#10, \#14, \#16} -- mức High):} Đây là nhóm rủi ro bảo mật/kiểm duyệt nghiêm trọng nhất. Kết quả đọc mã nguồn hộp trắng ở Mục 4.2.1 (\texttt{SendFriendRequestAsync}) và 4.3.2 (\texttt{SendPersonalMessageAsync}) xác nhận tầng nghiệp vụ hiện chưa kiểm tra cờ trạng thái khóa tài khoản, đồng thời cơ chế JWT chưa thu hồi phiên tức thì khi Admin khóa tài khoản.
+    \item[\textbf{--}] \textbf{Nhóm lỗi lệch tầng Frontend -- Backend (\texttt{\#1, \#4, \#5, \#11, \#12}):} Các ca Unit Test hộp trắng tại Mục 4.3.1 (\texttt{TC 246}) và 4.3.2 (\texttt{TC 130, 131}) đạt \texttt{Pass} trên hàm Backend, trong khi kiểm thử hệ thống trên giao diện \texttt{v1.0} lại \texttt{Fail}. Điều này chỉ ra giao diện Frontend \texttt{v1.0} chưa đồng bộ đầy đủ ràng buộc độ dài đầu vào (5.000 / 2.000 / 500 ký tự) và chưa tích hợp nút gửi ảnh vào khung chat.
+    \item[\textbf{--}] \textbf{Nhóm lỗi phân quyền, nghiệp vụ \& giao diện (\texttt{\#2, \#3, \#6, \#7, \#9, \#13, \#15, \#17}):} Tập trung ở tính năng còn thiếu trên UI (\texttt{\#9}), thiếu lọc bài gốc đã xóa khi truy vấn bài chia sẻ (\texttt{\#17}), thiếu kiểm tra trùng lặp báo cáo (\texttt{\#15}), sai điều kiện hiển thị nút Sửa bình luận (\texttt{\#7}) và thiếu CSS \texttt{word-break} cho chuỗi không khoảng trắng (\texttt{\#2, \#6}).
+\end{itemize}
+
+\subsection{Đánh giá tiêu chí kết thúc (Exit Criteria), Kết luận \& Kiến nghị}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|C{0.9cm}|L{5.5cm}|C{2.4cm}|X|}
+\hline
+\rowcolor[RGB]{179, 205, 255}
+\textbf{STT} & \textbf{Tiêu chí kết thúc (Exit Criteria -- Mục 1.4.2)} & \textbf{Trạng thái} & \textbf{Bằng chứng đối chiếu thực tế} \tabularnewline
+\hline
+1 & 100\% yêu cầu nghiệp vụ từ \texttt{B1} đến \texttt{B16} được ánh xạ và kiểm thử qua RTM. & \textcolor{blue}{\textbf{Đạt}} & 16/16 BRD và 183/183 mã TRD (\texttt{T01}--\texttt{T183}, bổ sung \texttt{T66.1}) được ánh xạ đầy đủ tại Mục 2.3. \\ \hline
+2 & 100\% tổng số ca kiểm thử hộp đen và hộp trắng đã thiết kế đều được thực thi. & \textcolor{blue}{\textbf{Đạt}} & 246/246 ca kiểm thử (236 hộp đen + 10 hộp trắng bổ sung) đã thực thi đầy đủ (0 \texttt{Blocked}). \\ \hline
+3 & Không còn lỗi mức độ nghiêm trọng cao (\texttt{Critical / High}) ở trạng thái mở. & \textcolor{red}{\textbf{Chưa đạt}} & Còn \textbf{4 lỗi Severity High} (\texttt{\#10, \#12, \#14, \#16}) và \textbf{5 lỗi Priority High} đang ở trạng thái \texttt{New}. \\ \hline
+4 & Đạt mục tiêu bao phủ hộp trắng đã đặt ra tại Mục 1.6.2 (\texttt{B4, B8}). & \textcolor{blue}{\textbf{Đạt (UT)}} & \texttt{B4} đạt 100\% Stmt, Branch, Condition \& Path; \texttt{B8} đạt 100\% Stmt, Branch (4 nút \texttt{if}) \& Path trên 5 đường cơ bản (Condition Coverage chưa đạt 100\%). \\ \hline
+5 & Báo cáo tổng hợp kết quả kiểm thử và danh sách lỗi (Defect Report) được hoàn thiện. & \textcolor{blue}{\textbf{Đạt}} & Đã hoàn thiện thống kê thực thi và danh sách 16 Defect tại Chương 5. \\ \hline
+\end{tabularx}
+\caption{Bảng đánh giá mức độ đáp ứng các tiêu chí kết thúc kiểm thử (Exit Criteria)}
+\end{table}
+
+\noindent\textbf{Kết luận đánh giá chất lượng:}
+\begin{itemize}[leftmargin=1.2cm, noitemsep]
+    \item[\textbf{--}] Tỷ lệ đạt tổng thể của \textbf{InteractHub v1.0} là \textbf{93,50\%} (230/246 TC; trong đó 7/16 nhóm chức năng gồm \texttt{B1, B2, B3, B5, B11, B12, B16} đạt 100\% Pass). Các luồng nghiệp vụ nền tảng như xác thực, đăng ký, hồ sơ, thích bài viết, hashtag, tìm kiếm và thông báo vận hành ổn định.
+    \item[\textbf{--}] Tuy nhiên, đối chiếu với tiêu chí kết thúc tại Mục 1.4, \textbf{hệ thống v1.0 CHƯA ĐỦ ĐIỀU KIỆN NGHIỆM THU PHÁT HÀNH (Release)} do vẫn còn \textbf{4 lỗi mức Severity High} chưa được khắc phục, đặc biệt tập trung tại module Nhắn tin 1-1 (\texttt{B8} chỉ đạt 60,0\% với 4 lỗi) và cơ chế kiểm soát tài khoản bị khóa (\texttt{B7, B8, B14}).
+\end{itemize}
+
+\noindent\textbf{Kiến nghị ưu tiên khắc phục trước khi phát hành:}
+\begin{enumerate}[leftmargin=1.2cm, noitemsep]
+    \item \textbf{Ưu tiên Đợt 1 (Bắt buộc trước phát hành -- Critical/High):}
+    \begin{itemize}[leftmargin=0.6cm, label=$\bullet$, noitemsep]
+        \item Bổ sung kiểm tra trạng thái tài khoản bị khóa ở cả tầng API lẫn giao diện cho Kết bạn (\texttt{\#10}) và Nhắn tin (\texttt{\#14}); triển khai cơ chế thu hồi/kiểm tra trạng thái khóa phiên theo thời gian thực khi Admin khóa tài khoản (\texttt{\#16}).
+        \item Tích hợp giao diện gửi hình ảnh trong khung chat 1-1 khớp với dịch vụ Backend (\texttt{\#12}) và ẩn nội dung bài gốc đã xóa trong các bài chia sẻ lại (\texttt{\#17}).
+        \item Về bảo mật xác thực (\texttt{B1 -- T07}): khuyến nghị hoán đổi thứ tự kiểm tra mật khẩu trước khi kiểm tra vai trò \texttt{Admin} trong \texttt{AuthController.Login} để tránh lộ tên tài khoản quản trị khi nhập sai mật khẩu.
+    \end{itemize}
+    \item \textbf{Ưu tiên Đợt 2 (Lỗi chức năng mức Medium):} Đồng bộ giới hạn độ dài Frontend--Backend cho Bài viết (\texttt{\#1}), Bài nhóm (\texttt{\#4}), Story (\texttt{\#5}), Tin nhắn (\texttt{\#11}); sửa lỗi hiển thị nút Sửa trên bình luận người khác (\texttt{\#7}), bổ sung nút ``Hủy lời mời'' (\texttt{\#9}) và chặn gửi báo cáo trùng lặp (\texttt{\#15}).
+    \item \textbf{Ưu tiên Đợt 3 (UI/UX \& Kiểm thử hồi quy):} Bổ sung CSS tự ngắt chuỗi dài (\texttt{overflow-wrap: anywhere}) cho bài viết và Story (\texttt{\#2, \#6}), khắc phục hiển thị GIF động (\texttt{\#3}) và số đếm tin nhắn chưa đọc (\texttt{\#13}); sau khi sửa lỗi cần thực hiện \textbf{Retesting} cho toàn bộ 16 ca lỗi và \textbf{Regression Testing} trên các module liên quan.
+\end{enumerate}
 
 \end{document}
